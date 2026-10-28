@@ -1,9 +1,46 @@
-# Technical methodology — 2026.10-v1
+# Technical methodology — 2026.10-v2
 
-Application 0.1.0. Each Analysis and Finding includes method version. Reports include
+Application 0.2.0. Each Analysis and Finding includes method version. Reports include
 actual FFmpeg/ffprobe versions, input metadata and analysis scope. None of the methods
 establish studio-master provenance or subjective sound quality. No calibrated probability
 or heuristic confidence percentage is produced.
+
+## Observations separated from inference — version 0.2
+
+`Finding.status` retains its historical/applicability interpretation. New structured
+`observations` describe only the measured property and reported scope. This is not a
+reclassification of Ambiguous provenance as confirmed provenance. No historical Codec,
+native 24-bit origin or exact Source rate is newly claimed.
+
+- Cutoff / Nyquist boundary: Detected when the existing complete-band thresholds pass;
+  Not detected when adequate reference occupancy and lower-band level permit the test,
+  but the thresholds do not pass. Otherwise Insufficient data, with the reason displayed.
+- Cutoff needs at least one full candidate band (first candidate 14 kHz, upper edge 15.2 kHz).
+  Thus Sample rate ≤30.4 kHz is Not applicable, instead of an ambiguous historical conclusion.
+  A boundary is excluded if c+1.2 kHz reaches Nyquist; partial upper bands are not used.
+  Report and UI list only the actual checked candidates (e.g. 14–20 kHz at 44.1 kHz).
+- Upper-band flags classify **median PSD**, not meaningful ultrasonic music content.
+  Bands: 22.3–23.7 kHz, and 25 kHz…Nyquist−500 Hz. Above threshold means >−40 dB relative
+  to mean reference PSD 1–8 kHz, Below threshold means ≤−40 dB. This reuses the existing
+  spectral level threshold, not a calibrated provenance threshold. Narrow tones can be
+  missed by a median; silence/missing reference and insufficient bins retain explicit uncertainty.
+- 16-bit grid flag uses the unchanged exact 100% low-byte-zero rule and minimum 1,000 active
+  samples. It is only a measured grid in the sampled population, not proof of padding history.
+- Full-scale samples are counts at the existing digital-rail threshold, never a clipping verdict.
+- True Peak above 0 dBTP is flagged from the full-stream backend estimate. Backend −infinity
+  is stored separately from missing/NaN data so zero peak can be shown without invented uncertainty.
+  Numeric JSON remains finite/null, with a separate state field. Undefined overs status is null.
+- Zero Residual RMS after reliable Alignment is displayed as −infinity; a residual withheld
+  due to unreliable Alignment is separately labelled, not shown as zero or identical PCM.
+
+Mono Channel layout can be established from a single Channel. Unlabelled two-channel WAV/AIFF
+uses their conventional stereo ordering, with `channel_layout_source="container convention"`
+and a visible disclosure. Other unknown layouts remain unspecified; no general multichannel
+layout inference is performed. Raw ffprobe output is preserved in `AudioInfo.raw`.
+
+The default UI presents observations and explains historical limitations. Detailed tables
+and JSON preserve the separate inference status and evidence. Method version incremented
+to v2 for result/schema/applicability changes; suspicion thresholds are unchanged.
 
 ## Routing and input safety
 

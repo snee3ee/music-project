@@ -5,6 +5,7 @@ from pathlib import Path
 
 import streamlit as st
 
+from music_project import __version__
 from music_project.core.config import Settings
 from music_project.core.models import AudioError
 
@@ -33,10 +34,16 @@ page = st.navigation(
         for name, title, icon in pages
     ]
 )
-st.sidebar.caption("Music Project · 0.1.0\n\nЛокальный анализ. Исходные файлы сохраняются.")
+st.sidebar.caption(
+    f"Music Project · {__version__}\n\nЛокальный анализ. Исходные файлы сохраняются."
+)
 st.title(page.title)
 try:
     page.run()
+except FileNotFoundError:
+    st.error("Файл или папка не найдены. Проверьте путь и доступность диска.")
+except PermissionError:
+    st.error("Нет доступа к файлу или папке. Проверьте права доступа.")
 except (AudioError, OSError, ValueError, sqlite3.Error) as exc:
     st.error(str(exc))
 except Exception:

@@ -1,4 +1,4 @@
-# Supported formats — 0.1.0
+# Supported formats — 0.2.0
 
 Verified means an automated synthetic fixture was actually probed/decoded with the local
 FFmpeg 9.0.2 backend. It does not establish every variant, bit depth or channel layout.

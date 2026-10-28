@@ -5,9 +5,7 @@ import streamlit as st
 from music_project.core.compare import compare_pcm
 from music_project.ui.shared import cached_analysis, export_json, show_finding
 
-st.caption(
-    "Сравнение первых фрагментов двух файлов. Историческая идентичность мастера не устанавливается."
-)
+st.caption("Сравните первые фрагменты двух файлов: Alignment, Gain, Polarity и совпадение PCM.")
 with st.form("compare_form"):
     first = st.text_input("Файл A", key="compare_a")
     second = st.text_input("Файл B", key="compare_b")
@@ -31,7 +29,7 @@ if submitted:
             st.session_state.comparison_result = (a, b, compare_pcm(ca, cb))
 if st.session_state.comparison_result:
     a, b, finding = st.session_state.comparison_result
-    show_finding("PCM comparison", finding)
+    show_finding("Сравнение PCM", finding)
     table = []
     for label, result in (("A", a), ("B", b)):
         p = result.findings["peaks"].measurements
@@ -50,7 +48,12 @@ if st.session_state.comparison_result:
                 "Crest, dB": p.get("crest_factor_db"),
             }
         )
-    st.dataframe(table, alt="Объективные измерения двух файлов")
+    st.dataframe(
+        table,
+        hide_index=True,
+        placeholder="Нет конечного значения",
+        alt="Объективные измерения двух файлов",
+    )
     export_json(
         "Скачать сравнение",
         {"a": a.to_dict(), "b": b.to_dict(), "comparison": finding.__dict__},

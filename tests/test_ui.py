@@ -60,3 +60,37 @@ def test_ui_compare(app, tone):
     app.form_submit_button[0].click().run()
     assert not app.exception and not app.error
     assert app.session_state.comparison_result[2].measurements["identical_prefix"]
+
+
+def test_choose_then_analyze_without_pasting_path(app, tone, monkeypatch):
+    from music_project.ui import file_picker
+
+    monkeypatch.setattr(file_picker, "choose_file", lambda: str(tone))
+    app.switch_page("music_project/ui/analyzer.py").run()
+    app.button(key="choose_audio").click().run()
+    assert app.text_input(key="analyzer_path").value == str(tone)
+    app.form_submit_button[0].click().run()
+    assert not app.exception and not app.error
+    assert app.session_state.analysis_result[1][0].info.path == str(tone.resolve())
+    visible = " ".join(e.value for group in (app.text, app.caption, app.markdown) for e in group)
+    assert "decoded_seconds" not in visible
+    assert "Not applicable / Unknown" not in visible
+    assert "Full-scale samples" in visible
+
+
+def test_cancel_keeps_selected_file(app, tone, monkeypatch):
+    from music_project.ui import file_picker
+
+    monkeypatch.setattr(file_picker, "choose_file", lambda: None)
+    app.session_state.analyzer_path = str(tone)
+    app.switch_page("music_project/ui/analyzer.py").run()
+    app.button(key="choose_audio").click().run()
+    assert app.text_input(key="analyzer_path").value == str(tone)
+    assert not app.exception and not app.error
+
+
+def test_empty_file_selection_is_clear_error(app):
+    app.switch_page("music_project/ui/analyzer.py").run()
+    app.form_submit_button[0].click().run()
+    assert app.error[0].value == "Сначала выберите файл для анализа."
+    assert not app.exception

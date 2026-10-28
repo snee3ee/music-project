@@ -3,13 +3,14 @@
 import json
 import math
 import re
+from dataclasses import replace
 
 import numpy as np
 from scipy import signal
 
 from music_project.core.config import Settings
 from music_project.core.decoder import PCMContext, input_args
-from music_project.core.models import AudioError, AudioInfo, Finding
+from music_project.core.models import AudioError, AudioInfo, Finding, Observation
 from music_project.core.subprocess_utils import run
 
 SPECTRAL_LIMITS = [
@@ -47,6 +48,15 @@ def peaks(context: PCMContext) -> Finding:
             "Sample Peak около 0 dBFS и отсчёты у full scale сами по себе не доказывают clipping.",
             "Null для dB означает тишину (−∞ dB); RMS не равен воспринимаемой громкости.",
         ],
+        observations=[
+            Observation(
+                "FULL_SCALE_SAMPLES",
+                "Detected" if np.any(counts) else "Not detected",
+                f"Full-scale samples: {int(counts.sum()):,} в проверенном фрагменте.",
+                int(counts.sum()),
+                "samples",
+            )
+        ],
     )
 
 
@@ -67,22 +77,58 @@ def loudness(info: AudioInfo, settings: Settings = Settings()) -> Finding:
         value = float(data[key])
         return value if math.isfinite(value) else None
 
+    def value_state(key):
+        value = float(data[key])
+        return (
+            "negative infinity"
+            if value == -math.inf
+            else "finite"
+            if math.isfinite(value)
+            else "undefined"
+        )
+
     tp = finite("input_tp")
+    tp_state = value_state("input_tp")
     return Finding(
         "Measured",
         "Громкость и True Peak измерены по всему первому аудиопотоку.",
         {
             "integrated_lufs": finite("input_i"),
+            "integrated_lufs_state": value_state("input_i"),
             "lra_lu": finite("input_lra"),
             "true_peak_dbtp": tp,
-            "true_peak_above_0_dbtp": tp is not None and tp > 0,
+            "true_peak_state": tp_state,
+            "true_peak_above_0_dbtp": tp > 0
+            if tp is not None
+            else False
+            if tp_state == "negative infinity"
+            else None,
             "scope": "whole first audio stream",
         },
-        "FFmpeg loudnorm input_i/input_lra/input_tp; dynamic analysis, 192 kHz TP pipeline.",
+        "Входные измерения FFmpeg loudnorm; True Peak оценивается через pipeline 192 kHz.",
         [
             "Измеряется вход loudnorm; нормализованный выход отбрасывается, файл не меняется.",
             "LUFS может быть неопределён для тишины/очень короткого сигнала; LRA коротких записей ограничен.",
             "True Peak — оценка реконструированного пика, отличная от Sample Peak.",
+        ],
+        observations=[
+            Observation(
+                "TRUE_PEAK_OVER",
+                "Insufficient data"
+                if tp is None and tp_state != "negative infinity"
+                else "Detected"
+                if tp is not None and tp > 0
+                else "Not detected",
+                "True Peak: −∞ dBTP (нулевой пик по FFmpeg); превышений нет."
+                if tp_state == "negative infinity"
+                else "FFmpeg не вернул значение True Peak."
+                if tp is None
+                else "True Peak превышает 0 dBTP."
+                if tp > 0
+                else "Превышений True Peak выше 0 dBTP не обнаружено по оценке FFmpeg.",
+                tp,
+                "dBTP",
+            )
         ],
     )
 
@@ -90,13 +136,22 @@ def loudness(info: AudioInfo, settings: Settings = Settings()) -> Finding:
 def quantization(context: PCMContext) -> Finding:
     info = context.info
     limits = [
-        "Dither, gain, фильтры и DSP могут стереть структуру прежнего квантования.",
-        "Энтропия не доказывает native 24-bit; число уровней не исключает обработанный 16-bit источник.",
-        "Совместимость с сеткой 16-bit не устанавливает историю файла.",
+        "Dither, Gain, фильтры и DSP могут стереть прежний Quantization grid.",
+        "Lower-byte entropy не доказывает native 24-bit; число PCM levels не исключает обработанный 16-bit источник.",
+        "Совместимость с 16-bit grid не устанавливает историю файла.",
     ]
     if info.kind != "PCM" or info.bit_depth != 24 or not info.lossless:
         return Finding(
-            "Not applicable", "Метод применим к lossless integer PCM 24-bit.", limitations=limits
+            "Not applicable",
+            "Метод применим к lossless integer PCM 24-bit.",
+            limitations=limits,
+            observations=[
+                Observation(
+                    "PADDING_GRID",
+                    "Not applicable",
+                    "16→24 Padding: проверка применяется только к lossless integer PCM 24-bit.",
+                )
+            ],
         )
     # Float64 exactly represents all 24-bit integers. Decode preserves native scale.
     values = np.rint(context.samples.ravel() * (1 << 23)).astype(np.int64)
@@ -108,6 +163,13 @@ def quantization(context: PCMContext) -> Finding:
             "Недостаточно активных отсчётов (нужно ≥1000).",
             {"active_samples": int(active.size)},
             limitations=limits,
+            observations=[
+                Observation(
+                    "PADDING_GRID",
+                    "Insufficient data",
+                    f"16-bit grid: доступно {active.size} активных samples; для проверки нужно ≥1000.",
+                )
+            ],
         )
     low = active & 255
     counts = np.bincount(low, minlength=256)
@@ -118,9 +180,9 @@ def quantization(context: PCMContext) -> Finding:
     padded = bool(np.all(low == 0))
     return Finding(
         "Direct 16→24 padding evidence" if padded else "No direct-padding evidence",
-        "Все активные отсчёты выборки лежат на сетке 16-bit. История неизвестна."
+        "Все активные samples выборки лежат на 16-bit grid; это совместимо с 16→24 Padding."
         if padded
-        else "В выборке есть ненулевые младшие 8 бит. История bit-depth неизвестна.",
+        else "В выборке есть ненулевые младшие 8 bits: прямой 16→24 Padding не описывает всю выборку.",
         {
             "zero_lower_byte_percent": zero,
             "distinct_lower_bytes": int(np.count_nonzero(counts)),
@@ -131,9 +193,21 @@ def quantization(context: PCMContext) -> Finding:
             "compatible_with_65536_output_levels": distinct <= 65536,
             "sampling": "nonzero interleaved samples, deterministic stride, max 1,000,000",
         },
-        "Signed 24-bit = round(f64*2^23); low byte = integer & 255; H=-Σp log2(p).",
+        "Samples представлены как signed 24-bit; lower byte — младшие 8 bits; "
+        "Shannon entropy вычисляется по распределению lower bytes.",
         limits,
         ["ZERO_LOW_BYTE_GRID"] if padded else [],
+        observations=[
+            Observation(
+                "PADDING_GRID",
+                "Detected" if padded else "Not detected",
+                "16-bit grid обнаружен: младшие 8 bits нулевые у всех активных samples выборки."
+                if padded
+                else f"16-bit grid отсутствует у части samples: нулевой lower byte у {zero:.2f}%.",
+                zero,
+                "%",
+            )
+        ],
     )
 
 
@@ -157,15 +231,60 @@ def spectrum(context: PCMContext) -> tuple[np.ndarray, np.ndarray]:
 
 def spectral_findings(context: PCMContext) -> tuple[Finding, Finding]:
     info = context.info
-    method = "Welch PSD: Hann 8192 (or available), overlap 50%, mean channel power; v1."
+    method = "Welch PSD: Window Hann, FFT 8192 или доступное число frames, Overlap 50%; "
+    method += "усредняется мощность Channels, Downmix не выполняется."
     if info.kind != "PCM" or not info.lossless:
-        na = Finding("Not applicable", "Спектральные эвристики: только lossless PCM.")
-        return na, na
+        return tuple(
+            Finding(
+                "Not applicable",
+                "Спектральные эвристики: только lossless PCM.",
+                observations=[
+                    Observation(
+                        code, "Not applicable", f"{label}: проверка рассчитана на lossless PCM."
+                    )
+                ],
+            )
+            for code, label in (("CUTOFF", "Cutoff"), ("NYQUIST_BOUNDARY", "Nyquist boundary"))
+        )
+    if info.sample_rate / 2 <= 15200:
+        # The first candidate is 14 kHz and needs a complete upper band to 15.2 kHz.
+        return (
+            Finding(
+                "Not applicable",
+                "Доступная полоса не вмещает проверяемые Cutoff bands.",
+                observations=[
+                    Observation(
+                        "CUTOFF",
+                        "Not applicable",
+                        f"Cutoff: Nyquist равен {info.sample_rate / 2000:g} kHz; "
+                        "для метода нужна полная полоса вокруг хотя бы одной границы 14–21 kHz.",
+                    )
+                ],
+            ),
+            Finding(
+                "Not applicable",
+                "Нужна PCM Sample rate >48 kHz.",
+                observations=[
+                    Observation(
+                        "NYQUIST_BOUNDARY",
+                        "Not applicable",
+                        f"Upsampling: Sample rate {info.sample_rate / 1000:g} kHz; метод применяется выше 48 kHz.",
+                    )
+                ],
+            ),
+        )
     try:
         f, power = spectrum(context)
     except AudioError as exc:
-        amb = Finding("Ambiguous", str(exc), limitations=SPECTRAL_LIMITS)
-        return amb, amb
+        return tuple(
+            Finding(
+                "Ambiguous",
+                str(exc),
+                limitations=SPECTRAL_LIMITS,
+                observations=[Observation(code, "Insufficient data", str(exc))],
+            )
+            for code in ("CUTOFF", "NYQUIST_BOUNDARY")
+        )
     ref_mask = (f >= 1000) & (f <= 8000)
     reference = float(np.mean(power[ref_mask])) if np.any(ref_mask) else 0
     if reference <= 1e-16 or len(context.samples) < info.sample_rate:
@@ -174,11 +293,37 @@ def spectral_findings(context: PCMContext) -> tuple[Finding, Finding]:
             "Тишина, короткая запись или недостаточная энергия 1–8 kHz.",
             method=method,
             limitations=SPECTRAL_LIMITS,
+            observations=[
+                Observation(
+                    "CUTOFF",
+                    "Insufficient data",
+                    "Cutoff: для проверки нужен фрагмент ≥1 s с измеримой энергией в 1–8 kHz.",
+                )
+            ],
         )
         return amb, (
-            amb
+            replace(
+                amb,
+                observations=[
+                    Observation(
+                        "NYQUIST_BOUNDARY",
+                        "Insufficient data",
+                        "Nyquist boundary: для проверки нужен фрагмент ≥1 s с измеримой энергией в 1–8 kHz.",
+                    )
+                ],
+            )
             if info.sample_rate > 48000
-            else Finding("Not applicable", "Нужна PCM sample rate >48 kHz.")
+            else Finding(
+                "Not applicable",
+                "Нужна PCM Sample rate >48 kHz.",
+                observations=[
+                    Observation(
+                        "NYQUIST_BOUNDARY",
+                        "Not applicable",
+                        f"Upsampling: Sample rate {info.sample_rate / 1000:g} kHz; метод применяется выше 48 kHz.",
+                    )
+                ],
+            )
         )
     relative = 10 * np.log10(np.maximum(power, 1e-30) / reference)
     occupancy = float(np.mean(relative[ref_mask] > -30))
@@ -188,6 +333,8 @@ def spectral_findings(context: PCMContext) -> tuple[Finding, Finding]:
         return float(np.median(selected)) if selected.size >= 3 else None
 
     def boundary(c):
+        if c + 1200 >= info.sample_rate / 2:
+            return None
         below, above = band(c - 1200, c - 300), band(c + 300, c + 1200)
         if below is None or above is None:
             return None
@@ -213,6 +360,25 @@ def spectral_findings(context: PCMContext) -> tuple[Finding, Finding]:
         and best["drop_db"] >= 20
         and best["above_db_relative"] <= -40
     )
+    cutoff_evaluable = bool(useful and best and best["below_db_relative"] > -35)
+    cutoff_observation = Observation(
+        "CUTOFF",
+        "Detected" if evidence else "Not detected" if cutoff_evaluable else "Insufficient data",
+        (
+            f"Cutoff около {best['boundary_hz'] / 1000:g} kHz: спад {best['drop_db']:.1f} dB; "
+            "выполнены пороги резкой границы."
+        )
+        if evidence
+        else (
+            f"Cutoff по заданным порогам не обнаружен среди проверенных границ "
+            f"{candidates[0]['boundary_hz'] / 1000:g}–{candidates[-1]['boundary_hz'] / 1000:g} kHz "
+            "с шагом 1 kHz."
+        )
+        if cutoff_evaluable
+        else "Cutoff: недостаточная ширина или уровень спектра для проверки границы в 14–21 kHz.",
+        best["boundary_hz"] if evidence else None,
+        "Hz",
+    )
     loss = Finding(
         "Medium suspicion" if evidence else "Ambiguous",
         "Резкая граница полосы совместима с lossy-кодированием или фильтрацией."
@@ -221,6 +387,7 @@ def spectral_findings(context: PCMContext) -> tuple[Finding, Finding]:
         {
             "candidate": best,
             "reference_occupancy": occupancy,
+            "checked_boundaries_hz": [m["boundary_hz"] for m in candidates],
             "thresholds": {
                 "drop_db_min": 20,
                 "above_db_max": -40,
@@ -231,9 +398,20 @@ def spectral_findings(context: PCMContext) -> tuple[Finding, Finding]:
         method,
         SPECTRAL_LIMITS,
         ["BAND_LIMIT"] if evidence else [],
+        observations=[cutoff_observation],
     )
     if info.sample_rate <= 48000:
-        return loss, Finding("Not applicable", "Нужна PCM sample rate >48 kHz.")
+        return loss, Finding(
+            "Not applicable",
+            "Нужна PCM Sample rate >48 kHz.",
+            observations=[
+                Observation(
+                    "NYQUIST_BOUNDARY",
+                    "Not applicable",
+                    f"Upsampling: Sample rate {info.sample_rate / 1000:g} kHz; метод применяется выше 48 kHz.",
+                )
+            ],
+        )
     boundaries = [m for c in (22050, 24000) if (m := boundary(c))]
     detected = [
         m
@@ -243,6 +421,38 @@ def spectral_findings(context: PCMContext) -> tuple[Finding, Finding]:
         and m["drop_db"] >= 20
         and m["above_db_relative"] <= -40
     ]
+    evaluable = any(useful and m["below_db_relative"] > -35 for m in boundaries)
+    nyquist_observation = Observation(
+        "NYQUIST_BOUNDARY",
+        "Detected" if detected else "Not detected" if evaluable else "Insufficient data",
+        "Nyquist boundary: признак около "
+        + ", ".join(f"{m['boundary_hz'] / 1000:g} kHz" for m in detected)
+        + "."
+        if detected
+        else "Nyquist boundary по заданным порогам не обнаружен около "
+        + " / ".join(f"{m['boundary_hz'] / 1000:g} kHz" for m in boundaries)
+        + "."
+        if evaluable
+        else "Nyquist boundary: уровень около 22.05 / 24 kHz недостаточен для проверки границы.",
+    )
+    upper_band = band(22300, 23700)
+    above_24 = band(25000, info.sample_rate / 2 - 500)
+
+    def psd_observation(code, label, level):
+        if level is None:
+            return Observation(
+                code, "Insufficient data", f"{label}: полоса недоступна при этой Sample rate."
+            )
+        above = level > -40
+        return Observation(
+            code,
+            "Above threshold" if above else "Below threshold",
+            f"{label}: {level:.1f} dB относительно 1–8 kHz; "
+            f"{'выше' if above else 'не выше'} порога −40 dB.",
+            level,
+            "dB rel. 1–8 kHz",
+        )
+
     up = Finding(
         "Medium suspicion" if detected else "Ambiguous",
         "Граница около исторического Nyquist совместима с ограниченным по полосе источником."
@@ -250,8 +460,8 @@ def spectral_findings(context: PCMContext) -> tuple[Finding, Finding]:
         else "Историческая частота источника не установлена.",
         {
             "boundaries": boundaries,
-            "band_22300_23700_db": band(22300, 23700),
-            "above_24k_db": band(25000, info.sample_rate / 2 - 500),
+            "band_22300_23700_db": upper_band,
+            "above_24k_db": above_24,
             "source_rate": "Unknown",
             "thresholds": loss.measurements["thresholds"],
         },
@@ -259,6 +469,11 @@ def spectral_findings(context: PCMContext) -> tuple[Finding, Finding]:
         SPECTRAL_LIMITS
         + ["Энергия >22.05 kHz может быть шумом/результатом DSP и не доказывает 48 kHz origin."],
         ["NYQUIST_BOUNDARY"] if detected else [],
+        observations=[
+            nyquist_observation,
+            psd_observation("PSD_22300_23700", "Median PSD 22.3–23.7 kHz", upper_band),
+            psd_observation("PSD_ABOVE_24K", "Median PSD выше 25 kHz", above_24),
+        ],
     )
     return loss, up
 

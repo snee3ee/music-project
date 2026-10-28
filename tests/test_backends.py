@@ -16,6 +16,8 @@ from music_project.core.subprocess_utils import run
 def test_unicode_probe_and_loudness(tone, settings):
     info = probe(tone, settings)
     assert info.sample_rate == 48000 and info.bit_depth == 16 and info.channels == 1
+    assert info.channel_layout == "mono"
+    assert info.channel_layout_source in {"metadata", "channel count"}
     context = PCMContext.load(info, settings)
     assert len(context.samples) == 144000
     measured = loudness(info, settings)

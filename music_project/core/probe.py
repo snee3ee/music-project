@@ -61,14 +61,21 @@ def probe(path: Path | str, settings: Settings = Settings()) -> AudioInfo:
         lossless = (codec in LOSSLESS - {"wavpack"}) or integer_pcm or codec.startswith("pcm_f")
         tags = {str(k).lower(): str(v) for k, v in fmt.get("tags", {}).items()}
         tags.update({str(k).lower(): str(v) for k, v in stream.get("tags", {}).items()})
+        channels = number(stream.get("channels"), int) or 0
+        layout = stream.get("channel_layout") or "Unknown"
+        layout_source = "metadata" if layout != "Unknown" else "not provided"
+        if layout == "Unknown" and channels == 1:
+            layout, layout_source = "mono", "channel count"
+        elif layout == "Unknown" and channels == 2 and fmt.get("format_name") in {"wav", "aiff"}:
+            layout, layout_source = "stereo", "container convention"
         return AudioInfo(
             str(source),
             fmt.get("format_name", "unknown"),
             codec,
             "DSD" if dsd else "PCM" if lossless else "Lossy/other",
             rate,
-            number(stream.get("channels"), int) or 0,
-            stream.get("channel_layout", "Unknown"),
+            channels,
+            layout,
             bits if not dsd and lossless and (integer_pcm or codec in LOSSLESS) else None,
             number(stream.get("duration")) or number(fmt.get("duration")),
             source.stat().st_size,
@@ -76,6 +83,7 @@ def probe(path: Path | str, settings: Settings = Settings()) -> AudioInfo:
             lossless and not dsd,
             tags,
             raw,
+            layout_source,
         )
     except (ValueError, KeyError, TypeError) as exc:
         raise AudioError("Некорректный JSON ffprobe") from exc

@@ -10,13 +10,13 @@ def compare_pcm(a: PCMContext, b: PCMContext, max_offset_seconds: float = 2) -> 
     limits = [
         "Сравнивается только перекрытие указанных фрагментов; это не whole-file identity.",
         "Нет resampling, time stretch, fractional-delay или drift compensation.",
-        "Корреляция похожих/периодических сигналов может давать неоднозначное смещение.",
+        "Correlation похожих/периодических сигналов может давать неоднозначный Alignment.",
         "Глобальное усиление и полярность оцениваются одной МНК-моделью; субъективного ранжирования нет.",
     ]
     if a.info.sample_rate != b.info.sample_rate or a.info.channels != b.info.channels:
         return Finding(
             "Not applicable",
-            "Для прямого сравнения нужны одинаковые sample rate и каналы.",
+            "Для прямого сравнения нужны одинаковые Sample rate и Channels.",
             limitations=limits,
         )
     if a.info.channel_layout != b.info.channel_layout:
@@ -52,9 +52,9 @@ def compare_pcm(a: PCMContext, b: PCMContext, max_offset_seconds: float = 2) -> 
     reliable = abs(normalized) >= 0.9 and abs(gain) > 1e-12 and (uniqueness >= 0.01 or same_prefix)
     return Finding(
         "Measured" if reliable else "Ambiguous",
-        "Выровненное перекрытие сравнено с компенсацией усиления и полярности."
+        "Перекрытие после Alignment сравнено с компенсацией Gain и Polarity."
         if reliable
-        else "Корреляция недостаточна для надёжной интерпретации null-сигнала.",
+        else "Alignment не прошёл проверки надёжности; Null signal не интерпретируется.",
         {
             "offset_b_samples": lag,
             "offset_b_seconds": lag / a.info.sample_rate,
@@ -76,6 +76,7 @@ def compare_pcm(a: PCMContext, b: PCMContext, max_offset_seconds: float = 2) -> 
             "scope_a": a.scope,
             "scope_b": b.scope,
         },
-        "FFT cross-correlation integer lag; least-squares scalar gain; signed normalized dot product.",
+        "Alignment через FFT cross-correlation с целым смещением; "
+        "Gain по least squares; Correlation — нормированное скалярное произведение.",
         limits,
     )

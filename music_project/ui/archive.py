@@ -5,6 +5,7 @@ import streamlit as st
 
 from music_project.core.integrity import create_manifest, verify_manifest
 from music_project.core.models import AudioError
+from music_project.ui.presentation import status_text
 from music_project.ui.shared import export_json
 
 st.caption(
@@ -32,10 +33,23 @@ if submitted:
 result = st.session_state.manifest_result
 if result is not None:
     if isinstance(result, list):
-        st.dataframe(result, alt="Результаты проверки архива")
+        st.dataframe(
+            [
+                {
+                    "Файл": row["path"],
+                    "Результат": status_text(row["status"]),
+                    "Диагностика": row.get("error", ""),
+                }
+                for row in result
+            ],
+            hide_index=True,
+            alt="Результаты проверки архива",
+        )
     else:
         st.success(f"Манифест создан: {len(result['files'])} файлов")
-        st.caption("Сохраните манифест вне проверяемой папки, чтобы он не появлялся как New.")
+        st.caption(
+            "Сохраните манифест вне проверяемой папки, иначе он попадёт в список новых файлов."
+        )
     export_json(
         "Скачать JSON",
         result,

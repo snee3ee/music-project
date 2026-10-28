@@ -25,10 +25,22 @@ class AudioInfo:
     lossless: bool
     tags: dict[str, str] = field(default_factory=dict)
     raw: dict[str, Any] = field(default_factory=dict)
+    channel_layout_source: str = "metadata"
 
     @property
     def name(self) -> str:
         return Path(self.path).name
+
+
+@dataclass
+class Observation:
+    """A scoped signal observation, separate from a historical inference."""
+
+    code: str
+    status: str
+    summary: str
+    value: float | int | None = None
+    unit: str = ""
 
 
 @dataclass
@@ -40,6 +52,7 @@ class Finding:
     limitations: list[str] = field(default_factory=list)
     evidence: list[str] = field(default_factory=list)
     method_version: str = METHOD_VERSION
+    observations: list[Observation] = field(default_factory=list)
 
 
 @dataclass

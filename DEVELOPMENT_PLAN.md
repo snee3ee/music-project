@@ -1,5 +1,18 @@
 # Music Project — implementation ledger
 
+## Current focus — version 0.2
+
+User accepted 0.1 and narrowed the next milestone to established signal observations,
+clear Russian interface with English engineering terms and simpler file selection.
+No unrelated product features are added in this milestone. The earlier broad roadmap
+below is retained as history; it is not the current execution scope.
+
+Implementation: structured measured observations separate from historical inference,
+readable tables/statuses/scope, Windows OpenFileDialog plus manual path fallback,
+explicit -infinity vs missing values, declared mono/conventional stereo layout sources.
+Method 2026.10-v2, application 0.2.0. See docs/RELEASE_0_2_PLAN.md and
+docs/VALIDATION_0_2.md for the current scope and executed checks.
+
 ## Scope and acceptance
 
 Build usable local, read-only vertical slices. Preserve AGENTS.md, local skills,
