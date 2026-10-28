@@ -3,7 +3,17 @@ __pycache__/
 *.pyc
 .pytest_cache/
 .ruff_cache/
-.streamlit/
+.streamlit/*
+!.streamlit/config.toml
 temp/
 tmp/
 *.log
+
+# Local indexes, reports and generated fixtures
+data/
+*.sqlite*
+*.egg-info/
+build/
+dist/
+.coverage
+htmlcov/
