@@ -13,6 +13,10 @@ def compare_pcm(a: PCMContext, b: PCMContext, max_offset_seconds: float = 2) -> 
         "Correlation похожих/периодических сигналов может давать неоднозначный Alignment.",
         "Глобальное усиление и полярность оцениваются одной МНК-моделью; субъективного ранжирования нет.",
     ]
+    if not np.isfinite(max_offset_seconds) or max_offset_seconds < 0:
+        return Finding("Not applicable", "Некорректный предел Alignment.", limitations=limits)
+    if a.info.channels > 1 and "Unknown" in (a.info.channel_layout, b.info.channel_layout):
+        return Finding("Not applicable", "Порядок каналов не установлен.", limitations=limits)
     if a.info.sample_rate != b.info.sample_rate or a.info.channels != b.info.channels:
         return Finding(
             "Not applicable",
@@ -45,9 +49,12 @@ def compare_pcm(a: PCMContext, b: PCMContext, max_offset_seconds: float = 2) -> 
     xx = x[start_x : start_x + length]
     yy = y[start_y : start_y + length]
     energy = float(np.sum(xx * xx))
+    other_energy = float(np.sum(yy * yy))
+    if not energy > 0 or not other_energy > 0:
+        return Finding("Ambiguous", "В перекрытии недостаточно энергии.", limitations=limits)
     gain = float(np.sum(xx * yy) / energy)
     residual = yy - gain * xx
-    normalized = float(np.sum(xx * yy) / np.sqrt(energy * np.sum(yy * yy)))
+    normalized = float(np.clip(np.sum(xx * yy) / (np.sqrt(energy) * np.sqrt(other_energy)), -1, 1))
     same_prefix = x.shape == y.shape and np.array_equal(x, y)
     reliable = abs(normalized) >= 0.9 and abs(gain) > 1e-12 and (uniqueness >= 0.01 or same_prefix)
     return Finding(

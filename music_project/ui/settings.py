@@ -2,6 +2,7 @@ import streamlit as st
 
 from music_project import METHOD_VERSION, __version__
 from music_project.core.config import Settings
+from music_project.core.dsd import DSD_METHOD_VERSION
 from music_project.core.subprocess_utils import backend_versions
 
 current = st.session_state.settings
@@ -21,6 +22,7 @@ if submitted:
     )
     st.success("Настройки применены. Для новых измерений повторно нажмите «Анализировать».")
 st.text(f"Версия приложения: {__version__} · Метод: {METHOD_VERSION}")
+st.caption(f"DSD Signal Diagnostics: {DSD_METHOD_VERSION}")
 if st.button("Проверить программы анализа"):
     st.dataframe(
         [

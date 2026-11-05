@@ -4,7 +4,15 @@ import re
 from typing import Any
 
 STATUS = {
+    "Passed": "Проверка пройдена",
+    "Failed": "Проверка не пройдена",
+    "Partial": "Частичная проверка",
+    "Inferred": "Выведено по правилу",
+    "Derived": "Рассчитано",
+    "Experimental": "Экспериментально",
+    "Not validated": "Не валидировано",
     "Measured": "Измерено",
+    "Verified": "Проверено",
     "Ambiguous": "Недостаточно признаков",
     "Unknown": "Нет подтверждённых данных",
     "Not applicable": "Не применяется",

@@ -4,10 +4,13 @@ from pathlib import Path
 
 import streamlit as st
 
+from music_project import METHOD_VERSION
 from music_project.core.analysis import analyze
-from music_project.core.config import Settings
+from music_project.core.config import Settings, backend_identity
+from music_project.core.dsd import DSD_METHOD_VERSION
 from music_project.core.library import Library
-from music_project.core.models import Finding
+from music_project.core.models import AudioError, Finding
+from music_project.core.origin_models import ORIGIN_VERSION
 from music_project.ui.presentation import measurement_rows, status_text
 
 PROJECT = Path(__file__).resolve().parents[2]
@@ -31,9 +34,44 @@ def export_json(label: str, value: dict | list, filename: str):
     )
 
 
+def cached_analysis(path: str, size: int, mtime_ns: int, settings: Settings, *, progress=None):
+    stat = Path(path).stat()
+    if (stat.st_size, stat.st_mtime_ns) != (size, mtime_ns):
+        raise AudioError("Файл изменился; результат не сохранён в кэше")
+    result = _cached_analysis(
+        path,
+        size,
+        mtime_ns,
+        settings,
+        f"{METHOD_VERSION}/{DSD_METHOD_VERSION}/{ORIGIN_VERSION}",
+        backend_identity(settings),
+        _progress=progress,
+    )
+    stat = Path(path).stat()
+    if (stat.st_size, stat.st_mtime_ns) != (size, mtime_ns):
+        raise AudioError("Файл изменился; результат не сохранён в кэше")
+    return result
+
+
+def clear_analysis_cache():
+    _cached_analysis.clear()
+
+
 @st.cache_data(max_entries=2, ttl=600, show_spinner=False)
-def cached_analysis(path: str, size: int, mtime_ns: int, settings: Settings):
-    return analyze(path, settings)
+def _cached_analysis(
+    path: str,
+    size: int,
+    mtime_ns: int,
+    settings: Settings,
+    method_identity: str,
+    backend_key: str,
+    _progress=None,
+):
+    result = analyze(path, settings, progress=_progress)
+    stat = Path(path).stat()
+    if (stat.st_size, stat.st_mtime_ns) != (size, mtime_ns):
+        raise AudioError("Файл изменился; результат не сохранён в кэше")
+    return result
 
 
 def show_finding(label: str, finding: Finding, *, advanced: bool = False):

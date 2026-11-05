@@ -1,0 +1,2530 @@
+{
+  "backends": {
+    "ffmpeg": "ffmpeg version 9.0.2-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers",
+    "ffprobe": "ffprobe version 9.0.2-full_build-www.gyan.dev Copyright (c) 2007-2026 the FFmpeg developers",
+    "fpcalc": "Backend unavailable: fpcalc (fpcalc)",
+    "sacd_extract": "Backend unavailable: sacd_extract (sacd_extract)"
+  },
+  "controls": [
+    {
+      "seconds": 0.7604871999992611,
+      "python_allocator_peak_mib": 6.227457046508789,
+      "memory_scope": "Python/NumPy allocator only; excludes FFmpeg and is not RSS",
+      "duration": 2.2,
+      "duration_status": "Verified",
+      "decoded_seconds": 2.2,
+      "integrity": "Passed",
+      "origin_status": "Measured",
+      "converted_noise_range_hz": [
+        20000,
+        80000.0
+      ],
+      "boundaries": [
+        {
+          "candidate_hz": 22050,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            7.935330484953376
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 24000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            10.723723129623615
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 44100,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.4255763270759694
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 48000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.40974057095542804
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 88200,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.19182782894297645
+          ],
+          "chain_usable": false,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 96000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.07349501408367765
+          ],
+          "chain_usable": false,
+          "compatibility_evidence": false
+        }
+      ],
+      "hypotheses": [
+        {
+          "code": "pcm-bandwidth-44100",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-48000",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-88200",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-96000",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-176400",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-192000",
+          "status": "Inconclusive"
+        }
+      ],
+      "temporal_measured": 3,
+      "temporal_retained": 3,
+      "chain": "44100 Hz pcm -> scipy resample_poly Kaiser8.6 -> first-order pulse density DSD64",
+      "seed": 44889,
+      "converted_regimes": [
+        {
+          "low_hz": 24481.070866093116,
+          "high_hz": 27479.07294916178,
+          "slopes_db_per_decade": [
+            -188.09982498218648,
+            18.441681488017835
+          ]
+        }
+      ],
+      "native_regimes": [
+        {
+          "low_hz": 27084.90601322496,
+          "high_hz": 32209.423684433263,
+          "slopes_db_per_decade": [
+            -157.364777749739,
+            17.367620790700656
+          ]
+        }
+      ]
+    },
+    {
+      "seconds": 0.7403603000002477,
+      "python_allocator_peak_mib": 6.217440605163574,
+      "memory_scope": "Python/NumPy allocator only; excludes FFmpeg and is not RSS",
+      "duration": 2.2,
+      "duration_status": "Verified",
+      "decoded_seconds": 2.2,
+      "integrity": "Passed",
+      "origin_status": "Measured",
+      "converted_noise_range_hz": [
+        20000,
+        80000.0
+      ],
+      "boundaries": [
+        {
+          "candidate_hz": 22050,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            3.4848408596040414
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 24000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            7.094693114557602
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 44100,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.4760789558415368
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 48000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.44386006782247023
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 88200,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.06409675818200178
+          ],
+          "chain_usable": false,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 96000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.0640456451307525
+          ],
+          "chain_usable": false,
+          "compatibility_evidence": false
+        }
+      ],
+      "hypotheses": [
+        {
+          "code": "pcm-bandwidth-44100",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-48000",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-88200",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-96000",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-176400",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-192000",
+          "status": "Inconclusive"
+        }
+      ],
+      "temporal_measured": 3,
+      "temporal_retained": 3,
+      "chain": "48000 Hz pcm -> scipy resample_poly Kaiser8.6 -> first-order pulse density DSD64",
+      "seed": 48789,
+      "converted_regimes": [
+        {
+          "low_hz": 25936.791093020198,
+          "high_hz": 29113.063656843766,
+          "slopes_db_per_decade": [
+            -123.6480499927426,
+            17.547877249749718
+          ]
+        }
+      ],
+      "native_regimes": [
+        {
+          "low_hz": 27084.90601322496,
+          "high_hz": 32209.423684433263,
+          "slopes_db_per_decade": [
+            -145.5044856897489,
+            17.540932128363746
+          ]
+        }
+      ]
+    },
+    {
+      "seconds": 0.7694541999990179,
+      "python_allocator_peak_mib": 6.214494705200195,
+      "memory_scope": "Python/NumPy allocator only; excludes FFmpeg and is not RSS",
+      "duration": 2.2,
+      "duration_status": "Verified",
+      "decoded_seconds": 2.2,
+      "integrity": "Passed",
+      "origin_status": "Measured",
+      "converted_noise_range_hz": [
+        20000,
+        80000.0
+      ],
+      "boundaries": [
+        {
+          "candidate_hz": 22050,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            0.054713586249848234
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 24000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.10432835254238881
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 44100,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            1.4921373482656008
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 48000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            2.7618971519802926
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 88200,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.21190637893242936
+          ],
+          "chain_usable": false,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 96000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            0.09760610566121208
+          ],
+          "chain_usable": false,
+          "compatibility_evidence": false
+        }
+      ],
+      "hypotheses": [
+        {
+          "code": "pcm-bandwidth-44100",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-48000",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-88200",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-96000",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-176400",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-192000",
+          "status": "Inconclusive"
+        }
+      ],
+      "temporal_measured": 3,
+      "temporal_retained": 3,
+      "chain": "96000 Hz pcm -> scipy resample_poly Kaiser8.6 -> first-order pulse density DSD64",
+      "seed": 96789,
+      "converted_regimes": [
+        null
+      ],
+      "native_regimes": [
+        {
+          "low_hz": 45550.60993877582,
+          "high_hz": 54168.875235749605,
+          "slopes_db_per_decade": [
+            -4.9775072748217015,
+            13.086659418631669
+          ]
+        }
+      ]
+    },
+    {
+      "seconds": 0.771942700001091,
+      "python_allocator_peak_mib": 6.214051246643066,
+      "memory_scope": "Python/NumPy allocator only; excludes FFmpeg and is not RSS",
+      "duration": 2.2,
+      "duration_status": "Verified",
+      "decoded_seconds": 2.2,
+      "integrity": "Passed",
+      "origin_status": "Measured",
+      "converted_noise_range_hz": [
+        20000,
+        80000.0
+      ],
+      "boundaries": [
+        {
+          "candidate_hz": 22050,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            0.1566312351046939
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 24000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.39902368945145206
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 44100,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            0.01593190066620842
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 48000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.22310979393543207
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 88200,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.03300167431985024
+          ],
+          "chain_usable": false,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 96000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            0.1353840592849842
+          ],
+          "chain_usable": false,
+          "compatibility_evidence": false
+        }
+      ],
+      "hypotheses": [
+        {
+          "code": "pcm-bandwidth-44100",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-48000",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-88200",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-96000",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-176400",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-192000",
+          "status": "Inconclusive"
+        }
+      ],
+      "temporal_measured": 3,
+      "temporal_retained": 3,
+      "chain": "352800 Hz pcm -> scipy resample_poly Kaiser8.6 -> first-order pulse density DSD64",
+      "seed": 353589,
+      "converted_regimes": [
+        null
+      ],
+      "native_regimes": [
+        null
+      ]
+    },
+    {
+      "seconds": 0.7502477999987605,
+      "python_allocator_peak_mib": 6.213974952697754,
+      "memory_scope": "Python/NumPy allocator only; excludes FFmpeg and is not RSS",
+      "duration": 2.2,
+      "duration_status": "Verified",
+      "decoded_seconds": 2.2,
+      "integrity": "Passed",
+      "origin_status": "Measured",
+      "converted_noise_range_hz": [
+        20000,
+        80000.0
+      ],
+      "boundaries": [
+        {
+          "candidate_hz": 22050,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            2.8498528021054526
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 24000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            3.7970059113184895
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 44100,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.4025084370415932
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 48000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.323377983631552
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 88200,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            0.38689988009909193
+          ],
+          "chain_usable": false,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 96000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            0.02265437301037565
+          ],
+          "chain_usable": false,
+          "compatibility_evidence": false
+        }
+      ],
+      "hypotheses": [
+        {
+          "code": "pcm-bandwidth-44100",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-48000",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-88200",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-96000",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-176400",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-192000",
+          "status": "Inconclusive"
+        }
+      ],
+      "temporal_measured": 3,
+      "temporal_retained": 3,
+      "chain": "352800 Hz analog-like filter -> scipy resample_poly Kaiser8.6 -> first-order pulse density DSD64",
+      "seed": 353589,
+      "converted_regimes": [
+        {
+          "low_hz": 25936.791093020198,
+          "high_hz": 29113.063656843766,
+          "slopes_db_per_decade": [
+            -66.76144682990777,
+            11.90260678490842
+          ]
+        }
+      ],
+      "native_regimes": [
+        {
+          "low_hz": 27084.90601322496,
+          "high_hz": 32209.423684433263,
+          "slopes_db_per_decade": [
+            -61.01924018018936,
+            6.3260891417036325
+          ]
+        }
+      ]
+    },
+    {
+      "seconds": 0.8185553999992408,
+      "python_allocator_peak_mib": 6.213883399963379,
+      "memory_scope": "Python/NumPy allocator only; excludes FFmpeg and is not RSS",
+      "duration": 2.2,
+      "duration_status": "Verified",
+      "decoded_seconds": 2.2,
+      "integrity": "Passed",
+      "origin_status": "Measured",
+      "converted_noise_range_hz": [
+        20000,
+        80000.0
+      ],
+      "boundaries": [
+        {
+          "candidate_hz": 22050,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            3.4879359646019825
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 24000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            7.391262991991834
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 44100,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.4368923339884745
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 48000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.48709746980021507
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 88200,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.0074414281328127885
+          ],
+          "chain_usable": false,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 96000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.07232562425566691
+          ],
+          "chain_usable": false,
+          "compatibility_evidence": false
+        }
+      ],
+      "hypotheses": [
+        {
+          "code": "pcm-bandwidth-44100",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-48000",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-88200",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-96000",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-176400",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-192000",
+          "status": "Inconclusive"
+        }
+      ],
+      "temporal_measured": 3,
+      "temporal_retained": 3,
+      "chain": "48000 Hz input dither -> scipy resample_poly Kaiser8.6 -> first-order pulse density DSD64",
+      "seed": 48789,
+      "converted_regimes": [
+        {
+          "low_hz": 25936.791093020198,
+          "high_hz": 29113.063656843766,
+          "slopes_db_per_decade": [
+            -122.30121197207987,
+            17.771123986411123
+          ]
+        }
+      ],
+      "native_regimes": [
+        {
+          "low_hz": 27084.90601322496,
+          "high_hz": 32209.423684433263,
+          "slopes_db_per_decade": [
+            -148.07234039255314,
+            17.490452837275434
+          ]
+        }
+      ]
+    },
+    {
+      "seconds": 0.8685538000008819,
+      "python_allocator_peak_mib": 8.973295211791992,
+      "memory_scope": "Python/NumPy allocator only; excludes FFmpeg and is not RSS",
+      "duration": 2.2,
+      "duration_status": "Verified",
+      "decoded_seconds": 2.2,
+      "integrity": "Passed",
+      "origin_status": "Measured",
+      "converted_noise_range_hz": [
+        20000,
+        150000.0
+      ],
+      "boundaries": [
+        {
+          "candidate_hz": 22050,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            7.699874872028438
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 24000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            9.687617056551963
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 44100,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.4931985143968376
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 48000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.6252288579881515
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 88200,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.16039648990790134
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 96000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.044736708563766214
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        }
+      ],
+      "hypotheses": [
+        {
+          "code": "pcm-bandwidth-44100",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-48000",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-88200",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-96000",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-176400",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-192000",
+          "status": "Inconclusive"
+        }
+      ],
+      "temporal_measured": 3,
+      "temporal_retained": 3,
+      "chain": "44.1k PCM -> DSD64 -> FFmpeg 352800 float32 -> first-order pulse density DSD128",
+      "converted_regimes": [
+        {
+          "low_hz": 26831.385347693296,
+          "high_hz": 31736.926679855398,
+          "slopes_db_per_decade": [
+            -148.7367384285855,
+            8.92430065390115
+          ]
+        }
+      ],
+      "native_regimes": [
+        {
+          "low_hz": 27084.90601322496,
+          "high_hz": 32209.423684433263,
+          "slopes_db_per_decade": [
+            -141.38893215321502,
+            6.851286876197115
+          ]
+        }
+      ]
+    }
+  ],
+  "real": {
+    "quick": {
+      "seconds": 3.519845599999826,
+      "python_allocator_peak_mib": 26.078232765197754,
+      "memory_scope": "Python/NumPy allocator only; excludes FFmpeg and is not RSS",
+      "duration": 234.02666666666667,
+      "duration_status": "Derived",
+      "decoded_seconds": 15.0,
+      "integrity": "Partial",
+      "origin_status": "Measured",
+      "converted_noise_range_hz": [
+        20000,
+        150000.0
+      ],
+      "boundaries": [
+        {
+          "candidate_hz": 22050,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 15,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            },
+            {
+              "channel": 2,
+              "eligible_cells": 15,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            3.114042395831209,
+            3.165310775149912
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 24000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 15,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            },
+            {
+              "channel": 2,
+              "eligible_cells": 15,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            6.151154480668737,
+            5.677962924149433
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 44100,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 14,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            },
+            {
+              "channel": 2,
+              "eligible_cells": 10,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            0.5690280256103541,
+            0.5522303769987325
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 48000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 14,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            },
+            {
+              "channel": 2,
+              "eligible_cells": 10,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            0.38418514884670074,
+            0.5723318823019596
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 88200,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 10,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            },
+            {
+              "channel": 2,
+              "eligible_cells": 10,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            8.110849312397832,
+            7.99694905246108
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 96000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 10,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            },
+            {
+              "channel": 2,
+              "eligible_cells": 10,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -2.2497257737275156,
+            -2.324580930163016
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        }
+      ],
+      "hypotheses": [
+        {
+          "code": "pcm-bandwidth-44100",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-48000",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-88200",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-96000",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-176400",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-192000",
+          "status": "Inconclusive"
+        }
+      ],
+      "temporal_measured": 15,
+      "temporal_retained": 15,
+      "dsd_core_without_origin_seconds": 1.1160072999991826,
+      "dsd_core_without_origin_allocator_peak_mib": 6.922576904296875,
+      "converted_regimes": [
+        {
+          "low_hz": 86915.1532422217,
+          "high_hz": 102805.7183806177,
+          "slopes_db_per_decade": [
+            -31.57033930647688,
+            153.77500512321444
+          ]
+        },
+        {
+          "low_hz": 86915.1532422217,
+          "high_hz": 102805.7183806177,
+          "slopes_db_per_decade": [
+            -31.98473023557412,
+            153.12626897256223
+          ]
+        }
+      ],
+      "native_regimes": [
+        {
+          "low_hz": 83538.9228459581,
+          "high_hz": 99344.65191693167,
+          "slopes_db_per_decade": [
+            -23.366292387554275,
+            145.99411894208552
+          ]
+        },
+        {
+          "low_hz": 83538.9228459581,
+          "high_hz": 99344.65191693167,
+          "slopes_db_per_decade": [
+            -25.927998339908374,
+            145.71271754441332
+          ]
+        }
+      ]
+    },
+    "full": {
+      "seconds": 21.278266400000575,
+      "python_allocator_peak_mib": 26.74438762664795,
+      "memory_scope": "Python/NumPy allocator only; excludes FFmpeg and is not RSS",
+      "duration": 234.02666666666667,
+      "duration_status": "Verified",
+      "decoded_seconds": 234.02666666666667,
+      "integrity": "Passed",
+      "origin_status": "Measured",
+      "converted_noise_range_hz": [
+        20000,
+        150000.0
+      ],
+      "boundaries": [
+        {
+          "candidate_hz": 22050,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 43,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            },
+            {
+              "channel": 2,
+              "eligible_cells": 43,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            3.1254903434596315,
+            3.9084748878857134
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 24000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 43,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            },
+            {
+              "channel": 2,
+              "eligible_cells": 43,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            5.802475766091959,
+            4.947506261663186
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 44100,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 36,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            },
+            {
+              "channel": 2,
+              "eligible_cells": 32,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            0.4473148300956886,
+            0.5456675882318329
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 48000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 35,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            },
+            {
+              "channel": 2,
+              "eligible_cells": 31,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            0.4616683958129286,
+            0.5333606043047645
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 88200,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 28,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            },
+            {
+              "channel": 2,
+              "eligible_cells": 27,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            8.42561951349925,
+            8.23140333417097
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 96000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 20,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            },
+            {
+              "channel": 2,
+              "eligible_cells": 20,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -2.3252854180880256,
+            -2.3584200160500757
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        }
+      ],
+      "hypotheses": [
+        {
+          "code": "pcm-bandwidth-44100",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-48000",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-88200",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-96000",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-176400",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-192000",
+          "status": "Inconclusive"
+        }
+      ],
+      "temporal_measured": 235,
+      "temporal_retained": 43,
+      "dsd_core_without_origin_seconds": 9.188981999999669,
+      "dsd_core_without_origin_allocator_peak_mib": 6.917625427246094,
+      "converted_regimes": [
+        {
+          "low_hz": 86915.1532422217,
+          "high_hz": 102805.7183806177,
+          "slopes_db_per_decade": [
+            -31.814565030165248,
+            154.05840157315026
+          ]
+        },
+        {
+          "low_hz": 86915.1532422217,
+          "high_hz": 102805.7183806177,
+          "slopes_db_per_decade": [
+            -32.92165373425389,
+            154.0820595034478
+          ]
+        }
+      ],
+      "native_regimes": [
+        {
+          "low_hz": 83538.9228459581,
+          "high_hz": 99344.65191693167,
+          "slopes_db_per_decade": [
+            -23.366292387554275,
+            145.99411894208552
+          ]
+        },
+        {
+          "low_hz": 83538.9228459581,
+          "high_hz": 99344.65191693167,
+          "slopes_db_per_decade": [
+            -25.927998339908374,
+            145.71271754441332
+          ]
+        }
+      ]
+    },
+    "sha256_before": "2495ee118c597cb2cb977e83d24c2217ade07dce8aae4f6e67080326f2ab84f3",
+    "sha256_after": "2495ee118c597cb2cb977e83d24c2217ade07dce8aae4f6e67080326f2ab84f3",
+    "source_unchanged": true
+  },
+  "control_limitations": "First-order generated modulator and Kaiser polyphase resampling; not all professional production chains. No historical rate classifier is validated.",
+  "filtered_high_rate_adversarial_control": {
+    "seconds": 1.2649259999998321,
+    "python_allocator_peak_mib": 15.82073974609375,
+    "memory_scope": "Python/NumPy allocator only; excludes FFmpeg and is not RSS",
+    "duration": 2.2,
+    "duration_status": "Verified",
+    "decoded_seconds": 2.2,
+    "integrity": "Passed",
+    "origin_status": "Measured",
+    "converted_noise_range_hz": [
+      20000,
+      150000.0
+    ],
+    "boundaries": [
+      {
+        "candidate_hz": 22050,
+        "channel_stability": [
+          {
+            "channel": 1,
+            "eligible_cells": 3,
+            "detected_cells": 3,
+            "native_detected_windows": 3,
+            "stable_converted": true,
+            "stable_native": true
+          }
+        ],
+        "global_attenuation_db": [
+          33.9402272008715
+        ],
+        "chain_usable": true,
+        "compatibility_evidence": true
+      },
+      {
+        "candidate_hz": 24000,
+        "channel_stability": [
+          {
+            "channel": 1,
+            "eligible_cells": 3,
+            "detected_cells": 0,
+            "native_detected_windows": 0,
+            "stable_converted": false,
+            "stable_native": false
+          }
+        ],
+        "global_attenuation_db": [
+          0.32914392182222585
+        ],
+        "chain_usable": true,
+        "compatibility_evidence": false
+      },
+      {
+        "candidate_hz": 44100,
+        "channel_stability": [
+          {
+            "channel": 1,
+            "eligible_cells": 3,
+            "detected_cells": 0,
+            "native_detected_windows": 0,
+            "stable_converted": false,
+            "stable_native": false
+          }
+        ],
+        "global_attenuation_db": [
+          -0.6455216719322898
+        ],
+        "chain_usable": true,
+        "compatibility_evidence": false
+      },
+      {
+        "candidate_hz": 48000,
+        "channel_stability": [
+          {
+            "channel": 1,
+            "eligible_cells": 3,
+            "detected_cells": 0,
+            "native_detected_windows": 0,
+            "stable_converted": false,
+            "stable_native": false
+          }
+        ],
+        "global_attenuation_db": [
+          -0.5596363714732178
+        ],
+        "chain_usable": true,
+        "compatibility_evidence": false
+      },
+      {
+        "candidate_hz": 88200,
+        "channel_stability": [
+          {
+            "channel": 1,
+            "eligible_cells": 3,
+            "detected_cells": 0,
+            "native_detected_windows": 0,
+            "stable_converted": false,
+            "stable_native": false
+          }
+        ],
+        "global_attenuation_db": [
+          -0.12242816411518476
+        ],
+        "chain_usable": true,
+        "compatibility_evidence": false
+      },
+      {
+        "candidate_hz": 96000,
+        "channel_stability": [
+          {
+            "channel": 1,
+            "eligible_cells": 3,
+            "detected_cells": 0,
+            "native_detected_windows": 0,
+            "stable_converted": false,
+            "stable_native": false
+          }
+        ],
+        "global_attenuation_db": [
+          -0.2627212672109458
+        ],
+        "chain_usable": true,
+        "compatibility_evidence": false
+      }
+    ],
+    "hypotheses": [
+      {
+        "code": "pcm-bandwidth-44100",
+        "status": "Compatible but not distinguishable"
+      },
+      {
+        "code": "pcm-bandwidth-48000",
+        "status": "Inconclusive"
+      },
+      {
+        "code": "pcm-bandwidth-88200",
+        "status": "Inconclusive"
+      },
+      {
+        "code": "pcm-bandwidth-96000",
+        "status": "Inconclusive"
+      },
+      {
+        "code": "pcm-bandwidth-176400",
+        "status": "Inconclusive"
+      },
+      {
+        "code": "pcm-bandwidth-192000",
+        "status": "Inconclusive"
+      }
+    ],
+    "temporal_measured": 3,
+    "temporal_retained": 3,
+    "chain": "352800 Hz Gaussian PCM seed790 sigma0.1 -> 1025tap Kaiser8.6 FIR 22050 Hz -> scipy resample_poly Kaiser8.6 -> first-order pulse density DSD256; no 44.1k stage",
+    "converted_regimes": [
+      {
+        "low_hz": 26831.385347693296,
+        "high_hz": 31736.926679855398,
+        "slopes_db_per_decade": [
+          -276.56601677792935,
+          19.605439145067272
+        ]
+      }
+    ],
+    "native_regimes": [
+      {
+        "low_hz": 27084.90601322496,
+        "high_hz": 32209.423684433263,
+        "slopes_db_per_decade": [
+          -261.6212022852695,
+          19.645478819424387
+        ]
+      }
+    ]
+  },
+  "dsd256_44100_level_controls": [
+    {
+      "seconds": 1.2760510000007343,
+      "python_allocator_peak_mib": 15.82028579711914,
+      "memory_scope": "Python/NumPy allocator only; excludes FFmpeg and is not RSS",
+      "duration": 2.2,
+      "duration_status": "Verified",
+      "decoded_seconds": 2.2,
+      "integrity": "Passed",
+      "origin_status": "Measured",
+      "converted_noise_range_hz": [
+        20000,
+        150000.0
+      ],
+      "boundaries": [
+        {
+          "candidate_hz": 22050,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            8.377729059006969
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 24000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            16.3004739148911
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 44100,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.1745724042407737
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 48000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.6047803373526506
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 88200,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.18819699491457342
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 96000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.08932516963191972
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        }
+      ],
+      "hypotheses": [
+        {
+          "code": "pcm-bandwidth-44100",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-48000",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-88200",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-96000",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-176400",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-192000",
+          "status": "Inconclusive"
+        }
+      ],
+      "temporal_measured": 3,
+      "temporal_retained": 3,
+      "chain": "44100 Hz Gaussian PCM seed790 -> scipy resample_poly Kaiser8.6 -> first-order pulse density DSD256",
+      "converted_regimes": [
+        {
+          "low_hz": 26831.385347693296,
+          "high_hz": 31736.926679855398,
+          "slopes_db_per_decade": [
+            -310.15757711450766,
+            19.77296265154905
+          ]
+        }
+      ],
+      "native_regimes": [
+        {
+          "low_hz": 27084.90601322496,
+          "high_hz": 32209.423684433263,
+          "slopes_db_per_decade": [
+            -305.1254975277102,
+            19.705200999121494
+          ]
+        }
+      ]
+    },
+    {
+      "seconds": 1.3155508999989252,
+      "python_allocator_peak_mib": 15.821033477783203,
+      "memory_scope": "Python/NumPy allocator only; excludes FFmpeg and is not RSS",
+      "duration": 2.2,
+      "duration_status": "Verified",
+      "decoded_seconds": 2.2,
+      "integrity": "Passed",
+      "origin_status": "Measured",
+      "converted_noise_range_hz": [
+        20000,
+        150000.0
+      ],
+      "boundaries": [
+        {
+          "candidate_hz": 22050,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            8.351935920033107
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 24000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            13.743818796796834
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 44100,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.3903775604179849
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 48000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.5882097541890907
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 88200,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.02768201459028674
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 96000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.1683541771153152
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        }
+      ],
+      "hypotheses": [
+        {
+          "code": "pcm-bandwidth-44100",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-48000",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-88200",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-96000",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-176400",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-192000",
+          "status": "Inconclusive"
+        }
+      ],
+      "temporal_measured": 3,
+      "temporal_retained": 3,
+      "chain": "44100 Hz Gaussian PCM seed790 -> scipy resample_poly Kaiser8.6 -> first-order pulse density DSD256",
+      "input_rms": 0.02,
+      "converted_regimes": [
+        {
+          "low_hz": 26831.385347693296,
+          "high_hz": 31736.926679855398,
+          "slopes_db_per_decade": [
+            -215.65250495133515,
+            19.18846008957288
+          ]
+        }
+      ],
+      "native_regimes": [
+        {
+          "low_hz": 27084.90601322496,
+          "high_hz": 32209.423684433263,
+          "slopes_db_per_decade": [
+            -211.27580210790694,
+            19.142971829106564
+          ]
+        }
+      ]
+    },
+    {
+      "seconds": 1.2572182000003522,
+      "python_allocator_peak_mib": 15.811776161193848,
+      "memory_scope": "Python/NumPy allocator only; excludes FFmpeg and is not RSS",
+      "duration": 2.2,
+      "duration_status": "Verified",
+      "decoded_seconds": 2.2,
+      "integrity": "Passed",
+      "origin_status": "Measured",
+      "converted_noise_range_hz": [
+        20000,
+        150000.0
+      ],
+      "boundaries": [
+        {
+          "candidate_hz": 22050,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            8.396584268967278
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 24000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            16.331128433754245
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 44100,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.5790459616749466
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 48000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.49720428459757215
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 88200,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.30663346313621886
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        },
+        {
+          "candidate_hz": 96000,
+          "channel_stability": [
+            {
+              "channel": 1,
+              "eligible_cells": 3,
+              "detected_cells": 0,
+              "native_detected_windows": 0,
+              "stable_converted": false,
+              "stable_native": false
+            }
+          ],
+          "global_attenuation_db": [
+            -0.31893786180564376
+          ],
+          "chain_usable": true,
+          "compatibility_evidence": false
+        }
+      ],
+      "hypotheses": [
+        {
+          "code": "pcm-bandwidth-44100",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-48000",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-88200",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-96000",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-176400",
+          "status": "Inconclusive"
+        },
+        {
+          "code": "pcm-bandwidth-192000",
+          "status": "Inconclusive"
+        }
+      ],
+      "temporal_measured": 3,
+      "temporal_retained": 3,
+      "chain": "44100 Hz Gaussian PCM seed790 -> scipy resample_poly Kaiser8.6 -> first-order pulse density DSD256",
+      "input_rms": 0.15,
+      "converted_regimes": [
+        {
+          "low_hz": 26831.385347693296,
+          "high_hz": 31736.926679855398,
+          "slopes_db_per_decade": [
+            -370.04663903171854,
+            20.03593664916777
+          ]
+        }
+      ],
+      "native_regimes": [
+        {
+          "low_hz": 27084.90601322496,
+          "high_hz": 32209.423684433263,
+          "slopes_db_per_decade": [
+            -391.2310012418102,
+            19.9660519567148
+          ]
+        }
+      ]
+    }
+  ],
+  "dsd512_performance": {
+    "fixture": "generated 22579200 Hz DSD stereo repeated 0x69, 352800 Hz PCM analysis",
+    "rss_method": "5 ms sampled sum of Python and active backend working sets; warm filesystem",
+    "backends": {
+      "ffmpeg": "ffmpeg version 9.0.2-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers",
+      "ffprobe": "ffprobe version 9.0.2-full_build-www.gyan.dev Copyright (c) 2007-2026 the FFmpeg developers",
+      "fpcalc": "Backend unavailable: fpcalc (fpcalc)",
+      "sacd_extract": "Backend unavailable: sacd_extract (sacd_extract)"
+    },
+    "cases": [
+      {
+        "duration_seconds": 20.0,
+        "file_mib": 107.67196273803711,
+        "quick": {
+          "mode": "quick",
+          "seconds": 10.555007099999784,
+          "python_allocator_peak_mib": 46.6403751373291,
+          "sampled_python_plus_children_rss_peak_mib": 186.81640625,
+          "subprocess_invocations": 8,
+          "decode_invocations": 4,
+          "successful_decode_seconds": 15.0,
+          "files_per_second": 0.09474176478763528,
+          "integrity_status": "Partial",
+          "complete_file": false,
+          "fft_segments": 642,
+          "warnings": [
+            "[in#0/dsf @ 0000025bb76c3d80] [warning] Estimating duration from bitrate, this may be inaccurate",
+            "[in#0/dsf @ 000001dc96ae1c80] [warning] Estimating duration from bitrate, this may be inaccurate",
+            "[in#0/dsf @ 0000019ce18b4100] [warning] Estimating duration from bitrate, this may be inaccurate"
+          ]
+        },
+        "quick_cached": {
+          "mode": "quick",
+          "seconds": 0.09477929999957269,
+          "python_allocator_peak_mib": 5.4209794998168945,
+          "sampled_python_plus_children_rss_peak_mib": 137.08203125,
+          "subprocess_invocations": 0,
+          "decode_invocations": 0,
+          "successful_decode_seconds": 15.0,
+          "files_per_second": 10.550827026624047,
+          "integrity_status": "Partial",
+          "complete_file": false,
+          "fft_segments": 642,
+          "warnings": [
+            "[in#0/dsf @ 0000025bb76c3d80] [warning] Estimating duration from bitrate, this may be inaccurate",
+            "[in#0/dsf @ 000001dc96ae1c80] [warning] Estimating duration from bitrate, this may be inaccurate",
+            "[in#0/dsf @ 0000019ce18b4100] [warning] Estimating duration from bitrate, this may be inaccurate"
+          ]
+        },
+        "full": {
+          "mode": "full",
+          "seconds": 5.968043999999281,
+          "python_allocator_peak_mib": 46.69939041137695,
+          "sampled_python_plus_children_rss_peak_mib": 192.08203125,
+          "subprocess_invocations": 4,
+          "decode_invocations": 1,
+          "successful_decode_seconds": 20.0,
+          "files_per_second": 0.1675590863606435,
+          "integrity_status": "Passed",
+          "complete_file": true,
+          "fft_segments": 860,
+          "warnings": [
+            "[in#0/dsf @ 000001a03a771e00] [warning] Estimating duration from bitrate, this may be inaccurate"
+          ]
+        }
+      },
+      {
+        "duration_seconds": 120.0,
+        "file_mib": 646.0000877380371,
+        "quick": {
+          "mode": "quick",
+          "seconds": 5.8609421999990445,
+          "python_allocator_peak_mib": 46.19804573059082,
+          "sampled_python_plus_children_rss_peak_mib": 190.16015625,
+          "subprocess_invocations": 6,
+          "decode_invocations": 3,
+          "successful_decode_seconds": 15.0,
+          "files_per_second": 0.17062103086431446,
+          "integrity_status": "Partial",
+          "complete_file": false,
+          "fft_segments": 642,
+          "warnings": [
+            "[in#0/dsf @ 0000020d97551f40] [warning] Estimating duration from bitrate, this may be inaccurate",
+            "[in#0/dsf @ 000001bc1d1320c0] [warning] Estimating duration from bitrate, this may be inaccurate",
+            "[in#0/dsf @ 0000022f341b2140] [warning] Estimating duration from bitrate, this may be inaccurate"
+          ]
+        },
+        "quick_cached": {
+          "mode": "quick",
+          "seconds": 0.09856419999960053,
+          "python_allocator_peak_mib": 5.424156188964844,
+          "sampled_python_plus_children_rss_peak_mib": 138.1875,
+          "subprocess_invocations": 0,
+          "decode_invocations": 0,
+          "successful_decode_seconds": 15.0,
+          "files_per_second": 10.145671552186828,
+          "integrity_status": "Partial",
+          "complete_file": false,
+          "fft_segments": 642,
+          "warnings": [
+            "[in#0/dsf @ 0000020d97551f40] [warning] Estimating duration from bitrate, this may be inaccurate",
+            "[in#0/dsf @ 000001bc1d1320c0] [warning] Estimating duration from bitrate, this may be inaccurate",
+            "[in#0/dsf @ 0000022f341b2140] [warning] Estimating duration from bitrate, this may be inaccurate"
+          ]
+        },
+        "full": {
+          "mode": "full",
+          "seconds": 14.791913299999578,
+          "python_allocator_peak_mib": 47.035977363586426,
+          "sampled_python_plus_children_rss_peak_mib": 192.890625,
+          "subprocess_invocations": 4,
+          "decode_invocations": 1,
+          "successful_decode_seconds": 120.0,
+          "files_per_second": 0.0676045065786066,
+          "integrity_status": "Passed",
+          "complete_file": true,
+          "fft_segments": 5166,
+          "warnings": [
+            "[in#0/dsf @ 00000233f8da6140] [warning] Estimating duration from bitrate, this may be inaccurate"
+          ]
+        }
+      }
+    ]
+  },
+  "measurement_note": "Performance observations from the implementation session; same numeric method, before final presentation-only text changes and added temporal-summary fields. Python/NumPy allocator is separate from sampled Python+children RSS. Concurrent browser activity can affect elapsed times. No speedup claim.",
+  "environment": {
+    "python": "3.13.15",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "AMD64 Family 23 Model 113 Stepping 0, AuthenticAMD",
+    "logical_cpus": 12,
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "streamlit": "1.66.1"
+  }
+}

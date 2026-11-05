@@ -8,7 +8,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from music_project import METHOD_VERSION
-from music_project.core.config import Settings
+from music_project.core.config import Settings, backend_identity
 from music_project.core.decoder import canonical_hash, verify_decode
 from music_project.core.files import file_hash, signature, walk_files
 from music_project.core.models import AudioError
@@ -66,6 +66,7 @@ class Library:
         seen = set()
         counts = Counter(new=0, modified=0, unchanged=0, removed=0, errors=0)
         now = datetime.now(UTC).isoformat()
+        backend_key = backend_identity(settings)
         for path in walk_files(folder):
             if cancelled and cancelled():
                 return {**counts, "cancelled": True}
@@ -74,7 +75,7 @@ class Library:
             if progress:
                 progress(len(seen), key)
             previous = old.get(key)
-            payload = {"hash_requested": audio_hash}
+            payload = {"hash_requested": audio_hash, "backend_identity": backend_key}
             try:
                 before = signature(path)
                 if (
@@ -84,10 +85,15 @@ class Library:
                     and (previous["size"], previous["mtime_ns"]) == before
                     and previous["method"] == METHOD_VERSION
                     and previous.get("hash_requested") == audio_hash
+                    and previous.get("backend_identity") == backend_key
                 ):
                     counts["unchanged"] += 1
                     continue
-                payload = {"sha256": file_hash(path), "hash_requested": audio_hash}
+                payload = {
+                    "sha256": file_hash(path),
+                    "hash_requested": audio_hash,
+                    "backend_identity": backend_key,
+                }
                 if path.suffix.lower() == ".cue":
                     from music_project.core.disc import parse_cue
 
@@ -142,6 +148,8 @@ class Library:
                         METHOD_VERSION,
                     ),
                 )
+        if cancelled and cancelled():
+            return {**counts, "cancelled": True}
         with self.connect() as db:
             for key in old.keys() - seen:
                 if old[key]["status"] != "Removed":

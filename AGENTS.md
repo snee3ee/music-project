@@ -31,6 +31,16 @@ Priority:
 
 ## No subjective audio judgments
 
+Permanent product policy: **ONLY FACTS. NO OPINIONS.**
+
+This governs every current and future screen, analysis, comparison and report.
+Distinguish Measured (actual observation), Verified (completed appropriate check),
+Derived (calculated from established inputs), Inferred (documented rule and limits),
+Unknown / Ambiguous, Not applicable, Unsupported and Not validated. A completed
+measurement does not validate a historical inference. Unknown is preferable to an
+unsupported conclusion. Never display a global audio-quality score, subjective
+rating, arbitrary quality percentage or uncalibrated provenance probability.
+
 Never describe audio as good, bad, better-sounding, audiophile-quality, or fake.
 
 Separate:

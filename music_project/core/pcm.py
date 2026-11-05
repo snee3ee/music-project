@@ -71,7 +71,11 @@ def loudness(info: AudioInfo, settings: Settings = Settings()) -> Finding:
     matches = re.findall(r'\{\s*"input_i".*?\}', result.stderr, re.S)
     if not matches:
         raise AudioError("FFmpeg не вернул loudnorm input measurements")
-    data = json.loads(matches[-1])
+    try:
+        raw = json.loads(matches[-1])
+        data = {key: float(raw[key]) for key in ("input_i", "input_lra", "input_tp")}
+    except (ValueError, TypeError, KeyError) as exc:
+        raise AudioError("FFmpeg вернул некорректные loudnorm measurements") from exc
 
     def finite(key):
         value = float(data[key])
@@ -154,9 +158,13 @@ def quantization(context: PCMContext) -> Finding:
             ],
         )
     # Float64 exactly represents all 24-bit integers. Decode preserves native scale.
-    values = np.rint(context.samples.ravel() * (1 << 23)).astype(np.int64)
-    active = values[values != 0]
-    active = active[:: max(1, math.ceil(active.size / 1_000_000))]
+    budget = max(1, 1_000_000 // info.channels)
+    selected = []
+    for channel in context.samples.T:
+        values = np.rint(channel * (1 << 23)).astype(np.int64)
+        nonzero = values[values != 0]
+        selected.append(nonzero[:: max(1, math.ceil(nonzero.size / budget))])
+    active = np.concatenate(selected)
     if active.size < 1000:
         return Finding(
             "Ambiguous",
@@ -191,7 +199,7 @@ def quantization(context: PCMContext) -> Finding:
             "normalized_entropy": entropy / 8,
             "active_samples": int(active.size),
             "compatible_with_65536_output_levels": distinct <= 65536,
-            "sampling": "nonzero interleaved samples, deterministic stride, max 1,000,000",
+            "sampling": "nonzero samples per channel, deterministic stride, total max 1,000,000",
         },
         "Samples представлены как signed 24-bit; lower byte — младшие 8 bits; "
         "Shannon entropy вычисляется по распределению lower bytes.",

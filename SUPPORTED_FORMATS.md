@@ -1,4 +1,4 @@
-# Supported formats — 0.2.0
+# Supported formats — 0.2.3
 
 Verified means an automated synthetic fixture was actually probed/decoded with the local
 FFmpeg 9.0.2 backend. It does not establish every variant, bit depth or channel layout.
@@ -13,8 +13,8 @@ No support is claimed from a filename extension. Scanner extensions are candidat
 | AIFF | Generated signed 16-bit big endian decode | AIFC variants untested |
 | Ogg Vorbis | Generated encode/decode | No exact PCM hash, bitrate is not a quality score |
 | Opus | Generated encode/decode | No exact PCM hash |
-| DSF | Synthetic DSD64 stereo container metadata, native-rate calculation/routing | No real recordings or DSD measurements; no playback |
-| DFF / DSDIFF | Synthetic uncompressed DSD64 stereo metadata/routing | DST-compressed DFF untested; native DST rate Unknown |
+| DSF | Generated DSD64/128/256/512; one real DSD256 stereo DSF; strict structure/full/seeked decode; 176.4/352.8 kHz output headers and 33-point response controls for each rate; LSBF/MSBF native reads and independent native PSD; bandwidth/noise investigations | Discrete response controls do not certify a continuous passband; no historical-rate identity classifier; multichannel investigation Unsupported; no playback |
+| DFF / DSDIFF | Generated uncompressed DSD64 stereo structure/full decode, native MSB/interleaving checks and bit-identical DSF/DFF tone through Origin investigation | Real DFF/DST unverified; DST detected but decode Unsupported; ffprobe native DST rate Unknown |
 | CUE | UTF-8 metadata, file references, 75-fps INDEX validation | Audio resolution/splitting and logical-track analysis pending; CP1251 fallback is disclosed |
 | SACD ISO | Synthetic signature recognition and command-plan/missing-backend tests | Actual TOC/areas/tracks/extraction unsupported in UI; real integration skipped |
 | ISO9660 / other ISO | Signature or Unknown image | Never treated as an ordinary audio codec |
@@ -42,3 +42,11 @@ Optional backends:
 Commercial distribution requires a dependency/tool license and redistribution audit.
 The inspected Gyan FFmpeg build is configured with GPL/version3 flags; it must not be
 assumed suitable for arbitrary proprietary bundling without review.
+
+See [DSD methodology](docs/DSD_METHODOLOGY.md) for exact pipeline, frequency-band
+applicability, duration tolerances, scope, warning semantics and known validation gaps.
+No DSD origin classifier, native DSD bit-depth test or source-rate detector is claimed.
+Real DSD256 and restructured UI verification: [Analyze File validation](docs/ANALYZE_UI_VALIDATION.md).
+Duration policy now selects validated DSF sample-count / uncompressed DFF audio-payload
+duration, independently retaining ffprobe's secondary estimate; full decode can corroborate
+the result as Verified. Details: [DSF duration investigation](docs/DSF_DURATION_VALIDATION.md).

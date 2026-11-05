@@ -4,6 +4,8 @@ import re
 from pathlib import Path
 
 from music_project.core.config import Settings
+from music_project.core.dsd_container import inspect_dsd
+from music_project.core.duration import select_dsd_duration, with_duration
 from music_project.core.models import AudioError, AudioInfo
 from music_project.core.subprocess_utils import run
 
@@ -68,7 +70,7 @@ def probe(path: Path | str, settings: Settings = Settings()) -> AudioInfo:
             layout, layout_source = "mono", "channel count"
         elif layout == "Unknown" and channels == 2 and fmt.get("format_name") in {"wav", "aiff"}:
             layout, layout_source = "stereo", "container convention"
-        return AudioInfo(
+        info = AudioInfo(
             str(source),
             fmt.get("format_name", "unknown"),
             codec,
@@ -85,5 +87,8 @@ def probe(path: Path | str, settings: Settings = Settings()) -> AudioInfo:
             raw,
             layout_source,
         )
+        if info.kind == "DSD":
+            info = with_duration(info, select_dsd_duration(info, inspect_dsd(info)))
+        return info
     except (ValueError, KeyError, TypeError) as exc:
         raise AudioError("Некорректный JSON ffprobe") from exc

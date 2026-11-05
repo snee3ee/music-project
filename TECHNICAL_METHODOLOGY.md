@@ -1,9 +1,36 @@
-# Technical methodology — 2026.10-v2
+# Technical methodology — 2026.11-v5
 
-Application 0.2.0. Each Analysis and Finding includes method version. Reports include
+Application 0.2.3. Each Analysis and Finding includes method version. Reports include
 actual FFmpeg/ffprobe versions, input metadata and analysis scope. None of the methods
 establish studio-master provenance or subjective sound quality. No calibrated probability
 or heuristic confidence percentage is produced.
+
+Origin Investigator `origin-2026.11-v1` adds six boundary compatibility tests,
+per-channel temporal measurements, exploratory ultrasonic regime fits, native one-bit
+PSD and opt-in reference investigation. `dsd-response-2026.11-v1` empirically controls
+33 frequencies through the installed backend before historical compatibility is used.
+No provenance probabilities or historical DSD-rate classifier are validated.
+[Numerical methods, controls, primary references and failure mechanisms](docs/ORIGIN_METHODOLOGY.md).
+
+DSD method `dsd-2026.11-v2` is documented separately in
+[DSD methodology](docs/DSD_METHODOLOGY.md): native container evidence versus validated
+streaming conversion output and PCM-derived Welch PSD. Native DSD PCM bit-depth tests
+remain Not applicable; historical origin remains Unknown/Ambiguous. Generated actual
+DSF/DFF decoder tests are separate from controlled/mocked conversion failures.
+
+Duration policy `dsd-duration-2026.11-v1` selects primary audio duration from supported
+DSF sample count or uncompressed DFF payload length. `AudioInfo.duration`, source,
+status and structured details are consistent in probe/analysis/index/export; original
+ffprobe duration is retained separately. Full validated EOF decoding corroborates
+the result as Verified; Quick/failed/unsupported operations do not. Full mismatch
+returns Ambiguous with no primary duration. Exact padding replaces the earlier
+whole-block allowance. [Evidence and tests](docs/DSF_DURATION_VALIDATION.md).
+
+PCM v3 changes deterministic quantization sampling to **each channel separately**,
+equal channel budgets totaling at most 1,000,000 active samples. This fixes even
+interleaved strides selecting only one stereo channel; thresholds remain unchanged.
+Comparison rejects unknown multichannel order/invalid offset limits and guards
+zero-energy overlap and underflow of the correlation denominator product.
 
 ## Observations separated from inference — version 0.2
 
@@ -47,9 +74,10 @@ to v2 for result/schema/applicability changes; suspicion thresholds are unchange
 ffprobe inspects container/codec, first audio stream, rate, layout, duration and tags;
 filename extension selects only CUE/ISO handling and scan candidates. Audio extensions
 are never proof of codec. PCM tests are blocked for dsd_* and dst. FFmpeg's dsd_* packed-byte
-sample rate is multiplied by 8 to display the native bit rate; synthetic DSF/DFF fixtures
-verify this with 2,822,400 Hz DSD64. DST native sample rate is Unknown (0 in machine data),
-pending dedicated validation. No conversion-derived DSD measurements are implemented.
+sample rate is multiplied by 8 to display the native bit rate; generated DSF/DFF fixtures
+verify DSD64 and generated DSF also verifies DSD128/256. DST native sample rate is
+Unknown (0 in machine data), pending dedicated validation. Conversion-derived DSD
+measurements use the separate pipeline documented in docs/DSD_METHODOLOGY.md.
 
 All subprocess commands use argument arrays, no shell, binary stdout and explicit UTF-8
 replacement decoding for diagnostics. A timer kills and waits for timed-out processes.
@@ -119,7 +147,8 @@ Thresholds are exploratory engineering rules, not calibrated on a real-music cor
 ## 24-bit quantization
 
 Only known lossless integer 24-bit PCM. Exact signed integer = round(f64 ×2^23).
-Zero samples excluded; deterministic stride caps the interleaved population at 1,000,000.
+Zero samples excluded; deterministic strides within each channel share an equal
+budget totaling at most 1,000,000 samples across channels.
 Fewer than 1,000 active analyzed samples: Ambiguous. Count low byte (integer &255),
 zero-byte percentage, distinct low bytes, distinct sample values and Shannon H=−Σp log2(p).
 Normalized H=H/8. Entire sampled active population low byte zero → Direct 16→24 padding
@@ -158,8 +187,11 @@ overlap; their storage figures must not be added. No removal or cleanup executio
 SQLite stores root/path, size, mtime_ns, UTC index time, method version, actual probe,
 file hash, optional PCM hash and full-decode result/error. Incremental reuses records when
 size+mtime_ns, method and PCM-hash option match. This can miss edits preserving size/mtime;
-use force scan or archive verification for stronger assurance. Backend-setting changes should
-also be followed by force scan. File mutation during scan invalidates its hash result.
+use force scan or archive verification for stronger assurance. Backend-setting changes
+automatically trigger revalidation at the next scan (settings plus executable path,
+size and mtime identity). Earlier records without backend identity also refresh;
+they remain readable before a scan, with no database schema migration. Source mutations
+during scan invalidate its hash result. Reconciliation checks cancellation again after traversal.
 Removed files remain marked in database. Scan cancellation callback is checked between files;
 no UI cancel button yet. Directory access failure aborts before removal reconciliation.
 File failures continue and are shown as unreadable/unsupported, never automatically as corruption.
@@ -220,5 +252,5 @@ Unknown properties remain Unknown; profiles do not certify actual hardware playb
 
 Only generated signals/containers and local backend integration have been used. No private
 collection was accessed. No diverse real-recording corpus, metering certification, native
-DSD spectral validation, real SACD image, browser rendering test or calibrated classification
+DSD recording spectral validation, real SACD image, browser rendering test or calibrated classification
 study has been performed. See DEVELOPMENT_PLAN.md for actual executed verification.

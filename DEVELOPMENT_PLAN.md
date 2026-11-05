@@ -1,5 +1,94 @@
 # Music Project — implementation ledger
 
+## Audio Origin Investigator — compatible extension 0.2.3 (2026-11-05)
+
+Implemented end-to-end signal investigation in Analyze File: empirical backend response,
+independent native DSF/uncompressed-DFF PSD, six candidate bandwidth compatibility
+tests, per-channel temporal evidence, exploratory ultrasonic regimes and optional
+reference alignment/gain/polarity/correlation/residual/identity investigation.
+Everyday is the default; Expert preserves existing measurements and diagnostics.
+View switches use the same stored result. Library/Compare/Duplicates/Archive UI source
+was not changed by this milestone; pre-existing uncommitted work was preserved.
+
+App 0.2.3; general method v5; Origin v1; response calibration v1. DSD method v2 and
+duration policy v1 retained. Scope and counterexamples: docs/ORIGIN_METHODOLOGY.md;
+executed checks/measurements: docs/ORIGIN_VALIDATION.md and ORIGIN_VALIDATION.json.
+Roadmap 0.3/0.4 reservations are retained. This milestone validates measurements and
+compatibility, not a universal historical-format classifier or release authenticity.
+
+Future modules should provide an ordinary-listener summary and an Expert evidence
+view of one result, with implemented verification actions. Further priorities:
+held-out professional modulator/filter chains; real DFF/DST and DSD512 recordings;
+authenticated reference/chronology evidence; broader primary literature review;
+human timed comprehension evaluation and explicit asynchronous UI cancellation.
+
+## DSF/DFF duration correctness — 0.2.2 (2026-11-05)
+
+Investigated the explicit repository DSF read-only. Mutagen/APIC and binary field
+inspection established a 5,230,592-byte ID3 tail (5,229,518-byte JPEG front cover)
+plus 4,096 bytes of declared block padding. ffprobe's estimate includes these bytes;
+controlled generated metadata-size tests isolate that behavior. Native sample count
+and full PCM decoding agree at 234.026666667 s on both output rates.
+
+Added typed duration selection, structured source/status/evidence, secondary ffprobe
+duration and exact padding accounting. Probe and analysis now select native audio
+duration; full consistency is Verified, partial is Derived, unsupported/invalid
+structure is not replaced by a bitrate estimate, full mismatch is Ambiguous.
+UI displays the selected audio duration; secondary values are in Technical Appendix.
+Old records remain readable, SQLite schema unchanged; method-aware rescan refreshes
+previous estimates when requested. Existing PCM/provenance thresholds unchanged.
+
+Application 0.2.2; general method 2026.11-v4; DSD method dsd-2026.11-v2; duration
+policy dsd-duration-2026.11-v1. Full regression 221 passed / 1 SACD skip, real DSF
+full rechecks on 176400/352800 Hz and source SHA-256 preservation verified. Details:
+docs/DSF_DURATION_VALIDATION.md and docs/DURATION_POLICY_PLAN.md. No Origin Investigator
+classifier implemented; earlier milestones below are historical and preserved.
+
+## Analyze File information architecture — 2026-11-05
+
+Restructured only Analyze File around persistent Overview / Integrity / Measurements /
+Provenance / conditional DSD / Technical Appendix navigation. Configuration is a single
+collapsed group; raw diagnostics/commands/exact values are centralized. Display navigation
+uses saved results, with cached PCM plot FFTs and no audio re-decoding. Native DSF duration
+is shown with its source, separately from ffprobe estimation. Warning deduplication preserves
+event counts, interval references and original text. Existing PCM prefix/loudness scopes
+are retained without inventing an independent full-integrity check.
+
+Permanent ONLY FACTS. NO OPINIONS. policy appended to AGENTS.md. No analytical threshold,
+core method, unrelated page behavior or database schema changed in this UI milestone.
+Application remains 0.2.1; analysis methods remain 2026.11-v3 / dsd-2026.11-v1.
+The earlier 0.3/0.4 roadmap and current uncommitted work are preserved.
+
+One explicitly supplied real DSD256 DSF was checked read-only: Quick 352.8 kHz and
+Full 352.8/176.4 kHz; full decoding passed with 234.026666667 s, distinct from estimated
+235.881361 s ffprobe metadata. Real-file regression is now executed, not skipped.
+See docs/ANALYZE_UI_PLAN.md and docs/ANALYZE_UI_VALIDATION.md for exact results and limits.
+
+## Compatible extension — 0.2.1 (2026-11-05)
+
+Implemented DSD Signal Diagnostics and reliability audit as an explicit extension
+of 0.2, preserving the 0.3/0.4 reservations in docs/RELEASE_0_2_PLAN.md. No Audio Time
+Machine/snapshot code exists in this checkout; existing pages and SQLite schema v1
+are preserved. Application 0.2.1, PCM/general method 2026.11-v3, dedicated DSD method
+dsd-2026.11-v1. Earlier verification ledgers below remain historical.
+
+- Native structural DSF/DFF checks are separate from strict complete/partial decode.
+- Streaming FFmpeg float32 conversion at 176.4/352.8 kHz validates actual output
+  rate/channels/layout mask; exports commands, backend versions, warnings and errors.
+- Per-channel streaming Welch PSD, band powers, median density and L−R differences;
+  explicit audible/ultrasonic scope and conversion/filter limitations. No origin classifier.
+- Quick deterministic multi-position windows; full single-pass decoding to EOF;
+  progress callback/UI progress and API cancellation. No asynchronous UI Cancel yet.
+- Fixed stereo quantization sampling, optional malformed loudnorm handling, comparison
+  guards, bounded stderr, cache identities, backend-aware reindex and cancellation
+  before removed-file reconciliation. Existing SQLite records remain readable and
+  refresh on the next scan; UI explicitly discloses revalidation.
+
+Evidence and remaining work: docs/ENGINEERING_AUDIT.md, docs/DSD_METHODOLOGY.md,
+docs/DSD_IMPLEMENTATION_PLAN.md and docs/VALIDATION_0_2_1.md. DSD256 real-recording
+validation, composite conversion response, real DST/SACD and multichannel spectra
+remain unverified/unsupported. No original audio modified or uploaded.
+
 ## Current focus — version 0.2
 
 User accepted 0.1 and narrowed the next milestone to established signal observations,

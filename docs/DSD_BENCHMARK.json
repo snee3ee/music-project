@@ -1,0 +1,124 @@
+{
+  "fixture": "generated DSD256 stereo repeated 0x69, 352800 Hz PCM analysis",
+  "rss_method": "5 ms sampled sum of Python and active backend working sets; warm filesystem",
+  "backends": {
+    "ffmpeg": "ffmpeg version 9.0.2-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers",
+    "ffprobe": "ffprobe version 9.0.2-full_build-www.gyan.dev Copyright (c) 2007-2026 the FFmpeg developers",
+    "fpcalc": "Backend unavailable: fpcalc (fpcalc)",
+    "sacd_extract": "Backend unavailable: sacd_extract (sacd_extract)"
+  },
+  "cases": [
+    {
+      "duration_seconds": 20.0,
+      "file_mib": 53.83602523803711,
+      "quick": {
+        "mode": "quick",
+        "seconds": 0.9843783999999687,
+        "python_allocator_peak_mib": 6.954489707946777,
+        "sampled_python_plus_children_rss_peak_mib": 147.02734375,
+        "subprocess_invocations": 6,
+        "decode_invocations": 3,
+        "successful_decode_seconds": 15.0,
+        "files_per_second": 1.0158695070920205,
+        "integrity_status": "Partial",
+        "complete_file": false,
+        "fft_segments": 642,
+        "warnings": [
+          "[in#0/dsf @ 0000022139bf0b40] [warning] Estimating duration from bitrate, this may be inaccurate",
+          "[in#0/dsf @ 000001df21eb0ec0] [warning] Estimating duration from bitrate, this may be inaccurate",
+          "[in#0/dsf @ 0000022df2420980] [warning] Estimating duration from bitrate, this may be inaccurate"
+        ]
+      },
+      "quick_cached": {
+        "mode": "quick",
+        "seconds": 0.04529150000007576,
+        "python_allocator_peak_mib": 1.8090429306030273,
+        "sampled_python_plus_children_rss_peak_mib": 123.9375,
+        "subprocess_invocations": 0,
+        "decode_invocations": 0,
+        "successful_decode_seconds": 15.0,
+        "files_per_second": 22.079198083488674,
+        "integrity_status": "Partial",
+        "complete_file": false,
+        "fft_segments": 642,
+        "warnings": [
+          "[in#0/dsf @ 0000022139bf0b40] [warning] Estimating duration from bitrate, this may be inaccurate",
+          "[in#0/dsf @ 000001df21eb0ec0] [warning] Estimating duration from bitrate, this may be inaccurate",
+          "[in#0/dsf @ 0000022df2420980] [warning] Estimating duration from bitrate, this may be inaccurate"
+        ]
+      },
+      "full": {
+        "mode": "full",
+        "seconds": 1.0532473000000664,
+        "python_allocator_peak_mib": 6.937338829040527,
+        "sampled_python_plus_children_rss_peak_mib": 149.796875,
+        "subprocess_invocations": 4,
+        "decode_invocations": 1,
+        "successful_decode_seconds": 20.0,
+        "files_per_second": 0.9494446366014296,
+        "integrity_status": "Passed",
+        "complete_file": true,
+        "fft_segments": 860,
+        "warnings": [
+          "[in#0/dsf @ 000002ca454ccb80] [warning] Estimating duration from bitrate, this may be inaccurate"
+        ]
+      }
+    },
+    {
+      "duration_seconds": 240.0,
+      "file_mib": 646.0000877380371,
+      "quick": {
+        "mode": "quick",
+        "seconds": 1.2495403000000351,
+        "python_allocator_peak_mib": 6.944430351257324,
+        "sampled_python_plus_children_rss_peak_mib": 150.6015625,
+        "subprocess_invocations": 6,
+        "decode_invocations": 3,
+        "successful_decode_seconds": 15.0,
+        "files_per_second": 0.8002943162377171,
+        "integrity_status": "Partial",
+        "complete_file": false,
+        "fft_segments": 642,
+        "warnings": [
+          "[in#0/dsf @ 000001b32a512880] [warning] Estimating duration from bitrate, this may be inaccurate",
+          "[in#0/dsf @ 000002639e162a00] [warning] Estimating duration from bitrate, this may be inaccurate",
+          "[in#0/dsf @ 000001c868110f00] [warning] Estimating duration from bitrate, this may be inaccurate"
+        ]
+      },
+      "quick_cached": {
+        "mode": "quick",
+        "seconds": 0.04589039999996203,
+        "python_allocator_peak_mib": 1.808201789855957,
+        "sampled_python_plus_children_rss_peak_mib": 123.96484375,
+        "subprocess_invocations": 0,
+        "decode_invocations": 0,
+        "successful_decode_seconds": 15.0,
+        "files_per_second": 21.791049979970264,
+        "integrity_status": "Partial",
+        "complete_file": false,
+        "fft_segments": 642,
+        "warnings": [
+          "[in#0/dsf @ 000001b32a512880] [warning] Estimating duration from bitrate, this may be inaccurate",
+          "[in#0/dsf @ 000002639e162a00] [warning] Estimating duration from bitrate, this may be inaccurate",
+          "[in#0/dsf @ 000001c868110f00] [warning] Estimating duration from bitrate, this may be inaccurate"
+        ]
+      },
+      "full": {
+        "mode": "full",
+        "seconds": 10.004797199999985,
+        "python_allocator_peak_mib": 6.937117576599121,
+        "sampled_python_plus_children_rss_peak_mib": 150.34375,
+        "subprocess_invocations": 4,
+        "decode_invocations": 1,
+        "successful_decode_seconds": 240.0,
+        "files_per_second": 0.09995205100209344,
+        "integrity_status": "Passed",
+        "complete_file": true,
+        "fft_segments": 10334,
+        "warnings": [
+          "[in#0/dsf @ 00000162ce3e0dc0] [warning] Estimating duration from bitrate, this may be inaccurate"
+        ]
+      }
+    }
+  ]
+}

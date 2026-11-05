@@ -9,6 +9,14 @@ class AudioError(Exception):
     """Expected input/backend failure safe to display without a traceback."""
 
 
+class DecoderError(AudioError):
+    """Retain bounded backend diagnostics separately from the fatal outcome."""
+
+    def __init__(self, message: str, diagnostics: str):
+        super().__init__(message)
+        self.diagnostics = diagnostics
+
+
 @dataclass(frozen=True)
 class AudioInfo:
     path: str
@@ -26,6 +34,10 @@ class AudioInfo:
     tags: dict[str, str] = field(default_factory=dict)
     raw: dict[str, Any] = field(default_factory=dict)
     channel_layout_source: str = "metadata"
+    ffprobe_duration: float | None = None
+    duration_source: str = "ffprobe"
+    duration_status: str = "Unknown"
+    duration_details: dict[str, Any] = field(default_factory=dict)
 
     @property
     def name(self) -> str:

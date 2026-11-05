@@ -1,12 +1,11 @@
 """No shell, explicit UTF-8 diagnostics and bounded streaming binary output."""
 
 import subprocess
-import tempfile
 import threading
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 
-from music_project.core.models import AudioError
+from music_project.core.models import AudioError, DecoderError
 
 
 @dataclass(frozen=True)
@@ -25,62 +24,95 @@ def run(
     timeout: float = 300,
     max_bytes: int = 4 * 1024 * 1024,
     consume: Callable[[bytes], None] | None = None,
+    cancelled: Callable[[], bool] | None = None,
 ) -> CommandResult:
     if timeout <= 0 or max_bytes < 0:
         raise AudioError("Некорректный лимит subprocess")
-    # stderr cannot block stdout: it goes to a separate disk-backed stream.
-    # PCM is consumed in blocks without a whole-file RAM/disk copy.
-    with tempfile.TemporaryFile() as errors:
-        try:
-            process = subprocess.Popen(
-                list(command),
-                stdin=subprocess.DEVNULL,
-                stdout=subprocess.PIPE,
-                stderr=errors,
-                creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
-            )
-        except FileNotFoundError as exc:
-            raise AudioError(f"Backend unavailable: {command[0]}") from exc
-        except OSError as exc:
-            raise AudioError(f"Не удалось запустить backend: {exc}") from exc
-        expired = threading.Event()
+    try:
+        process = subprocess.Popen(
+            list(command),
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+        )
+    except FileNotFoundError as exc:
+        raise AudioError(f"Backend unavailable: {command[0]}") from exc
+    except OSError as exc:
+        raise AudioError(f"Не удалось запустить backend: {exc}") from exc
+    expired = threading.Event()
+    stopped = threading.Event()
+    done = threading.Event()
+    diagnostics = bytearray()
 
-        def kill_on_timeout():
-            expired.set()
-            try:
-                process.kill()
-            except OSError:
-                pass
+    def drain_errors():
+        assert process.stderr is not None
+        while chunk := process.stderr.read(8192):
+            diagnostics.extend(chunk)
+            if len(diagnostics) > 65536:
+                del diagnostics[:-65536]
 
-        timer = threading.Timer(timeout, kill_on_timeout)
-        timer.daemon = True
-        timer.start()
-        data = bytearray()
+    reader = threading.Thread(target=drain_errors, daemon=True)
+    reader.start()
+
+    def check_cancellation():
+        while not done.wait(0.1):
+            if cancelled and cancelled():
+                stopped.set()
+                try:
+                    process.kill()
+                except OSError:
+                    pass
+                return
+
+    watcher = threading.Thread(target=check_cancellation, daemon=True) if cancelled else None
+    if watcher:
+        watcher.start()
+
+    def kill_on_timeout():
+        expired.set()
         try:
-            assert process.stdout is not None
-            while block := process.stdout.read(1024 * 1024):
-                if consume:
-                    consume(block)
-                else:
-                    if len(data) + len(block) > max_bytes:
-                        raise AudioError("Вывод backend превышает лимит; уменьшите область анализа")
-                    data.extend(block)
-            process.wait()
-        finally:
-            timer.cancel()
-            if process.poll() is None:
-                process.kill()
-            process.wait()
-            if process.stdout:
-                process.stdout.close()
-        if expired.is_set():
-            raise AudioError(f"Превышено время ожидания ({timeout:g} с)")
-        errors.seek(0, 2)
-        errors.seek(max(0, errors.tell() - 65536))
-        diagnostic = errors.read().decode("utf-8", errors="replace")
-        if process.returncode:
-            raise AudioError(f"Ошибка декодера ({process.returncode}): {diagnostic[-3000:]}")
-        return CommandResult(bytes(data), diagnostic)
+            process.kill()
+        except OSError:
+            pass
+
+    timer = threading.Timer(timeout, kill_on_timeout)
+    timer.daemon = True
+    timer.start()
+    data = bytearray()
+    try:
+        assert process.stdout is not None
+        while block := process.stdout.read(1024 * 1024):
+            if consume:
+                consume(block)
+            else:
+                if len(data) + len(block) > max_bytes:
+                    raise AudioError("Вывод backend превышает лимит; уменьшите область анализа")
+                data.extend(block)
+        process.wait()
+    finally:
+        done.set()
+        timer.cancel()
+        if process.poll() is None:
+            process.kill()
+        process.wait()
+        if process.stdout:
+            process.stdout.close()
+        reader.join()
+        if process.stderr:
+            process.stderr.close()
+        if watcher:
+            watcher.join()
+    if expired.is_set():
+        raise AudioError(f"Превышено время ожидания ({timeout:g} с)")
+    if stopped.is_set():
+        raise AudioError("Cancelled: декодирование остановлено")
+    diagnostic = diagnostics.decode("utf-8", errors="replace")
+    if process.returncode:
+        raise DecoderError(
+            f"Ошибка декодера ({process.returncode}): {diagnostic[-3000:]}", diagnostic
+        )
+    return CommandResult(bytes(data), diagnostic)
 
 
 def backend_versions(settings) -> dict[str, str]:

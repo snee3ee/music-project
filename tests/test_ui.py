@@ -9,7 +9,11 @@ PROJECT = Path(__file__).resolve().parents[1]
 @pytest.fixture
 def app(tmp_path, monkeypatch):
     monkeypatch.setenv("MUSIC_PROJECT_DB", str(tmp_path / "ui-index.sqlite3"))
-    return AppTest.from_file(str(PROJECT / "app.py"), default_timeout=30).run()
+    value = AppTest.from_file(str(PROJECT / "app.py"), default_timeout=30).run()
+    value.session_state.analysis_view = (
+        "expert"  # Preserve the existing expert-navigation regression matrix.
+    )
+    return value
 
 
 @pytest.mark.parametrize(
@@ -27,7 +31,11 @@ def test_analyze_and_advanced_sections(app, tone):
     app.form_submit_button[0].click().run()
     assert not app.exception and not app.error
     assert app.session_state.analysis_result[0] == "audio"
-    assert any(e.label == "Quantization Structure" and not e.proto.expanded for e in app.expander)
+    assert len(app.expander) == 1 and app.expander[0].label == "Параметры анализа"
+    assert not app.json and not app.code
+    app.segmented_control(key="analysis_module").set_value("provenance").run()
+    assert any("Bit-depth / Padding" in e.value for e in app.markdown)
+    app.segmented_control(key="analysis_module").set_value("measurements").run()
     app.toggle(key="spectrum_visible").set_value(True).run()
     assert not app.exception and not app.error
     app.toggle(key="preview_visible").set_value(True).run()
@@ -75,6 +83,8 @@ def test_choose_then_analyze_without_pasting_path(app, tone, monkeypatch):
     visible = " ".join(e.value for group in (app.text, app.caption, app.markdown) for e in group)
     assert "decoded_seconds" not in visible
     assert "Not applicable / Unknown" not in visible
+    app.segmented_control(key="analysis_module").set_value("measurements").run()
+    visible = " ".join(e.value for group in (app.text, app.caption, app.markdown) for e in group)
     assert "Full-scale samples" in visible
 
 
@@ -94,3 +104,192 @@ def test_empty_file_selection_is_clear_error(app):
     app.form_submit_button[0].click().run()
     assert app.error[0].value == "Сначала выберите файл для анализа."
     assert not app.exception
+
+
+def test_dsd_diagnostics_and_full_mode(app, tmp_path):
+    from dsd_fixtures import dsf
+
+    path = dsf(tmp_path / "generated.dsf")
+    app.switch_page("music_project/ui/analyzer.py").run()
+    app.text_input(key="analyzer_path").set_value(str(path))
+    app.selectbox(key="dsd_mode").set_value("full")
+    app.selectbox(key="dsd_rate").set_value(176400)
+    app.form_submit_button[0].click().run()
+    assert not app.exception and not app.error
+    result, context = app.session_state.analysis_result[1]
+    assert context is None and result.scope["complete_file"]
+    assert result.findings["dsd_integrity"].status == "Passed"
+    assert "DSD Diagnostics" in app.segmented_control(key="analysis_module").options
+    app.segmented_control(key="analysis_module").set_value("dsd").run()
+    assert len(app.expander) == 1
+    visible = " ".join(e.value for group in (app.text, app.caption, app.markdown) for e in group)
+    assert "DST processing: Not applicable" in visible
+    assert "Derived from DSD-to-PCM conversion" in visible
+    app.segmented_control(key="analysis_module").set_value("measurements").run()
+    app.toggle(key="dsd_psd").set_value(True).run()
+    assert not app.exception and not app.error
+
+
+def test_optional_dsd_decoder_failure_keeps_metadata(app, tmp_path):
+    from dataclasses import replace
+
+    from dsd_fixtures import dsf
+
+    path = dsf(tmp_path / "generated.dsf")
+    app.session_state.settings = replace(app.session_state.settings, ffmpeg="not-installed")
+    app.switch_page("music_project/ui/analyzer.py").run()
+    app.text_input(key="analyzer_path").set_value(str(path))
+    app.form_submit_button[0].click().run()
+    assert not app.exception
+    assert app.metric[0].value == "DSD"
+    result = app.session_state.analysis_result[1][0]
+    assert result.findings["dsd_conversion"].status == "Unsupported"
+
+
+def test_pcm_module_switches_keep_results_and_cache_ffts(app, tone, monkeypatch):
+    from music_project.ui import analysis_charts, shared
+
+    app.switch_page("music_project/ui/analyzer.py").run()
+    app.text_input(key="analyzer_path").set_value(str(tone))
+    app.form_submit_button[0].click().run()
+    original = app.session_state.analysis_result[1][0].to_dict()
+    assert "DSD Diagnostics" not in app.segmented_control(key="analysis_module").options
+    analysis_charts.pcm_spectrum_data.clear()
+    analysis_charts.pcm_spectrogram_data.clear()
+    calls = {"spectrum": 0, "spectrogram": 0}
+    real_spectrum, real_spectrogram = analysis_charts.spectrum, analysis_charts.spectrogram
+
+    def spectrum(context):
+        calls["spectrum"] += 1
+        return real_spectrum(context)
+
+    def spectrogram(context):
+        calls["spectrogram"] += 1
+        return real_spectrogram(context)
+
+    def forbidden(*args, **kwargs):
+        pytest.fail("Presentation navigation must not invoke analysis/decoding")
+
+    monkeypatch.setattr(analysis_charts, "spectrum", spectrum)
+    monkeypatch.setattr(analysis_charts, "spectrogram", spectrogram)
+    monkeypatch.setattr(shared, "cached_analysis", forbidden)
+    monkeypatch.setattr("music_project.core.decoder.run", forbidden)
+    for _ in range(2):
+        app.segmented_control(key="analysis_module").set_value("measurements").run()
+        app.toggle(key="spectrum_visible").set_value(True).run()
+        app.segmented_control(key="analysis_module").set_value("overview").run()
+        assert not app.exception and not app.error
+    for module in ("integrity", "provenance", "appendix"):
+        app.segmented_control(key="analysis_module").set_value(module).run()
+        assert not app.exception and not app.error
+    app.selectbox(key="analysis_appendix").set_value("spectrum").run()
+    assert len(app.get("download_button")) == 2
+    assert calls == {"spectrum": 1, "spectrogram": 1}
+    assert app.session_state.analysis_result[1][0].to_dict() == original
+
+
+def test_dsd_modules_and_appendix_preserve_exact_data_without_redecode(app, tmp_path, monkeypatch):
+    import json
+
+    from dsd_fixtures import dsf
+
+    from music_project.ui import shared
+
+    path = dsf(tmp_path / "generated.dsf")
+    app.switch_page("music_project/ui/analyzer.py").run()
+    app.text_input(key="analyzer_path").set_value(str(path))
+    app.form_submit_button[0].click().run()
+    original = app.session_state.analysis_result[1][0].to_dict()
+
+    def forbidden(*args, **kwargs):
+        pytest.fail("DSD presentation must not decode or analyze again")
+
+    monkeypatch.setattr(shared, "cached_analysis", forbidden)
+    monkeypatch.setattr("music_project.core.dsd_decoder.run", forbidden)
+    monkeypatch.setattr("music_project.core.dsd_spectrum.StreamingWelch.consume", forbidden)
+    assert not app.code and not app.json and not app.dataframe
+    for module in ("integrity", "measurements", "provenance", "dsd", "appendix"):
+        app.segmented_control(key="analysis_module").set_value(module).run()
+        assert not app.exception and not app.error
+        assert len(app.expander) == 1  # Configuration only; no nested result expanders.
+    for section in ("results", "logs", "methods", "metadata", "spectrum", "raw"):
+        app.selectbox(key="analysis_appendix").set_value(section).run()
+        assert not app.exception and not app.error
+    assert json.loads(app.json[0].value) == original
+    assert len(app.get("download_button")) == 1
+    assert app.session_state.analysis_result[1][0].to_dict() == original
+
+
+def test_flac_new_modules(app, tone, tmp_path, encode):
+    path = encode(tone, tmp_path / "fixture.flac")
+    app.switch_page("music_project/ui/analyzer.py").run()
+    app.text_input(key="analyzer_path").set_value(str(path))
+    app.form_submit_button[0].click().run()
+    assert app.metric[0].value == "FLAC"
+    for module in ("integrity", "measurements", "provenance", "appendix"):
+        app.segmented_control(key="analysis_module").set_value(module).run()
+        assert not app.exception and not app.error
+
+
+def test_new_pcm_file_resets_dsd_navigation(app, tone, tmp_path):
+    from dsd_fixtures import dsf
+
+    path = dsf(tmp_path / "generated.dsf")
+    app.switch_page("music_project/ui/analyzer.py").run()
+    app.text_input(key="analyzer_path").set_value(str(path))
+    app.form_submit_button[0].click().run()
+    app.segmented_control(key="analysis_module").set_value("dsd").run()
+    app.text_input(key="analyzer_path").set_value(str(tone))
+    app.form_submit_button[0].click().run()
+    assert not app.exception and not app.error
+    assert app.segmented_control(key="analysis_module").value == "overview"
+    assert "DSD Diagnostics" not in app.segmented_control(key="analysis_module").options
+
+
+@pytest.mark.parametrize("mode,status", [("quick", "Derived"), ("full", "Verified")])
+def test_dsf_selected_duration_and_secondary_estimate_in_appendix(app, tmp_path, mode, status):
+    import json
+
+    from dsd_fixtures import dsf, dsf_metadata
+
+    path = dsf_metadata(dsf(tmp_path / "generated.dsf"), padding_bytes=500000)
+    app.switch_page("music_project/ui/analyzer.py").run()
+    app.text_input(key="analyzer_path").set_value(str(path))
+    app.selectbox(key="dsd_mode").set_value(mode)
+    app.form_submit_button[0].click().run()
+    assert not app.exception and not app.error
+    result = app.session_state.analysis_result[1][0]
+    assert result.info.duration == 0.15 and result.info.duration_status == status
+    selected = [m for m in app.metric if m.label.startswith("Длительность аудио")]
+    assert len(selected) == 1 and selected[0].value == "0:00.15"
+    assert ("проверено" in selected[0].label) == (mode == "full")
+    assert not app.json
+    app.segmented_control(key="analysis_module").set_value("integrity").run()
+    assert not app.json
+    assert not any("Источник" in d.value.columns for d in app.dataframe)
+    app.segmented_control(key="analysis_module").set_value("appendix").run()
+    sources = json.loads(app.json[0].value)
+    assert sources[0]["seconds"] == result.info.ffprobe_duration
+    app.selectbox(key="analysis_appendix").set_value("raw").run()
+    exported = json.loads(app.json[0].value)
+    assert exported["info"]["duration"] == 0.15
+    assert exported["info"]["ffprobe_duration"] > 0.15
+
+
+def test_invalid_dsf_duration_is_not_replaced_by_estimate(app, tmp_path):
+    import struct
+
+    from dsd_fixtures import dsf
+
+    path = dsf(tmp_path / "generated.dsf")
+    data = bytearray(path.read_bytes())
+    struct.pack_into("<Q", data, 12, len(data) + 100)
+    path.write_bytes(data)
+    app.switch_page("music_project/ui/analyzer.py").run()
+    app.text_input(key="analyzer_path").set_value(str(path))
+    app.form_submit_button[0].click().run()
+    assert not app.exception and app.error
+    result = app.session_state.analysis_result[1][0]
+    assert result.info.duration is None and result.info.ffprobe_duration is not None
+    selected = [m for m in app.metric if m.label.startswith("Длительность аудио")]
+    assert len(selected) == 1 and selected[0].value == "Не установлена"

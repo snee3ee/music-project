@@ -105,7 +105,8 @@ def test_dsd_synthetic_container_routing(tmp_path, settings, extension, writer):
     assert info.sample_rate == 2822400
     assert info.bit_depth is None
     result, context = analyze(path, settings)
-    assert context is None and set(result.findings) == {"dsd"}
+    assert context is None and "dsd" in result.findings
+    assert "dsd_integrity" in result.findings
     assert result.findings["dsd"].measurements["dsd_family"] == "DSD64"
     with pytest.raises(AudioError, match="Native DSD"):
         PCMContext.load(info)
