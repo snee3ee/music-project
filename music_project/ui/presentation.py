@@ -11,6 +11,7 @@ STATUS = {
     "Derived": "Рассчитано",
     "Experimental": "Экспериментально",
     "Not validated": "Не валидировано",
+    "Not performed": "Не выполнялась",
     "Measured": "Измерено",
     "Verified": "Проверено",
     "Ambiguous": "Недостаточно признаков",

@@ -17,8 +17,11 @@ from music_project.ui.shared import (
 
 st.caption("Выберите файл, запустите анализ и переключайтесь между модулями результатов.")
 requested_full = st.session_state.pop("origin_full_requested", False)
+requested_pcm_full = st.session_state.pop("technical_full_requested", False)
 if requested_full:
     st.session_state.dsd_mode = "full"
+if requested_pcm_full:
+    st.session_state.technical_mode = "full"
 if st.button("Выбрать файл…", icon=":material/folder_open:", key="choose_audio"):
     try:
         selected_path = choose_file()
@@ -57,9 +60,26 @@ with st.form("analyze_form"):
             format_func=lambda v: f"{v / 1000:g} kHz",
             key="dsd_rate",
         )
+        technical_mode = st.selectbox(
+            "Область громкости и пиков PCM",
+            ["full", "prefix"],
+            format_func=lambda x: "Весь поток" if x == "full" else "Начальный фрагмент",
+            key="technical_mode",
+        )
+        near_ceiling = st.number_input(
+            "Порог около цифрового предела, dBFS",
+            min_value=-60.0,
+            max_value=0.0,
+            value=-1.0,
+            step=0.1,
+            key="near_ceiling",
+        )
+        st.caption(
+            "Порог и область применяются при следующем анализе PCM. В native DSD эти тесты не применяются."
+        )
         force = st.checkbox("Повторить анализ без кэша", key="analysis_force")
     submitted = st.form_submit_button("Анализировать", type="primary")
-if submitted or requested_full:
+if submitted or requested_full or requested_pcm_full:
     st.session_state.analysis_module = "overview"
     st.session_state.analysis_result = None
     st.session_state.origin_reference_result = None
@@ -74,7 +94,13 @@ if submitted or requested_full:
         stat = source.stat()
         if force:
             clear_analysis_cache()
-        settings = replace(st.session_state.settings, dsd_mode=dsd_mode, dsd_pcm_rate=dsd_rate)
+        settings = replace(
+            st.session_state.settings,
+            dsd_mode=dsd_mode,
+            dsd_pcm_rate=dsd_rate,
+            technical_mode=technical_mode,
+            near_ceiling_dbfs=near_ceiling,
+        )
         progress_bar = st.progress(0.0, text="Анализ аудиопотока…")
         try:
             with st.spinner("Измеряем параметры файла…"):

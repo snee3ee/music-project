@@ -1,6 +1,7 @@
 from collections.abc import Callable
 from pathlib import Path
 
+from music_project.core.conclusions import build_conclusions
 from music_project.core.config import Settings
 from music_project.core.decoder import PCMContext
 from music_project.core.dsd import diagnose_dsd
@@ -11,9 +12,10 @@ from music_project.core.origin import investigate_origin, investigate_pcm_contex
 from music_project.core.origin_calibration import calibrate_response, controlled_bandwidth
 from music_project.core.origin_models import ORIGIN_VERSION
 from music_project.core.origin_temporal import OriginCollector
-from music_project.core.pcm import loudness, peaks, quantization, spectral_findings
+from music_project.core.pcm import peaks, quantization, spectral_findings
 from music_project.core.probe import probe
 from music_project.core.subprocess_utils import backend_versions
+from music_project.core.technical_analysis import measure_technical
 
 
 def analyze(
@@ -77,7 +79,9 @@ def analyze(
             )
         if before != signature(source):
             raise AudioError("Файл изменился во время анализа; повторите проверку")
-        return Analysis(info, scope, findings, versions), None
+        result = Analysis(info, scope, findings, versions)
+        result.conclusions = build_conclusions(info, scope, findings)
+        return result, None
     context = PCMContext.load(info, settings)
     cutoff, upsampling = spectral_findings(context)
     findings = {
@@ -87,9 +91,26 @@ def analyze(
         "quantization": quantization(context),
     }
     try:
-        findings["loudness"] = loudness(info, settings)
-    except AudioError as exc:
+        findings.update(measure_technical(info, settings, progress=progress, cancelled=cancelled))
+    except (AudioError, ValueError, OSError) as exc:
         findings["loudness"] = Finding("Unknown", str(exc))
+        status = (
+            "Unsupported"
+            if "Backend unavailable" in str(exc) or "Unsupported" in str(exc)
+            else "Partial"
+            if "Cancelled" in str(exc) or "время ожидания" in str(exc)
+            else "Failed"
+        )
+        findings["pcm_integrity"] = Finding(
+            status,
+            str(exc),
+            {
+                "complete_file": False,
+                "warnings_retained": False,
+                "reason": str(exc),
+                "fatal_error": str(exc) if status == "Failed" else None,
+            },
+        )
     try:
         findings["origin_investigation"] = investigate_pcm_context(context, settings, versions)
     except (AudioError, ValueError, OSError) as exc:
@@ -98,4 +119,6 @@ def analyze(
         )
     if before != signature(source):
         raise AudioError("Файл изменился во время анализа; повторите проверку")
-    return Analysis(info, context.scope, findings, versions), context
+    result = Analysis(info, context.scope, findings, versions)
+    result.conclusions = build_conclusions(info, context.scope, findings)
+    return result, context

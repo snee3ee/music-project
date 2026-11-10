@@ -41,7 +41,15 @@ class WarningGroup:
 def decoder_warnings(result: Analysis) -> list[WarningGroup]:
     groups: dict[str, WarningGroup] = {}
     finding = result.findings.get("dsd_integrity")
-    for index, attempt in enumerate(finding.measurements.get("attempts", []) if finding else [], 1):
+    pcm = result.findings.get("pcm_integrity")
+    attempts = (
+        finding.measurements.get("attempts", [])
+        if finding
+        else [{"warnings": pcm.measurements.get("warnings", [])}]
+        if pcm
+        else []
+    )
+    for index, attempt in enumerate(attempts, 1):
         for raw in attempt.get("warnings", []):
             message = re.sub(r"\[[^\]]+ @ (?:0x)?[0-9a-fA-F]+\]\s*", "", raw).strip()
             message = re.sub(r"^\[warning\]\s*", "", message)
@@ -153,7 +161,22 @@ def integrity_summary(result: Analysis) -> dict[str, Any]:
             "container_errors": container.measurements.get("errors", []) if container else [],
             "container_warnings": container.measurements.get("warnings", []) if container else [],
         }
-    # Prefix decoding and full loudnorm metering are not a dedicated integrity check.
+    pcm = result.findings.get("pcm_integrity")
+    if pcm:
+        m = pcm.measurements
+        return {
+            "container_status": "Not performed",
+            "decode_status": m.get("decode_status", pcm.status),
+            "complete_file": bool(m.get("complete_file")),
+            "intervals": 1,
+            "decoded_seconds": m.get("decoded_seconds", 0),
+            "warning_events": m.get("warning_events"),
+            "warning_groups": decoder_warnings(result),
+            "fatal_errors": [m["fatal_error"]] if m.get("fatal_error") else [],
+            "container_errors": [],
+            "container_warnings": [],
+        }
+    # Legacy results distinguish a missing check from warnings which were not retained.
     return {
         "container_status": "Unknown",
         "decode_status": "Partial",

@@ -31,7 +31,7 @@ def test_everyday_is_default_and_mode_changes_preserve_results_without_analysis(
     saved = analyze_file(everyday, tone)
     assert everyday.segmented_control(key="analysis_view").value == "everyday"
     visible = " ".join(e.value for group in (everyday.text, everyday.markdown) for e in group)
-    assert "Origin Investigation Report" in visible and "Что найдено" in visible
+    assert "Technical Findings" in visible and "Измерено" in visible
     assert not everyday.dataframe and not everyday.json
 
     def forbidden(*args, **kwargs):

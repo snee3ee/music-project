@@ -25,6 +25,7 @@ def run(
     max_bytes: int = 4 * 1024 * 1024,
     consume: Callable[[bytes], None] | None = None,
     cancelled: Callable[[], bool] | None = None,
+    consume_stderr: Callable[[bytes], None] | None = None,
 ) -> CommandResult:
     if timeout <= 0 or max_bytes < 0:
         raise AudioError("Некорректный лимит subprocess")
@@ -44,10 +45,20 @@ def run(
     stopped = threading.Event()
     done = threading.Event()
     diagnostics = bytearray()
+    stderr_errors = []
 
     def drain_errors():
         assert process.stderr is not None
         while chunk := process.stderr.read(8192):
+            if consume_stderr and not stderr_errors:
+                try:
+                    consume_stderr(chunk)
+                except Exception as exc:
+                    stderr_errors.append(exc)
+                    try:
+                        process.kill()
+                    except OSError:
+                        pass
             diagnostics.extend(chunk)
             if len(diagnostics) > 65536:
                 del diagnostics[:-65536]
@@ -108,6 +119,10 @@ def run(
     if stopped.is_set():
         raise AudioError("Cancelled: декодирование остановлено")
     diagnostic = diagnostics.decode("utf-8", errors="replace")
+    if stderr_errors:
+        raise AudioError(
+            f"Некорректные потоковые измерения: {stderr_errors[0]}"
+        ) from stderr_errors[0]
     if process.returncode:
         raise DecoderError(
             f"Ошибка декодера ({process.returncode}): {diagnostic[-3000:]}", diagnostic

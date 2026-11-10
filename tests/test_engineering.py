@@ -111,11 +111,14 @@ def test_malformed_loudness_is_optional(tone, settings, monkeypatch):
     real_run = run
 
     def controlled(command, **kwargs):
-        if "loudnorm=print_format=json" in command:
+        if "loudnorm=print_format=json" in command or any(
+            arg.startswith("ebur128=metadata") for arg in command
+        ):
             return CommandResult(b"", '{"input_i":"invalid", "input_tp":"0", "input_lra":"0"}')
         return real_run(command, **kwargs)
 
     monkeypatch.setattr("music_project.core.pcm.run", controlled)
+    monkeypatch.setattr("music_project.core.technical_analysis.run", controlled)
     result, context = analyze(tone, settings)
     assert context is not None
     assert result.findings["loudness"].status == "Unknown"

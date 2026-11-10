@@ -61,6 +61,16 @@ def show_appendix(result: Analysis, context: PCMContext | None = None):
                 st.code("\n".join(attempt["warnings"]), language=None)
             if attempt.get("fatal_error"):
                 st.code(attempt["fatal_error"], language=None)
+        pcm = result.findings.get("pcm_integrity")
+        if pcm:
+            st.text(
+                f"Событий warning/error: {pcm.measurements.get('warning_events', 'не сохранены')}"
+            )
+            st.caption(
+                pcm.measurements.get("warning_retention", "Диагностика этого прохода не сохранена.")
+            )
+            if pcm.measurements.get("warnings"):
+                st.code("\n".join(pcm.measurements["warnings"]), language=None)
         container = result.findings.get("dsd_container")
         if container:
             st.json({key: container.measurements.get(key, []) for key in ("errors", "warnings")})

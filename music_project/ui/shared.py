@@ -1,11 +1,14 @@
 import json
 import os
+from collections import deque
+from concurrent.futures import ThreadPoolExecutor, TimeoutError
 from pathlib import Path
 
 import streamlit as st
 
 from music_project import METHOD_VERSION
 from music_project.core.analysis import analyze
+from music_project.core.conclusion_models import CONCLUSIONS_VERSION, TECHNICAL_VERSION
 from music_project.core.config import Settings, backend_identity
 from music_project.core.dsd import DSD_METHOD_VERSION
 from music_project.core.library import Library
@@ -38,15 +41,32 @@ def cached_analysis(path: str, size: int, mtime_ns: int, settings: Settings, *, 
     stat = Path(path).stat()
     if (stat.st_size, stat.st_mtime_ns) != (size, mtime_ns):
         raise AudioError("Файл изменился; результат не сохранён в кэше")
-    result = _cached_analysis(
+    arguments = (
         path,
         size,
         mtime_ns,
         settings,
-        f"{METHOD_VERSION}/{DSD_METHOD_VERSION}/{ORIGIN_VERSION}",
+        f"{METHOD_VERSION}/{DSD_METHOD_VERSION}/{ORIGIN_VERSION}/{TECHNICAL_VERSION}/{CONCLUSIONS_VERSION}",
         backend_identity(settings),
-        _progress=progress,
     )
+    if progress is None:
+        result = _cached_analysis(*arguments)
+    else:
+        # Cache workers only publish numbers. Main-thread UI writes stay outside
+        # the cached function, so cache replay never captures an obsolete widget.
+        latest = deque(maxlen=1)
+        with ThreadPoolExecutor(max_workers=1, thread_name_prefix="audio-analysis") as pool:
+            future = pool.submit(_cached_analysis, *arguments, _progress=latest.append)
+            while True:
+                try:
+                    result = future.result(timeout=0.1)
+                    break
+                except TimeoutError:
+                    if future.done():
+                        raise
+                    if latest:
+                        progress(latest[-1])
+        progress(1.0)
     stat = Path(path).stat()
     if (stat.st_size, stat.st_mtime_ns) != (size, mtime_ns):
         raise AudioError("Файл изменился; результат не сохранён в кэше")

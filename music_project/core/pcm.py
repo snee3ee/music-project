@@ -31,7 +31,7 @@ def peaks(context: PCMContext) -> Finding:
     rms = float(np.sqrt(np.mean(x * x)))
     bits = context.info.bit_depth
     threshold = 1 - 2 ** (1 - bits) if bits and bits <= 32 else 1.0
-    counts = np.sum(absolute >= threshold, axis=0)
+    counts = np.sum((x >= threshold) | (x <= -1), axis=0)
     return Finding(
         "Measured",
         "Sample Peak и RMS измерены в указанной области.",
@@ -42,6 +42,15 @@ def peaks(context: PCMContext) -> Finding:
             "full_scale_samples_per_channel": counts.tolist(),
             "samples_above_1": int(np.sum(absolute > 1)),
             "full_scale_threshold": threshold,
+            "negative_full_scale_threshold": -1.0,
+            "scope": context.scope
+            | {
+                "analyzed_seconds": context.scope["decoded_seconds"],
+                "end_seconds": context.scope["decoded_seconds"],
+                "sample_rate_hz": context.info.sample_rate,
+                "domain": "PCM",
+                "processing": "Native rate/channel order, decoded float64; no gain",
+            },
         },
         "Максимум |sample|; RMS всех каналов; crest=20log10(peak/RMS).",
         [

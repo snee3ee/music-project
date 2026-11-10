@@ -19,6 +19,8 @@ class Settings:
     dsd_mode: str = "quick"
     dsd_pcm_rate: int = 352800
     origin_cache_dir: str = "data/origin-calibration"
+    near_ceiling_dbfs: float = -1.0
+    technical_mode: str = "full"
 
     def require(self, name: str) -> str:
         candidate = getattr(self, name)

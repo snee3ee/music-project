@@ -17,6 +17,7 @@ from music_project.ui.analysis_presentation import (
     integrity_summary,
 )
 from music_project.ui.presentation import codec_text, container_text, status_text
+from music_project.ui.technical_findings import show_technical_findings
 
 
 def cards(values: list[tuple[str, str]]):
@@ -59,6 +60,7 @@ def show_overview(result: Analysis):
     elif info.bitrate:
         properties.append(("Bitrate · ffprobe", f"{info.bitrate / 1000:g} kb/s"))
     cards(properties)
+    show_technical_findings(result, controls=False)
     if info.kind == "DSD":
         st.caption(
             "Источник длительности: " + info.duration_source + ". "
@@ -96,10 +98,15 @@ def show_integrity(result: Analysis):
     summary = integrity_summary(result)
     cards(
         [
-            ("Контейнер", status_text(summary["container_status"])),
+            (
+                "Контейнер",
+                "Отдельная проверка не выполнялась"
+                if result.info.kind != "DSD"
+                else status_text(summary["container_status"]),
+            ),
             ("Декодирование", status_text(summary["decode_status"])),
             (
-                "Полная проверка целостности",
+                "Полный проход декодера",
                 "Проверено" if summary["complete_file"] else "Не подтверждена",
             ),
         ]
@@ -113,22 +120,22 @@ def show_integrity(result: Analysis):
             (
                 "Фатальные ошибки",
                 str(len(summary["fatal_errors"]))
-                if result.info.kind == "DSD"
+                if result.info.kind == "DSD" or "pcm_integrity" in result.findings
                 else "Нет отдельной проверки",
             ),
         ]
     )
     if result.info.kind != "DSD":
-        st.text(
-            "Прочитан PCM-фрагмент. Независимая проверка контейнера и полного потока здесь не выполнялась."
+        show_technical_findings(result, controls=False, category={"integrity"})
+        if not summary["complete_file"]:
+
+            def request_pcm_full():
+                st.session_state.technical_full_requested = True
+
+            st.button("Измерить весь PCM-поток", key="technical_full", on_click=request_pcm_full)
+        st.caption(
+            "Декодирование и встроенный FLAC MD5 не аутентифицируют архивную копию. Независимая проверка всех полей контейнера не выполнялась."
         )
-        loudness = result.findings.get("loudness")
-        if loudness:
-            st.caption(
-                "Loudness/True Peak: "
-                + status_text(loudness.status)
-                + ". Успешное измерение не заменяет отдельную архивную проверку."
-            )
         return
     ranges = result.scope.get("ranges", [])
     if ranges:
@@ -202,6 +209,7 @@ def _number(values: dict, field: str) -> str:
 
 
 def show_measurements_module(result: Analysis, context: PCMContext | None):
+    show_technical_findings(result, expert=True)
     if result.info.kind == "DSD":
         show_dsd_bands(result)
         spectrum = result.findings["dsd_audible"].measurements.get("spectrum")
@@ -287,6 +295,7 @@ def show_measurements_module(result: Analysis, context: PCMContext | None):
 def show_provenance(result: Analysis):
     from music_project.ui.origin import show_origin_report
 
+    show_technical_findings(result, expert=True, controls=False, category={"origin"})
     show_origin_report(result, expert=True)
 
 
@@ -303,7 +312,15 @@ def show_analysis(result: Analysis, context: PCMContext | None):
     if view == "everyday":
         from music_project.ui.origin import show_origin_report
 
-        show_origin_report(result)
+        show_technical_findings(result)
+        if result.info.kind == "DSD":
+            show_origin_report(result)
+        else:
+            from music_project.ui.origin import _open_reference
+
+            st.button(
+                "Сравнить с референсом", on_click=_open_reference, key="origin_reference_next"
+            )
         return
     options = available_modules(result)
     if st.session_state.get("analysis_module") not in options:

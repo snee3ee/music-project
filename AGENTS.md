@@ -52,6 +52,9 @@ Use Ambiguous, Unknown, Not applicable or Unsupported when appropriate.
 
 Never present a heuristic as proof.
 
+Measurement without interpretation is incomplete when a valid interpretation can be derived.
+Interpretation must never exceed its supporting evidence.
+
 ## Audio-specific rules
 
 PCM and DSD require different analytical pipelines.

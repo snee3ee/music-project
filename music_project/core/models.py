@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Any
 
 from music_project import METHOD_VERSION, __version__
+from music_project.core.conclusion_models import Conclusion
 
 
 class AudioError(Exception):
@@ -75,6 +76,7 @@ class Analysis:
     backends: dict[str, str]
     app_version: str = __version__
     method_version: str = METHOD_VERSION
+    conclusions: list[Conclusion] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

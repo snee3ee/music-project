@@ -30,8 +30,22 @@ def quick_windows(duration: float | None, width: float = 5) -> list[tuple[float,
 class FloatWaveStream:
     """Parse RIFF/WAVE float32 incrementally, including WAVEFORMATEXTENSIBLE."""
 
-    def __init__(self, rate: int, channels: int, consume: Callable[[np.ndarray], None]):
+    def __init__(
+        self,
+        rate: int,
+        channels: int,
+        consume: Callable[[np.ndarray], None],
+        *,
+        bits=32,
+        expected_mask=None,
+    ):
         self.rate, self.channels, self.consume = rate, channels, consume
+        if bits not in (32, 64):
+            raise AudioError("Only IEEE float32/64 stream formats are supported")
+        self.bits = bits
+        self.expected_mask = (
+            expected_mask if expected_mask is not None else (4 if channels == 1 else 3)
+        )
         self.pending = b""
         self.riff_seen = False
         self.format_verified = False
@@ -73,13 +87,15 @@ class FloatWaveStream:
             if not self.in_data:
                 self.pending = data
                 return
-        frame_bytes = 4 * self.channels
+        frame_bytes = (self.bits // 8) * self.channels
         count = len(data) // frame_bytes * frame_bytes
         if count:
             self.received_bytes += count
             if self.data_bytes is not None and self.received_bytes > self.data_bytes:
                 raise AudioError("Unexpected bytes after converted PCM data")
-            samples = np.frombuffer(data[:count], dtype="<f4").reshape(-1, self.channels)
+            samples = np.frombuffer(data[:count], dtype=f"<f{self.bits // 8}").reshape(
+                -1, self.channels
+            )
             if not np.isfinite(samples).all():
                 raise AudioError("Converted PCM contains NaN/Infinity")
             self.consume(samples)
@@ -95,16 +111,16 @@ class FloatWaveStream:
             if len(data) < 40 or data[24:40] != bytes.fromhex("0300000000001000800000aa00389b71"):
                 raise AudioError("Output is not extensible IEEE float PCM")
             valid_bits, mask = struct.unpack("<HI", data[18:24])
-            if valid_bits != 32 or mask != (4 if channels == 1 else 3):
+            if valid_bits != self.bits or mask != self.expected_mask:
                 raise AudioError("Converted PCM channel layout/valid bits mismatch")
         elif tag != 3:
             raise AudioError("Output is not IEEE float PCM")
         if (channels, rate, bits, align, byte_rate) != (
             self.channels,
             self.rate,
-            32,
-            channels * 4,
-            rate * channels * 4,
+            self.bits,
+            channels * (self.bits // 8),
+            rate * channels * (self.bits // 8),
         ):
             raise AudioError("Actual converted sample rate/channels/format mismatch")
         self.header = {
