@@ -31,7 +31,8 @@ def test_everyday_is_default_and_mode_changes_preserve_results_without_analysis(
     saved = analyze_file(everyday, tone)
     assert everyday.segmented_control(key="analysis_view").value == "everyday"
     visible = " ".join(e.value for group in (everyday.text, everyday.markdown) for e in group)
-    assert "Technical Findings" in visible and "Измерено" in visible
+    assert "Целостность" in visible and "Происхождение" in visible
+    assert "Technical Findings" not in visible
     assert not everyday.dataframe and not everyday.json
 
     def forbidden(*args, **kwargs):
@@ -42,6 +43,7 @@ def test_everyday_is_default_and_mode_changes_preserve_results_without_analysis(
     everyday.segmented_control(key="analysis_view").set_value("expert").run()
     assert not everyday.exception
     everyday.segmented_control(key="analysis_module").set_value("provenance").run()
+    everyday.toggle(key="origin_evidence_visible").set_value(True).run()
     assert everyday.dataframe and not everyday.exception
     assert everyday.session_state.analysis_result[1][0].to_dict() == saved
     everyday.segmented_control(key="analysis_view").set_value("everyday").run()
@@ -53,6 +55,7 @@ def test_everyday_full_action_really_runs_full_dsd(everyday, tmp_path):
     path = dsf(tmp_path / "generated.dsf", rate=2822400, seconds=0.3)
     analyze_file(everyday, path)
     assert not everyday.session_state.analysis_result[1][0].scope["complete_file"]
+    everyday.segmented_control(key="analysis_module").set_value("integrity").run()
     everyday.button(key="origin_full").click().run()
     assert not everyday.exception and not everyday.error
     assert everyday.session_state.analysis_result[1][0].scope["complete_file"]
@@ -61,6 +64,7 @@ def test_everyday_full_action_really_runs_full_dsd(everyday, tmp_path):
 
 def test_reference_action_opens_workflow_and_executes_comparison(everyday, tone):
     saved = analyze_file(everyday, tone)
+    everyday.segmented_control(key="analysis_module").set_value("provenance").run()
     everyday.button(key="origin_reference_next").click().run()
     assert not everyday.exception and everyday.toggle(key="origin_reference_visible").value
     everyday.text_input(key="origin_reference_path").set_value(str(tone))
@@ -69,3 +73,9 @@ def test_reference_action_opens_workflow_and_executes_comparison(everyday, tone)
     value = everyday.session_state.origin_reference_result
     assert value["status"] == "Measured" and value["alignment"]["measurements"]["identical_prefix"]
     assert everyday.session_state.analysis_result[1][0].to_dict() == saved
+    assert not everyday.json
+    everyday.segmented_control(key="analysis_module").set_value("appendix").run()
+    everyday.selectbox(key="analysis_appendix").set_value("reference").run()
+    import json
+
+    assert json.loads(everyday.json[0].value) == value

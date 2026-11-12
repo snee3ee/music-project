@@ -7,6 +7,7 @@ from music_project.core.decoder import PCMContext
 from music_project.core.dsd import diagnose_dsd
 from music_project.core.duration import DurationSelection, with_duration
 from music_project.core.files import signature
+from music_project.core.lossy import investigate_context, unavailable
 from music_project.core.models import Analysis, AudioError, Finding
 from music_project.core.origin import investigate_origin, investigate_pcm_context, origin_finding
 from music_project.core.origin_calibration import calibrate_response, controlled_bandwidth
@@ -48,6 +49,9 @@ def analyze(
         )
         findings, scope = diagnose_dsd(
             info, settings, progress=progress, cancelled=cancelled, origin_collector=collector
+        )
+        findings["lossy_source"] = unavailable(
+            "PCM-only lossy investigation; native DSD is not converted for this test"
         )
         info = with_duration(info, DurationSelection(**scope["duration"]))
         try:
@@ -94,6 +98,9 @@ def analyze(
         findings.update(measure_technical(info, settings, progress=progress, cancelled=cancelled))
     except (AudioError, ValueError, OSError) as exc:
         findings["loudness"] = Finding("Unknown", str(exc))
+        findings["lossy_source"] = investigate_context(
+            context, reason="Technical pass unavailable: " + str(exc)
+        )
         status = (
             "Unsupported"
             if "Backend unavailable" in str(exc) or "Unsupported" in str(exc)

@@ -6,6 +6,7 @@ from music_project.core.conclusion_models import TECHNICAL_VERSION, MeasurementS
 from music_project.core.decoder import input_args
 from music_project.core.dsd_decoder import FloatWaveStream
 from music_project.core.flac_integrity import FlacMD5
+from music_project.core.lossy import LossyCollector
 from music_project.core.loudness_stream import LoudnessMetadata
 from music_project.core.models import AudioError, Finding
 from music_project.core.peak_measurements import PeakMeasurements
@@ -23,6 +24,8 @@ def measure_technical(info, settings, *, progress=None, cancelled=None):
         settings.technical_mode not in {"full", "prefix"}
         or not math.isfinite(settings.near_ceiling_dbfs)
         or not -60 <= settings.near_ceiling_dbfs <= 0
+        or settings.technical_mode == "prefix"
+        and (not math.isfinite(settings.analysis_seconds) or settings.analysis_seconds <= 0)
     ):
         raise AudioError("Invalid technical measurement scope/near-ceiling threshold")
     samples = PeakMeasurements(
@@ -30,10 +33,19 @@ def measure_technical(info, settings, *, progress=None, cancelled=None):
     )
     metadata = LoudnessMetadata(info.sample_rate)
     md5 = FlacMD5(info)
+    investigation = LossyCollector(
+        info,
+        min(settings.analysis_seconds, info.duration)
+        if settings.technical_mode == "prefix" and info.duration is not None
+        else settings.analysis_seconds
+        if settings.technical_mode == "prefix"
+        else None,
+    )
 
     def consume(x):
         samples.consume(x)
         md5.consume(x)
+        investigation.consume(x)
         if progress and info.duration:
             progress(min(0.99, samples.frames / info.sample_rate / info.duration))
 
@@ -46,11 +58,18 @@ def measure_technical(info, settings, *, progress=None, cancelled=None):
     )
     command = input_args(info, settings)
     command[command.index("error")] = "level+info"
+    meter_filter = (
+        "ebur128=metadata=1:peak=none:framelog=verbose,ametadata=mode=print:file='pipe\\:2'"
+    )
     if settings.technical_mode == "prefix":
         command += ["-t", str(settings.analysis_seconds)]
+        # Output -t alone runs filters on extra decoded input before trimming WAV.
+        # Trim before the meter so metadata and native sample observations share scope.
+        frame_limit = round(settings.analysis_seconds * info.sample_rate)
+        meter_filter = f"atrim=end_sample={frame_limit}," + meter_filter
     command += [
         "-af",
-        "ebur128=metadata=1:peak=none:framelog=verbose,ametadata=mode=print:file='pipe\\:2'",
+        meter_filter,
         "-ar",
         str(info.sample_rate),
         "-ac",
@@ -118,6 +137,7 @@ def measure_technical(info, settings, *, progress=None, cancelled=None):
         "warning_retention": "first128 warning/error lines; total events counted while streaming",
     }
     return {
+        "lossy_source": investigation.finish(complete_decode=complete),
         "full_peaks": Finding(
             "Measured",
             "Пики, RMS и события измерены в указанной области.",

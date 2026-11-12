@@ -1,6 +1,8 @@
+import os
 import struct
 import sys
 from dataclasses import replace
+from pathlib import Path
 
 import pytest
 
@@ -123,6 +125,23 @@ def test_device_constraints(info):
     )
 
 
-@pytest.mark.skip(reason="No real SACD fixture or sacd_extract backend; end-to-end unverified")
 def test_real_sacd_integration():
-    pass
+    from music_project.core.cue import track_source
+    from music_project.core.sacd import open_sacd
+    from music_project.core.sources import analyze_source
+
+    value = os.environ.get("MUSIC_PROJECT_SACD_FIXTURE")
+    if not value:
+        pytest.skip(
+            "No explicitly authorized MUSIC_PROJECT_SACD_FIXTURE; real ISO end-to-end not run"
+        )
+    settings = Settings(timeout=600, dsd_mode="full")
+    catalog = open_sacd(Path(value), settings)
+    area = next(a for a in catalog["areas"] if a["kind"] == "stereo")
+    track = min(area["tracks"], key=lambda t: t["duration_seconds"])
+    source = track_source(track)
+    result, context = analyze_source(source, settings)
+    assert context is None and result.findings["dsd_integrity"].status == "Passed"
+    assert result.info.duration == pytest.approx(source.duration_seconds, abs=1 / 75)
+    assert result.findings["logical_source"].measurements["area"] == "stereo"
+    source.verify()

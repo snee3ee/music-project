@@ -1,4 +1,4 @@
-# DSD Signal Diagnostics — dsd-2026.11-v2
+# DSD Signal Diagnostics — dsd-2026.11-v3
 
 As of app0.2.3, a separate [Origin Investigator](ORIGIN_METHODOLOGY.md) adds sampled
 native PSD and empirical discrete converter-response controls. The conversion-group
@@ -25,12 +25,22 @@ and DST compression must not be conflated with nominal DSD bitrate.
 
 DFF/DSDIFF: big-endian FRM8/PROP/chunk bounds, FS/CHNL/CMPR consistency and uncompressed
 DSD payload length divisible by channels; repeated/missing/contradictory required
-properties are rejected. Chunk traversal is limited to 10,000 entries per table.
+properties are rejected. FVER must be first, exactly4 bytes and unique; main version1
+is supported, while unknown major versions are Unsupported. Required FS/CHNL/CMPR sound
+properties must precede audio. PROP is checked for its4-byte type before reading;
+counted CMPR names cannot exceed their chunk. Version, channel IDs and compression name
+are retained. Chunk traversal is limited to10,000 entries per table; unknown same-major
+extensions remain skippable.
 Native sample count = payload bytes × 8 / channels. Unknown chunks are skipped by
 bounded seeks. DFF DST is detected by CMPR and the audio chunk, reported Unsupported;
 compressed payload/FRTE/DST checksums and actual decoding are not validated. Native
 rate from ffprobe DST stays Unknown; header declarations are separately visible.
 SACD ISO remains a disc image handled by the existing optional-backend architecture.
+
+These v3 structural guards follow the [Philips DSDIFF1.5 specification, sections3.1–3.2.3](https://www.sonicstudio.com/pdf/dsd/DSDIFF_1.5_Spec.pdf).
+Generated adversarial chunks reproduce and test previous incorrect Passed results.
+This does not add DST decompression or full optional-metadata validation.
+[Current real-file validation and remaining coverage](V1_VALIDATION_MATRIX.md).
 
 Structural inspection reads header bytes and file lengths; it does not inspect the
 musical meaning of every payload bit. Arbitrary uncompressed one-bit patterns may be

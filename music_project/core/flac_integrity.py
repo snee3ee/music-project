@@ -43,9 +43,11 @@ class FlacMD5:
             self.status = "Unsupported"
             self.reason = "STREAMINFO properties inconsistent with probed stream"
             return
-        if bits not in (16, 24):
+        if bits not in (8, 16, 24, 32):
             self.status = "Not validated"
-            self.reason = f"Native {bits}-bit FLAC MD5 path not validated; tested depths are16/24"
+            self.reason = (
+                f"Native {bits}-bit FLAC MD5 path not validated; tested depths are8/16/24/32"
+            )
             return
         if self.expected == "0" * 32:
             self.status = "Unknown"
@@ -74,13 +76,21 @@ class FlacMD5:
         if status == "Pending":
             status = (
                 "Verified"
-                if complete
-                and self.expected == calculated
-                and (not self.expected_samples or self.samples == self.expected_samples)
+                if complete and self.expected == calculated
                 else "Failed"
                 if complete
                 else "Partial"
             )
+        md5_status = status
+        count_status = (
+            ("Verified" if self.samples == self.expected_samples else "Failed")
+            if complete and self.expected_samples
+            else "Partial"
+            if not complete and self.expected_samples
+            else "Unknown"
+        )
+        if count_status == "Failed":
+            status = "Failed"
         reason = (
             "Embedded MD5 matched after complete native PCM decoding"
             if status == "Verified"
@@ -90,6 +100,8 @@ class FlacMD5:
         )
         return {
             "status": status,
+            "md5_status": md5_status,
+            "frame_count_status": count_status,
             "reason": reason,
             "expected_md5": self.expected,
             "calculated_md5": calculated,

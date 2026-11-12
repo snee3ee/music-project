@@ -25,7 +25,10 @@ def db(power):
     return float(10 * np.log10(power)) if power > 0 else None
 
 
-def boundary_features(frequencies, density) -> list[dict]:
+def boundary_features(frequencies, density, *, candidates=None, rule=None) -> list[dict]:
+    candidates = CANDIDATES if candidates is None else candidates
+    rule = BOUNDARY_RULE if rule is None else rule
+    low_start, low_stop, high_start, high_stop = rule["side_bands_hz"]
     f, p = np.asarray(frequencies), np.asarray(density)
     if p.ndim == 1:
         p = p[:, None]
@@ -33,17 +36,21 @@ def boundary_features(frequencies, density) -> list[dict]:
         raise ValueError("Invalid measured PSD")
     df = float(f[1] - f[0])
     rows = []
-    for candidate in CANDIDATES:
-        low = (f >= candidate - 2000) & (f <= candidate - 500)
-        high = (f >= candidate + 500) & (f <= candidate + 2000)
-        applicable = f[-1] >= candidate + 2000 and low.sum() >= 5 and high.sum() >= 5
+    for candidate in candidates:
+        low = (f >= candidate + low_start) & (f <= candidate + low_stop)
+        high = (f >= candidate + high_start) & (f <= candidate + high_stop)
+        applicable = (
+            f[-1] >= candidate + high_stop
+            and low.sum() >= rule["minimum_bins_per_side"]
+            and high.sum() >= rule["minimum_bins_per_side"]
+        )
         row = {
             "id": f"boundary-{candidate}",
             "candidate_hz": candidate,
             "status": "Measured" if applicable else "Unsupported",
             "channels": [],
             "frequency_step_hz": df,
-            "rule": BOUNDARY_RULE,
+            "rule": rule,
         }
         if applicable:
             ref = (f >= 1000) & (f <= 8000)
@@ -66,13 +73,13 @@ def boundary_features(frequencies, density) -> list[dict]:
                 q10, q90 = np.percentile(y[low], [10, 90])
                 spread = 10 * (np.log10(q90) - np.log10(q10)) if q10 > 0 else np.inf
                 eligible = (
-                    below > BOUNDARY_RULE["below_density_min_fs2_per_hz"]
+                    below > rule["below_density_min_fs2_per_hz"]
                     and relative is not None
-                    and relative >= -60
-                    and spread <= 35
+                    and relative >= rule["below_relative_db_min"]
+                    and spread <= rule["tonal_spread_db_max"]
                 )
-                detected = bool(eligible and drop is not None and drop >= 18)
-                local = (f >= candidate - 2000) & (f <= candidate + 2000)
+                detected = bool(eligible and drop is not None and drop >= rule["drop_db_min"])
+                local = (f >= candidate + low_start) & (f <= candidate + high_stop)
                 slope = width = crossing = adjacent_drop = None
                 if np.all(y[local] > 0):
                     smoothed = median_filter(10 * np.log10(y[local]), size=5, mode="nearest")

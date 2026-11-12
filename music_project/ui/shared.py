@@ -14,6 +14,8 @@ from music_project.core.dsd import DSD_METHOD_VERSION
 from music_project.core.library import Library
 from music_project.core.models import AudioError, Finding
 from music_project.core.origin_models import ORIGIN_VERSION
+from music_project.core.source_models import SOURCE_VERSION
+from music_project.core.sources import analyze_source
 from music_project.ui.presentation import measurement_rows, status_text
 
 PROJECT = Path(__file__).resolve().parents[2]
@@ -37,7 +39,11 @@ def export_json(label: str, value: dict | list, filename: str):
     )
 
 
-def cached_analysis(path: str, size: int, mtime_ns: int, settings: Settings, *, progress=None):
+def cached_analysis(
+    path: str, size: int, mtime_ns: int, settings: Settings, *, progress=None, logical_source=None
+):
+    if logical_source is not None:
+        logical_source.verify()
     stat = Path(path).stat()
     if (stat.st_size, stat.st_mtime_ns) != (size, mtime_ns):
         raise AudioError("Файл изменился; результат не сохранён в кэше")
@@ -46,8 +52,9 @@ def cached_analysis(path: str, size: int, mtime_ns: int, settings: Settings, *, 
         size,
         mtime_ns,
         settings,
-        f"{METHOD_VERSION}/{DSD_METHOD_VERSION}/{ORIGIN_VERSION}/{TECHNICAL_VERSION}/{CONCLUSIONS_VERSION}",
+        f"{METHOD_VERSION}/{DSD_METHOD_VERSION}/{ORIGIN_VERSION}/{TECHNICAL_VERSION}/{CONCLUSIONS_VERSION}/{SOURCE_VERSION}",
         backend_identity(settings),
+        logical_source,
     )
     if progress is None:
         result = _cached_analysis(*arguments)
@@ -70,6 +77,8 @@ def cached_analysis(path: str, size: int, mtime_ns: int, settings: Settings, *, 
     stat = Path(path).stat()
     if (stat.st_size, stat.st_mtime_ns) != (size, mtime_ns):
         raise AudioError("Файл изменился; результат не сохранён в кэше")
+    if logical_source is not None:
+        logical_source.verify()
     return result
 
 
@@ -85,9 +94,14 @@ def _cached_analysis(
     settings: Settings,
     method_identity: str,
     backend_key: str,
+    logical_source=None,
     _progress=None,
 ):
-    result = analyze(path, settings, progress=_progress)
+    result = (
+        analyze_source(logical_source, settings, progress=_progress)
+        if logical_source is not None
+        else analyze(path, settings, progress=_progress)
+    )
     stat = Path(path).stat()
     if (stat.st_size, stat.st_mtime_ns) != (size, mtime_ns):
         raise AudioError("Файл изменился; результат не сохранён в кэше")

@@ -1,0 +1,452 @@
+{
+  "date": "2026-11-11",
+  "app_version": "0.2.5.dev0",
+  "method_version": "2026.11-v8",
+  "dsd_method_version": "dsd-2026.11-v3",
+  "technical_method_version": "technical-pcm-2026.11-v2",
+  "v1_complete": false,
+  "baseline": {
+    "passed": 364,
+    "failed": 0,
+    "skipped": 0,
+    "seconds": 137.34,
+    "real_dsf_enabled": true,
+    "real_sacd_enabled": true
+  },
+  "final_regression": {
+    "passed": 419,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cli_seconds": 136.95,
+    "junit_seconds": 136.91,
+    "timestamp": "2026-11-11T19:32:42.190798+03:00",
+    "real_dsf_enabled": true,
+    "real_sacd_enabled": true,
+    "junit_local_artifact": "data/v1-validation/pytest-final.xml"
+  },
+  "new_controls": {
+    "tests.test_v1_flac": 12,
+    "tests.test_v1_forensics": 21,
+    "tests.test_v1_metering": 5,
+    "tests.test_v1_sources": 8,
+    "tests.test_v1_structure": 9
+  },
+  "static": {
+    "ruff": "Passed",
+    "format": "104 Python files already formatted",
+    "compileall": "Passed",
+    "pip_check": "No broken requirements found",
+    "core_imports_passed": 43,
+    "diff_whitespace": "Passed; LF/CRLF notices only"
+  },
+  "fixed_defects": [
+    "DFF mandatory FVER/order/field bounds",
+    "Spectral candidate ranking before all applicability/decision guards",
+    "Exact grid verdict aliased by entropy stride",
+    "PCM prefix metadata extended beyond decoded measurement scope"
+  ],
+  "validation_expansion": [
+    "Native FLAC8/32-bit embedded MD5 enabled after actual independent known-PCM fixtures;16/24 retained",
+    "Independent48kHz K-weighting/gating/LRA comparison",
+    "Native sample exactness for FLAC/float64 CUE at32/44.1/88.2/96kHz"
+  ],
+  "meter_reference": {
+    "independent": true,
+    "rate_hz": 48000,
+    "cases": [
+      "broadband",
+      "gated/changing levels",
+      "anti-phase stereo",
+      "5.1 with LFE"
+    ],
+    "integrated_tolerance_lu": 0.15,
+    "lra_tolerance_lu": 0.25,
+    "sample_peak_rms_crest_tolerance_db": 1e-10,
+    "status": "Executed tests passed",
+    "scope": "Complete windows; selected controls, not full standards certification"
+  },
+  "real_dsf": {
+    "file": "02. The Pink Panther DSD 256fs - 2ch.dsf",
+    "analyses": [
+      {
+        "native_rate_hz": 11289600,
+        "channels": 2,
+        "output_rate_hz": 176400,
+        "integrity_status": "Passed",
+        "elapsed_seconds": 10.055589199997485,
+        "duration": {
+          "seconds": 234.02666666666667,
+          "source": "DSF sample count / native rate",
+          "status": "Verified",
+          "ffprobe_seconds": 235.881361,
+          "container_seconds": 234.02666666666667,
+          "decoded_seconds": 234.02666666666667,
+          "full_decode_reached_eof": true,
+          "decode_status": "Passed",
+          "rounding_tolerance_seconds": 1.1337868480725624e-05,
+          "padding_tolerance_seconds": 0.0014512471655328798,
+          "ffprobe_minus_container_seconds": 1.8546943333333274,
+          "decoded_minus_container_seconds": 0.0,
+          "consistency": "Passed",
+          "policy_version": "dsd-duration-2026.11-v1"
+        },
+        "warnings": [
+          "[in#0/dsf @ 0000020e94aa0880] [warning] Estimating duration from bitrate, this may be inaccurate"
+        ],
+        "historical_source": "Unknown"
+      },
+      {
+        "native_rate_hz": 11289600,
+        "channels": 2,
+        "output_rate_hz": 352800,
+        "integrity_status": "Passed",
+        "elapsed_seconds": 12.64900590000616,
+        "duration": {
+          "seconds": 234.02666666666667,
+          "source": "DSF sample count / native rate",
+          "status": "Verified",
+          "ffprobe_seconds": 235.881361,
+          "container_seconds": 234.02666666666667,
+          "decoded_seconds": 234.02666666666667,
+          "full_decode_reached_eof": true,
+          "decode_status": "Passed",
+          "rounding_tolerance_seconds": 5.668934240362812e-06,
+          "padding_tolerance_seconds": 0.0014512471655328798,
+          "ffprobe_minus_container_seconds": 1.8546943333333274,
+          "decoded_minus_container_seconds": 0.0,
+          "consistency": "Passed",
+          "policy_version": "dsd-duration-2026.11-v1"
+        },
+        "warnings": [
+          "[in#0/dsf @ 000001fced1b26c0] [warning] Estimating duration from bitrate, this may be inaccurate"
+        ],
+        "historical_source": "Unknown"
+      }
+    ],
+    "source_preservation": {
+      "signature": [
+        665751644,
+        1793898560504433500
+      ],
+      "sha256": "2495ee118c597cb2cb977e83d24c2217ade07dce8aae4f6e67080326f2ab84f3",
+      "sha256_after": "2495ee118c597cb2cb977e83d24c2217ade07dce8aae4f6e67080326f2ab84f3",
+      "signature_after": [
+        665751644,
+        1793898560504433500
+      ],
+      "sha256_unchanged": true,
+      "stat_unchanged": true
+    }
+  },
+  "real_cue": {
+    "tracks": [
+      {
+        "number": 1,
+        "title": "Black Cow",
+        "status": "Ready",
+        "duration_seconds": 307.9866666666667
+      },
+      {
+        "number": 2,
+        "title": "Aja",
+        "status": "Ready",
+        "duration_seconds": 475.0133333333333
+      },
+      {
+        "number": 3,
+        "title": "Deacon Blues",
+        "status": "Ready",
+        "duration_seconds": 453.42666666666673
+      },
+      {
+        "number": 4,
+        "title": "Peg",
+        "status": "Ready",
+        "duration_seconds": 236.79999999999995
+      },
+      {
+        "number": 5,
+        "title": "Home At Last",
+        "status": "Ready",
+        "duration_seconds": 331.66666666666674
+      },
+      {
+        "number": 6,
+        "title": "I Got The News",
+        "status": "Ready",
+        "duration_seconds": 303.0533333333333
+      },
+      {
+        "number": 7,
+        "title": "Josie",
+        "status": "Ready",
+        "duration_seconds": 271.7866666666664
+      }
+    ],
+    "dff_metadata": {
+      "status": "Passed",
+      "format_version": "1.5.0.0",
+      "channel_ids": [
+        "SLFT",
+        "SRGT"
+      ],
+      "compression": "DSD",
+      "compression_name": "not compressed",
+      "rate_hz": 2822400,
+      "channels": 2,
+      "duration_seconds": 2379.733333333333
+    }
+  },
+  "real_sacd": {
+    "backend_version": "0.3.9.3-107-g01c90ddafb0256f3eb194d2c62e7ee5ba14b1c12",
+    "areas": [
+      {
+        "kind": "stereo",
+        "encoding": "DSD",
+        "channels": 2,
+        "native_rate_hz": 2822400,
+        "track_count": 7
+      }
+    ]
+  },
+  "selected_track_analyses": [
+    {
+      "kind": "cue",
+      "track": 4,
+      "title": "Peg",
+      "duration_seconds": 236.8,
+      "decode_status": "Passed",
+      "seconds": 12.078096299999743,
+      "conclusion_count": 12
+    },
+    {
+      "kind": "sacd",
+      "track": 4,
+      "title": "Peg",
+      "duration_seconds": 236.8,
+      "decode_status": "Passed",
+      "seconds": 9.558544300001813,
+      "conclusion_count": 12
+    }
+  ],
+  "source_preservation": [
+    {
+      "file": "Aja.iso",
+      "size": 1715818496,
+      "sha256": "6012d1155907d1bfd39b26803c865b26bb4e5078f0dbf4a99ea67aff452ecbc1",
+      "sha256_after": "6012d1155907d1bfd39b26803c865b26bb4e5078f0dbf4a99ea67aff452ecbc1",
+      "sha256_unchanged": true,
+      "stat_unchanged": true
+    },
+    {
+      "file": "Steely Dan - Aja.cue",
+      "size": 584,
+      "sha256": "f72a2c10785ea42b28cb00f6088ad4b6088518e63b9a141290a992b2b4a55987",
+      "sha256_after": "f72a2c10785ea42b28cb00f6088ad4b6088518e63b9a141290a992b2b4a55987",
+      "sha256_unchanged": true,
+      "stat_unchanged": true
+    },
+    {
+      "file": "Steely Dan - Aja.dff",
+      "size": 1679139970,
+      "sha256": "2ab6d866aabbd7705f1db667b7cd0c2fa96d8ea097e5ff400f9172c0170cce6d",
+      "sha256_after": "2ab6d866aabbd7705f1db667b7cd0c2fa96d8ea097e5ff400f9172c0170cce6d",
+      "sha256_unchanged": true,
+      "stat_unchanged": true
+    }
+  ],
+  "generated_pcm_controls": [
+    {
+      "fixture": "anchor",
+      "source_unchanged": true,
+      "integrated_lufs": -23.0,
+      "true_peak_dbtp": -22.99330375970996,
+      "lra_lu": 0.0,
+      "decode_status": "Passed",
+      "flac_md5_status": "Verified"
+    },
+    {
+      "fixture": "intersample",
+      "source_unchanged": true,
+      "integrated_lufs": 4.166,
+      "true_peak_dbtp": 0.8725450485745517,
+      "lra_lu": 0.01,
+      "decode_status": "Passed",
+      "flac_md5_status": "Not applicable"
+    },
+    {
+      "fixture": "levels",
+      "source_unchanged": true,
+      "integrated_lufs": -22.596,
+      "true_peak_dbtp": -19.993302123564984,
+      "lra_lu": 10.0,
+      "decode_status": "Passed",
+      "flac_md5_status": "Not applicable"
+    },
+    {
+      "fixture": "plateau",
+      "source_unchanged": true,
+      "integrated_lufs": -8.581,
+      "true_peak_dbtp": 1.6436418704402498,
+      "lra_lu": 0.06,
+      "decode_status": "Passed",
+      "flac_md5_status": "Not applicable"
+    }
+  ],
+  "streaming_observations": [
+    {
+      "duration": 20.0,
+      "input_mib": 5.493206024169922,
+      "legacy_loudnorm_seconds": 0.5478800999990199,
+      "legacy_python_allocator_peak_mib": 1.0361404418945312,
+      "new_stream_seconds_with_tracemalloc": 0.5213432000018656,
+      "python_allocator_peak_mib": 12.629817008972168,
+      "retained_peak_rows": 200,
+      "retained_loudness_rows": 200,
+      "warning": "Both paths use tracemalloc; legacy is a component, not the whole previous application. No speedup claim. Allocator peak excludes FFmpeg/RSS."
+    },
+    {
+      "duration": 240.0,
+      "input_mib": 65.91801071166992,
+      "legacy_loudnorm_seconds": 6.4471512000018265,
+      "legacy_python_allocator_peak_mib": 1.0401611328125,
+      "new_stream_seconds_with_tracemalloc": 5.6882214000070235,
+      "python_allocator_peak_mib": 13.948371887207031,
+      "retained_peak_rows": 1376,
+      "retained_loudness_rows": 1376,
+      "warning": "Both paths use tracemalloc; legacy is a component, not the whole previous application. No speedup claim. Allocator peak excludes FFmpeg/RSS."
+    }
+  ],
+  "analyze_file_integration": [
+    {
+      "kind": "flac",
+      "actual_analysis": true,
+      "integrity": "Passed",
+      "duration": 20.0,
+      "overview_metrics": [
+        [
+          "Integrated · LUFS",
+          "-23.00"
+        ],
+        [
+          "True Peak · dBTP",
+          "-22.99"
+        ],
+        [
+          "LRA · LU",
+          "0.00"
+        ]
+      ],
+      "app_exceptions": 0,
+      "navigation_with_subprocess_forbidden": "Passed",
+      "saved_result_unchanged": true
+    },
+    {
+      "kind": "dsf",
+      "actual_analysis": true,
+      "integrity": "Passed",
+      "duration": 234.02666666666667,
+      "overview_metrics": [],
+      "app_exceptions": 0,
+      "navigation_with_subprocess_forbidden": "Passed",
+      "saved_result_unchanged": true
+    }
+  ],
+  "startup": {
+    "health_http": 200,
+    "health_body": "ok",
+    "root_http": 200
+  },
+  "unchanged_preexisting_ui_and_configuration_sources": [
+    {
+      "path": "music_project\\ui\\analyzer.py",
+      "sha256": "a069b6d56384d6473e6afa9d20188babfc2bbb3a75d5028a42ec265ccbfe5dba",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\ui\\album_sources.py",
+      "sha256": "9182bad57032f29d458461f11de678bb09a43310fc7ed04a84d953dea4a23237",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\ui\\shared.py",
+      "sha256": "95e179cd868d89e96dba564524fc79e504a63cbe67a617c4baf074fc423c5484",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\ui\\library.py",
+      "sha256": "ab44e44e225aa8a09a11913115970a85248fe869f20062bfca5606830212315d",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\ui\\duplicates.py",
+      "sha256": "469a52aaba89c9b4a0b2b0caa89524637cce142f7398e4cdf114bb116f55b47b",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\ui\\compare.py",
+      "sha256": "275d5992a00b11cb5406a2f655a9107bf5c417a5a0f89471c285a3dd6ad347b1",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\ui\\archive.py",
+      "sha256": "cb3cdd178dc4929a83d0223cbcc35fafcfb142ce0fdcf7d1e3b8c821fa35a8bf",
+      "unchanged": true
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "28a4adfa13f177070df3181c6f0e77374a6682dfe8e20bdbfbb874bcf6d79535",
+      "unchanged": true
+    }
+  ],
+  "execution_notes": [
+    "Initial targeted real-DSF test skipped when environment variable absent; final full regression enables both real fixtures and skips none",
+    "An auxiliary PowerShell stderr redirect returned shell error for bare-mode Streamlit warnings; both actual AppTest cases completed and JSON read-back assertions passed",
+    "No new app visual inspection or human usability study is claimed in this engineering session"
+  ],
+  "unsupported_or_unverified": [
+    "Historical source codec/rate/bit-depth authentication; current spectral compatibility experimental",
+    "Full ITU/EBU conformity, terminal LRA convention, independent all-rate/layout references",
+    "Real DST or multichannel SACD signal validation; native DFF DST reader unsupported",
+    "Encrypted/raw-sector/backup-only/damaged SACD variants",
+    "Other native FLAC depths and unsupported wrappers",
+    "Held-out diverse recording/filter/professional modulator corpus",
+    "Large-library/RSS/concurrency/crash/distribution/mobile/accessibility validation",
+    "Standalone fpcalc unavailable; no acoustic grouping"
+  ],
+  "file_safety": {
+    "original_audio_written": false,
+    "audio_uploaded": false,
+    "original_recordings_copied_to_repository": false,
+    "new_executable_installed": false,
+    "git_history_changed": false,
+    "remote_push": false
+  },
+  "final_source_preservation": [
+    {
+      "file": "02. The Pink Panther DSD 256fs - 2ch.dsf",
+      "sha256": "2495ee118c597cb2cb977e83d24c2217ade07dce8aae4f6e67080326f2ab84f3",
+      "sha256_matches_before_all_checks": true,
+      "stat_matches_before_all_checks": true
+    },
+    {
+      "file": "Aja.iso",
+      "sha256": "6012d1155907d1bfd39b26803c865b26bb4e5078f0dbf4a99ea67aff452ecbc1",
+      "sha256_matches_before_all_checks": true,
+      "stat_matches_before_all_checks": true
+    },
+    {
+      "file": "Steely Dan - Aja.cue",
+      "sha256": "f72a2c10785ea42b28cb00f6088ad4b6088518e63b9a141290a992b2b4a55987",
+      "sha256_matches_before_all_checks": true,
+      "stat_matches_before_all_checks": true
+    },
+    {
+      "file": "Steely Dan - Aja.dff",
+      "sha256": "2ab6d866aabbd7705f1db667b7cd0c2fa96d8ea097e5ff400f9172c0170cce6d",
+      "sha256_matches_before_all_checks": true,
+      "stat_matches_before_all_checks": true
+    }
+  ]
+}

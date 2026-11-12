@@ -31,9 +31,14 @@ def test_analyze_and_advanced_sections(app, tone):
     app.form_submit_button[0].click().run()
     assert not app.exception and not app.error
     assert app.session_state.analysis_result[0] == "audio"
-    assert len(app.expander) == 1 and app.expander[0].label == "Параметры анализа"
+    assert [e.label for e in app.expander] == [
+        "Параметры анализа",
+        "Сведения об источнике",
+    ]
+    assert not app.dataframe
     assert not app.json and not app.code
     app.segmented_control(key="analysis_module").set_value("provenance").run()
+    app.toggle(key="origin_evidence_visible").set_value(True).run()
     assert any("Bit-depth / Padding" in e.value for e in app.markdown)
     app.segmented_control(key="analysis_module").set_value("measurements").run()
     app.toggle(key="spectrum_visible").set_value(True).run()
@@ -85,7 +90,7 @@ def test_choose_then_analyze_without_pasting_path(app, tone, monkeypatch):
     assert "Not applicable / Unknown" not in visible
     app.segmented_control(key="analysis_module").set_value("measurements").run()
     visible = " ".join(e.value for group in (app.text, app.caption, app.markdown) for e in group)
-    assert "Full-scale samples" in visible
+    assert "Отсчётов на цифровом пределе" in visible
 
 
 def test_cancel_keeps_selected_file(app, tone, monkeypatch):
@@ -123,8 +128,8 @@ def test_dsd_diagnostics_and_full_mode(app, tmp_path):
     app.segmented_control(key="analysis_module").set_value("dsd").run()
     assert len(app.expander) == 1
     visible = " ".join(e.value for group in (app.text, app.caption, app.markdown) for e in group)
-    assert "DST processing: Not applicable" in visible
-    assert "Derived from DSD-to-PCM conversion" in visible
+    assert "DST: Не применяется" in visible
+    assert "Измеренный выход DSD-to-PCM" in visible
     app.segmented_control(key="analysis_module").set_value("measurements").run()
     app.toggle(key="dsd_psd").set_value(True).run()
     assert not app.exception and not app.error
@@ -141,7 +146,7 @@ def test_optional_dsd_decoder_failure_keeps_metadata(app, tmp_path):
     app.text_input(key="analyzer_path").set_value(str(path))
     app.form_submit_button[0].click().run()
     assert not app.exception
-    assert app.metric[0].value == "DSD"
+    assert any("MHz DSD" in c.value and "Кодек:" in c.value for c in app.caption)
     result = app.session_state.analysis_result[1][0]
     assert result.findings["dsd_conversion"].status == "Unsupported"
 
@@ -211,7 +216,7 @@ def test_dsd_modules_and_appendix_preserve_exact_data_without_redecode(app, tmp_
     for module in ("integrity", "measurements", "provenance", "dsd", "appendix"):
         app.segmented_control(key="analysis_module").set_value(module).run()
         assert not app.exception and not app.error
-        assert len(app.expander) == 1  # Configuration only; no nested result expanders.
+        assert len(app.expander) <= 2  # Configuration and at most one optional result section.
     for section in ("results", "logs", "methods", "metadata", "spectrum", "raw"):
         app.selectbox(key="analysis_appendix").set_value(section).run()
         assert not app.exception and not app.error
@@ -225,7 +230,7 @@ def test_flac_new_modules(app, tone, tmp_path, encode):
     app.switch_page("music_project/ui/analyzer.py").run()
     app.text_input(key="analyzer_path").set_value(str(path))
     app.form_submit_button[0].click().run()
-    assert app.metric[0].value == "FLAC"
+    assert any("Кодек: FLAC" in c.value for c in app.caption)
     for module in ("integrity", "measurements", "provenance", "appendix"):
         app.segmented_control(key="analysis_module").set_value(module).run()
         assert not app.exception and not app.error
@@ -260,9 +265,11 @@ def test_dsf_selected_duration_and_secondary_estimate_in_appendix(app, tmp_path,
     assert not app.exception and not app.error
     result = app.session_state.analysis_result[1][0]
     assert result.info.duration == 0.15 and result.info.duration_status == status
-    selected = [m for m in app.metric if m.label.startswith("Длительность аудио")]
-    assert len(selected) == 1 and selected[0].value == "0:00.15"
-    assert ("проверено" in selected[0].label) == (mode == "full")
+    selected = [c.value for c in app.caption if "Длительность:" in c.value]
+    assert len(selected) == 1 and "Длительность: 0:00.15" in selected[0]
+    assert str(round(result.info.ffprobe_duration, 2)) not in selected[0]
+    # Status and alternate estimates stay in evidence, independent of compact layout.
+    assert result.info.duration_status == ("Verified" if mode == "full" else "Derived")
     assert not app.json
     app.segmented_control(key="analysis_module").set_value("integrity").run()
     assert not app.json
@@ -291,5 +298,5 @@ def test_invalid_dsf_duration_is_not_replaced_by_estimate(app, tmp_path):
     assert not app.exception and app.error
     result = app.session_state.analysis_result[1][0]
     assert result.info.duration is None and result.info.ffprobe_duration is not None
-    selected = [m for m in app.metric if m.label.startswith("Длительность аудио")]
-    assert len(selected) == 1 and selected[0].value == "Не установлена"
+    selected = [c.value for c in app.caption if "Длительность:" in c.value]
+    assert len(selected) == 1 and "Длительность: Не установлена" in selected[0]

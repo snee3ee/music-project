@@ -1,5 +1,115 @@
 # Music Project — implementation ledger
 
+## Lossy source investigation — 0.2.5.dev0 (2026-11-12)
+
+Added a typed bounded native PCM investigation inside the existing technical decode:
+adaptive audible-band candidates, energy/floor proxies, per-channel/time evidence,
+explicit exclusions and abstention. Existing Origin boundary utilities and streaming
+Welch are reused. Normal/Expert remain the same UI/navigation; all original evidence,
+DSD/Hi-Res/integrity/loudness algorithms remain. General methodv9 invalidates stale
+results, application version stays0.2.5.dev0.
+
+Executed106synthetic A/B/C/D cases with actual MP3/AAC encoders/configurations:
+49/64known-lossy and4/42non-lossy cases trigger spectral observations. No historical
+codec classifier/confidence is deployed; flux/pre-post descriptors overlap controls.
+Authorized140.293333s16/44.1FLAC measured read-only:32windows/64s, near-Nyquist
+21425.537Hz candidate recurrent32/32per channel; Inconclusive, codec Unknown.
+MD5Verified and source SHA-256 preserved. Other metering values match supplied numbers
+after rounding. Real DSF regression retained; the earlier Aja ISO is unavailable now.
+
+[Persistent plan](docs/LOSSY_IMPLEMENTATION_PLAN.md), [methods](docs/LOSSY_METHODOLOGY.md),
+[executed matrix, limitations and commands](docs/LOSSY_VALIDATION.md).
+No release1.0 declaration, private-audio copy/upload, dependency installation or push.
+
+## Engineering validation — 0.2.5.dev0 (2026-11-11)
+
+Preserved the results-first UI. Corrected demonstrated DFF mandatory-chunk/version/
+field-bound validation, spectral selection before applicability, entropy-stride aliasing
+of exact24-bit grid checks, and PCM prefix metering extending beyond the selected scope.
+FLAC MD5 expanded to independently decoded known8/16/24/32-bit mono/stereo controls.
+General method2026.11-v8 / DSDv3 / technical-PCMv2 invalidate stale results; application
+version, Origin rules, conversion filters, TP algorithm and duration policy are retained.
+
+Fresh baseline364passes; final **419 passed,0failed,0skipped;136.95s**, authorized real
+DSF/SACD enabled. Independent48kHz K-weighting/gates/LRA controls pass0.15/0.25LU
+tolerances. Actual Pink Panther full176.4/352.8kHz outputs agree at234.026666667s;
+Aja CUE/DFF and ISO each enumerate7tracks and fully decode Peg236.8s. Original audio
+SHA-256 and size/mtime signatures match. Startup HTTP200 and real FLAC/DSF Analyze File
+integration completed. Ruff/format104files/compileall/pip check/43core imports passed.
+
+This is selected measurement/engineering validation, not v1.0, general provenance
+identification or metering certification. Real DST/multichannel/corpus, broader reference
+and distribution validation remain. [Persistent progress](docs/V1_ENGINEERING_PROGRESS.md),
+[matrix/commands](docs/V1_VALIDATION_MATRIX.md), [snapshot](docs/V1_VALIDATION.json).
+
+## Logical CUE/SACD tracks and result clarity — 0.2.5.dev0 (2026-11-10)
+
+Analyze File now presents compact source identity before conclusions, with separate
+container/codec and native rate/depth/channel/duration fields. Detailed measurements,
+rules and methods remain accessible. Added typed fingerprinted logical sources,
+bounded CUE parsing/resolution and exact selected-track native PCM/DSD preparation.
+Track-relative scopes include explicit source-time mappings; complete-track checks
+never stand for complete albums or images. Other application pages are not redesigned.
+
+SACD uses bounded master/primary-area checks plus optional sacd_extract capabilities,
+actual TOC enumeration and controlled one-track native DSF extraction/cleanup. Owner
+authorized the official portable 0.3.9.3-107 backend in ignored data/backends/; no PATH
+or system installation change. No automatic backend downloader is in the application.
+
+Explicitly authorized Aja CUE/DFF and ISO were actually read: seven tracks in each;
+stereo DSD64, native DFF and uncompressed DSD ISO area. Peg was fully decoded through
+both sources; current-version tool also fully decoded CUE Josie 271.786667 s and ISO
+Black Cow 307.986667 s. All original SHA-256 and size/mtime checks matched. Their distinct
+timelines are retained; no ISO/DFF audio or mastering identity comparison was made.
+
+Final full matrix: **359 passed, 0 failed, 0 skipped; 124.94 s**, real DSF and ISO enabled.
+Ruff/format (94 files)/compileall passed. Actual local Edge rendered ordinary FLAC and
+real CUE/ISO selection/results with 0 app exceptions. Mocked DST/multichannel tests
+are explicitly separate from real uncompressed stereo end-to-end validation.
+
+App 0.2.5.dev0 / general method v7 / logical-source v1; analytical DSP/method families
+remain unchanged. Methods/results: docs/CUE_SACD_METHODS.md, CUE_SACD_VALIDATION.md/.json.
+Real DST, multichannel signal analysis, raw/encrypted/damaged image variants, other
+backend protocols/encodings and commercial redistribution/release validation remain.
+No Collection DNA 2/major Compare 3 work, audio upload/commit, push or v1.0 declaration.
+
+Post-scope-guard UI matrix: 29 passed, 0 failed, 31.94 s; logical-track external
+reference comparison explicitly unsupported rather than analyzing the whole album.
+
+## Evidence-Based Conclusions Engine — 0.2.4.dev0 (2026-11-10)
+
+Implemented reusable deterministic typed statements with measurement references,
+component scopes, versioned rules, applicability and limits. Analyze File now uses
+one bounded full/prefix technical PCM decode for Integrated/LRA/M/S, reconstructed
+peaks, native sample/RMS/crest/rail/plateau facts and native-FLAC 16/24-bit MD5/count
+checks. Existing spectrum prefix, Origin and distinct native DSD pipeline remain.
+Custom reference gain/ceiling math never modifies audio or silently selects a target.
+Everyday Russian Technical Findings and Expert evidence/curves share saved facts.
+Cache progress is emitted outside cached functions; view/reference reruns do not decode.
+
+Application 0.2.4.dev0 / general method v6; conclusions v1 / technical-pcm v1.
+Origin v1, DSD v2 and duration v1 retained. Permanent objective-analysis standard now
+requires supported interpretation without exceeding evidence. Methods and executed
+matrix: docs/CONCLUSIONS_METHODOLOGY.md, CONCLUSIONS_VALIDATION.md/.json.
+
+Executed full regression: 319 passed, 0 failed, 1 real SACD skip in 116.04 s; real DSF
+enabled. After the final chart-axis display correction, all 3 relevant UI tests passed
+in 6.80 s. Ruff/format/compileall passed; actual local Edge rendering had 0 app exceptions.
+Generated controls establish whole-stream −23 LUFS, matched FLAC MD5 and above-zero TP
+with zero rail hits. Supplied Pink Panther source SHA-256 stayed unchanged and duration
+remains 234.026666667 s Verified. Sad Girl is unavailable and was not remeasured.
+
+Selected synthetic standards controls passed; complete ITU/EBU conformance, terminal
+LRA convention, other TP rates/layouts, 8/32-bit FLAC MD5, real DFF/DST/SACD corpus and
+authenticated provenance remain open. Real-library profiling, asynchronous UI cancel,
+human/accessibility/Windows release validation and commercial distribution work remain.
+Single-session 240 s synthetic PCM observation: 5.617 s technical pass, 13.946 MiB Python
+allocator peak excluding FFmpeg/RSS; not a general performance improvement claim.
+
+Roadmap 0.3/0.4 reservations and older ledger history are preserved. Collection DNA 2 and
+major Audio Comparison 3 are not started. This is not v1.0; stable release still requires
+explicit owner approval. No original audio changes, audio commits/uploads or remote push.
+
 ## Audio Origin Investigator — compatible extension 0.2.3 (2026-11-05)
 
 Implemented end-to-end signal investigation in Analyze File: empirical backend response,
@@ -213,3 +323,19 @@ sacd_extract and standalone fpcalc are missing. Real music, native DSD/DST recor
 real SACD fixtures are unavailable; none downloaded. Their absence does not prevent the
 implemented PCM/index/duplicate/compare/archive workflows. This is a runnable foundation,
 not completion of every phase or commercial Music Project v1.
+
+## UI correction verification — 2026-11-11
+
+The ledger above records the original foundation milestone and its historical limits.
+This presentation correction retains application 0.2.5.dev0 and analytical method
+2026.11-v7. Overview is compact; Integrity, Levels and Origin each own their findings;
+raw rules, JSON and logs are available in Technical Appendix. Modes share saved results.
+No analytical core, decoder, CUE/ISO processing or unrelated page source changed during
+this correction (53 matching protected-file hashes).
+
+Executed: 364 full-suite tests passed with authorized real DSF/SACD fixtures; 2 targeted
+DSD UI tests passed after the final layout adjustment; Ruff, formatting and compileall
+passed. Actual Edge desktop inspection covered ordinary/high-rate FLAC, short silence
+with unavailable loudness measurements, and the authorized DSF. Mobile, accessibility
+and a human usability study remain unvalidated by this correction.
+See [scope and validation](docs/UI_RESULTS_FIRST_VALIDATION.md).

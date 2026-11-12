@@ -89,6 +89,8 @@ Default language: Russian.
 
 Show essential information first.
 
+SHOW CONCLUSIONS FIRST. EVIDENCE SECOND. METHODOLOGY ON REQUEST.
+
 Hide advanced technical metrics in expandable sections.
 
 All analytical findings must have accessible evidence and methodology.

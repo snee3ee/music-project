@@ -28,19 +28,24 @@ def test_reference_and_modes_use_identical_stored_measurements_without_backends(
         pytest.fail("Reference/view changes must not decode or analyze")
 
     monkeypatch.setattr("subprocess.Popen", forbidden)
+    app.segmented_control(key="analysis_module").set_value("measurements").run()
     app.selectbox(key="technical_reference_widget").set_value("custom").run()
     assert not app.exception and not app.error
     profile = app.session_state.technical_reference
     assert profile.loudness_lufs == -14 and profile.peak_ceiling_dbtp == -1
-    visible = " ".join(e.value for e in app.markdown)
+    visible = " ".join(e.value for group in (app.markdown, app.text) for e in group)
     assert "Расчёт линейного gain" in visible
     assert app.session_state.analysis_result[1][0].to_dict() == saved
     app.segmented_control(key="analysis_view").set_value("expert").run()
     app.segmented_control(key="analysis_module").set_value("measurements").run()
     assert not app.exception
+    assert not app.json
+    app.segmented_control(key="analysis_module").set_value("appendix").run()
+    app.selectbox(key="analysis_appendix").set_value("conclusions").run()
     app.toggle(key="conclusion_evidence_visible").set_value(True).run()
     assert app.json
     app.segmented_control(key="analysis_view").set_value("everyday").run()
+    app.segmented_control(key="analysis_module").set_value("overview").run()
     assert not app.exception and not app.json
     assert app.session_state.technical_reference == profile
     assert app.session_state.analysis_result[1][0].to_dict() == saved
@@ -64,6 +69,7 @@ def test_pcm_prefix_full_action_and_integrity_status(app):
 
 def test_no_reference_is_implicit_and_timelines_use_saved_data(app, monkeypatch):
     saved = app.session_state.analysis_result[1][0].to_dict()
+    app.segmented_control(key="analysis_module").set_value("measurements").run()
     assert app.selectbox(key="technical_reference_widget").value == "none"
     assert not any(
         c.category == "reference" for c in app.session_state.analysis_result[1][0].conclusions
@@ -75,5 +81,5 @@ def test_no_reference_is_implicit_and_timelines_use_saved_data(app, monkeypatch)
     monkeypatch.setattr("subprocess.Popen", forbidden)
     app.toggle(key="technical_timeline_visible").set_value(True).run()
     assert not app.exception
-    assert len(app.get("image")) == 2
+    assert len(app.get("image")) == 3  # Two timelines and the retained spectrum.
     assert app.session_state.analysis_result[1][0].to_dict() == saved

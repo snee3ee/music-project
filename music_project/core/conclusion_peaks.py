@@ -12,6 +12,19 @@ def peak_rules(info, scope, findings, ref, add) -> None:
     integrated = lm.get("integrated_lufs")
     tp = lm.get("true_peak_dbtp")
     sp = pm.get("sample_peak_dbfs")
+    if lm.get("true_peak_method", {}).get("status") == "Not validated":
+        add(
+            "peaks.true-peak-unavailable",
+            "peaks",
+            "True Peak не валидирован",
+            "Метод True Peak для этой частоты дискретизации не валидирован; запас и превышения dBTP не определяются.",
+            "Not validated",
+            ["loudness.true_peak_method"],
+            {"sample_rate_hz": info.sample_rate},
+            {"sample_rate_hz": "Hz"},
+            ls,
+            "peaks.unsupported-sample-rate",
+        )
     if number(tp) and isinstance(ls, dict) and ls.get("frames"):
         margin = -tp
         phrase = (
@@ -172,7 +185,11 @@ def peak_rules(info, scope, findings, ref, add) -> None:
                 "dynamics." + field,
                 "dynamics",
                 title,
-                f"{title}: {value:.3f} {unit} ({peak_area}).",
+                (
+                    f"RMS — среднеквадратичный уровень: {value:.3f} {unit} ({peak_area})."
+                    if field == "rms_dbfs"
+                    else f"Crest Factor: пик отсчётов выше RMS на {value:.3f} dB в той же области ({peak_area})."
+                ),
                 "Measured fact" if field == "rms_dbfs" else "Mathematical derivation",
                 ["full_peaks." + field],
                 {field: value},

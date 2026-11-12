@@ -4,7 +4,7 @@ from dataclasses import asdict, dataclass, field
 from typing import Any
 
 CONCLUSIONS_VERSION = "conclusions-2026.11-v1"
-TECHNICAL_VERSION = "technical-pcm-2026.11-v1"
+TECHNICAL_VERSION = "technical-pcm-2026.11-v2"
 
 
 @dataclass(frozen=True)

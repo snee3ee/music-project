@@ -20,7 +20,7 @@ def pcm_spectrogram_data(context: PCMContext, method_version: str = METHOD_VERSI
     return spectrogram(context)
 
 
-def show_band_chart(bands: list[dict], label: str):
+def show_band_chart(bands: list[dict], label: str, *, expert=False):
     available = [b for b in bands if b["status"] == "Measured"]
     if not available:
         st.caption("Нет доступных измерений в этих полосах.")
@@ -45,7 +45,7 @@ def show_band_chart(bands: list[dict], label: str):
         ax.set_xticks(positions, [r["Полоса, kHz"] for r in band_rows(available)])
         ax.set(xlabel="Полоса, kHz", ylabel="Мощность, dB re FS²")
         ax.legend()
-        st.pyplot(fig, alt=label)
+        st.pyplot(fig, width=540, alt=label)
     else:
         st.caption("Мощность во всех доступных полосах равна нулю (−∞ dB re FS²).")
     plt.close(fig)
@@ -53,7 +53,8 @@ def show_band_chart(bands: list[dict], label: str):
     rows = band_rows(available)
     for row in rows:
         row.pop("Статус", None)
-    st.dataframe(rows, hide_index=True, alt="Мощность полос и различия каналов")
+    if expert:
+        st.dataframe(rows, hide_index=True, alt="Мощность полос и различия каналов")
     unavailable = [b for b in bands if b["status"] != "Measured"]
     if unavailable:
         st.caption(
@@ -68,7 +69,14 @@ def show_density(frequencies, density, *, labels: list[str], max_hz: float | Non
     if p.ndim == 1:
         p = p[:, None]
     selected = f <= max_hz if max_hz is not None else np.ones(len(f), dtype=bool)
-    fig, ax = plt.subplots(figsize=(9, 3.3), layout="constrained")
+    if not np.any(np.isfinite(p[selected]) & (p[selected] > 0)):
+        st.caption(
+            "PSD равна нулю (−∞); конечных значений для графика нет."
+            if np.all(p[selected] == 0)
+            else "Нет пригодных значений PSD для графика."
+        )
+        return
+    fig, ax = plt.subplots(figsize=(7.2, 2.6), layout="constrained")
     for channel in range(p.shape[1]):
         db = np.full(len(p), np.nan)
         positive = p[:, channel] > 0
@@ -76,18 +84,12 @@ def show_density(frequencies, density, *, labels: list[str], max_hz: float | Non
         ax.plot(f[selected] / 1000, db[selected], label=labels[channel], linewidth=1)
     ax.set(xlabel="Частота, kHz", ylabel="PSD, dB re FS²/Hz")
     ax.legend()
-    st.pyplot(fig, alt="Измеренная PSD с указанными частотами и каналами")
+    st.pyplot(fig, width=720, alt="Измеренная PSD с указанными частотами и каналами")
     plt.close(fig)
-    st.caption(
-        "Линии соединяют FFT bins; сглаживание не применяется. Нулевая PSD (−∞) не рисуется."
-    )
 
 
-def show_dsd_bands(result):
-    st.caption(
-        "Derived from DSD-to-PCM conversion. Измеряется полученный PCM; "
-        "характеристика преобразования native DSD: Not validated."
-    )
+def show_dsd_bands(result, *, expert=False):
+    st.caption("Измерен PCM после DSD-to-PCM; native DSD показан отдельно в Origin Investigator.")
     columns = st.columns(2)
     for column, (key, label) in zip(
         columns,
@@ -99,8 +101,6 @@ def show_dsd_bands(result):
     ):
         with column:
             st.markdown(f"**{label}**")
-            show_band_chart(result.findings[key].measurements.get("bands", []), label)
-    st.caption(
-        "Ультразвуковая энергия может включать noise shaping; "
-        "она зависит от фильтрации и не определяет полезную музыкальную информацию."
-    )
+            show_band_chart(
+                result.findings[key].measurements.get("bands", []), label, expert=expert
+            )

@@ -26,6 +26,7 @@ def run(
     consume: Callable[[bytes], None] | None = None,
     cancelled: Callable[[], bool] | None = None,
     consume_stderr: Callable[[bytes], None] | None = None,
+    cwd=None,
 ) -> CommandResult:
     if timeout <= 0 or max_bytes < 0:
         raise AudioError("Некорректный лимит subprocess")
@@ -35,6 +36,7 @@ def run(
             stdin=subprocess.DEVNULL,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
+            cwd=cwd,
             creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
         )
     except FileNotFoundError as exc:

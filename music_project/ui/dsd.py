@@ -3,8 +3,6 @@
 import streamlit as st
 
 from music_project.core.models import Analysis
-from music_project.ui.analysis_charts import show_dsd_bands
-from music_project.ui.analysis_presentation import integrity_summary
 from music_project.ui.presentation import status_text
 
 
@@ -13,36 +11,25 @@ def show_dsd(result: Analysis):
 
     native = result.findings["dsd"].measurements
     container = result.findings["dsd_container"].measurements
-    integrity = integrity_summary(result)
     conversion = result.findings["dsd_conversion"]
-    st.markdown("**A / Свойства Native DSD**")
+    st.markdown("### Native DSD")
     rate = native.get("native_rate_hz")
     bitrate = native.get("nominal_native_bitrate_bps")
     cards(
         [
             ("Контейнер", container.get("container", "Unknown")),
             ("Семейство DSD", native["dsd_family"]),
-            ("Native rate", f"{rate / 1e6:g} MHz" if rate else "Unknown"),
-            ("Каналы", str(result.info.channels)),
-        ]
-    )
-    if bitrate:
-        st.caption(f"Номинальный bitrate: {bitrate / 1000:.1f} kb/s · Рассчитано.")
-    st.text("DST processing: " + native["dst_processing"])
-    st.markdown("**B / Проверка потока**")
-    cards(
-        [
-            ("Декодирование", status_text(integrity["decode_status"])),
-            ("Интервалы", str(integrity["intervals"])),
-            ("Прочитанный PCM", f"{integrity['decoded_seconds']:.3f} s"),
-            ("Предупреждения", str(integrity["warning_events"])),
         ]
     )
     st.caption(
-        "Интервалы и источники длительности — в модуле «Целостность». "
-        "Исходная диагностика — в техническом приложении."
+        f"Native rate: {rate / 1e6:g} MHz · каналы: {result.info.channels}"
+        if rate
+        else f"Частота не установлена · каналы: {result.info.channels}"
     )
-    st.markdown("**C / DSD-to-PCM**")
+    if bitrate:
+        st.caption(f"Номинальный bitrate: {bitrate / 1000:.1f} kb/s · Рассчитано.")
+    st.text("DST: " + status_text(native["dst_processing"]))
+    st.markdown("### Измеренный выход DSD-to-PCM")
     headers = conversion.measurements.get("output_headers", [])
     verified = [h for h in headers if h]
     cards(
@@ -57,12 +44,8 @@ def show_dsd(result: Analysis):
                 if verified
                 else "Не валидировано",
             ),
-            ("Метод", conversion.method_version),
         ]
     )
-    st.caption(result.backends.get("ffmpeg", "Unknown"))
-    st.markdown("**D–E / Слышимые и ультразвуковые полосы**")
-    show_dsd_bands(result)
-    st.markdown("**F / Свидетельства преобразований**")
-    st.text("Исторический источник: Unknown.")
-    st.caption("Спектр после преобразования не устанавливает исходную цепочку PCM/DSD/analog.")
+    st.caption(
+        "Проверка потока — в «Целостности», полосы — в «Спектре и уровнях», параметры метода — в приложении."
+    )

@@ -21,10 +21,18 @@ class Settings:
     origin_cache_dir: str = "data/origin-calibration"
     near_ceiling_dbfs: float = -1.0
     technical_mode: str = "full"
+    max_track_bytes: int = 4 * 1024**3
 
     def require(self, name: str) -> str:
         candidate = getattr(self, name)
         resolved = shutil.which(candidate)
+        if not resolved and name == "sacd_extract" and candidate == "sacd_extract":
+            portable = (
+                Path(__file__).resolve().parents[2]
+                / "data/backends/sacd_extract-0.3.9.3-107/sacd_extract.exe"
+            )
+            if portable.is_file():
+                resolved = str(portable)
         if not resolved:
             raise AudioError(f"Backend unavailable: {name} ({candidate})")
         return resolved

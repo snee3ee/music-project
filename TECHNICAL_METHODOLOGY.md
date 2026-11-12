@@ -1,9 +1,28 @@
-# Technical methodology — 2026.11-v5
+# Technical methodology — 2026.11-v9
 
-Application 0.2.3. Each Analysis and Finding includes method version. Reports include
+Application 0.2.5.dev0. Each Analysis and Finding includes method version. Reports include
 actual FFmpeg/ffprobe versions, input metadata and analysis scope. None of the methods
 establish studio-master provenance or subjective sound quality. No calibrated probability
 or heuristic confidence percentage is produced.
+
+`lossy-investigation-2026.11-v1` adds a separate PCM lossy-source question, including
+ordinary16/44.1 and48kHz lossless inputs. It consumes the existing technical streaming
+pass: bounded selected regions, adaptive audible-band candidates, band-energy/floor
+proxies and per-channel temporal remeasurement. It is independent of Hi-Res upsampling,
+container digest and loudness. Historical codec/authenticity remain unestablished;
+bandwidth evidence is not a unique coding signature. Legacy fixed-band findings and
+all original DSD/Origin defaults remain available. [Methods](docs/LOSSY_METHODOLOGY.md),
+[actual lossy/lossless controls and supplied-file results](docs/LOSSY_VALIDATION.md).
+
+Evidence-Based Conclusions Engine `conclusions-2026.11-v1` applies deterministic
+versioned rules to scoped measurements, preserving numerical values/units, applicability,
+validation and limits. `technical-pcm-2026.11-v2` replaces Analyze File's separate full
+loudnorm pass with native-rate float64 streaming metrics, FFmpeg ebur128 metadata and
+an explicit reconstructed-peak estimator. Legacy standalone loudnorm remains for
+compatibility and independent comparison. [Methods and primary references](docs/CONCLUSIONS_METHODOLOGY.md).
+
+Permanent policy: **Measurement without interpretation is incomplete when a valid
+interpretation can be derived. Interpretation must never exceed its supporting evidence.**
 
 Origin Investigator `origin-2026.11-v1` adds six boundary compatibility tests,
 per-channel temporal measurements, exploratory ultrasonic regime fits, native one-bit
@@ -12,7 +31,7 @@ PSD and opt-in reference investigation. `dsd-response-2026.11-v1` empirically co
 No provenance probabilities or historical DSD-rate classifier are validated.
 [Numerical methods, controls, primary references and failure mechanisms](docs/ORIGIN_METHODOLOGY.md).
 
-DSD method `dsd-2026.11-v2` is documented separately in
+DSD method `dsd-2026.11-v3` is documented separately in
 [DSD methodology](docs/DSD_METHODOLOGY.md): native container evidence versus validated
 streaming conversion output and PCM-derived Welch PSD. Native DSD PCM bit-depth tests
 remain Not applicable; historical origin remains Unknown/Ambiguous. Generated actual
@@ -98,11 +117,12 @@ describe unexamined later passages. Full-stream loudness/hashes may time out ind
 
 Sample Peak = 20 log10(max |sample|); RMS = sqrt(mean(sample²)) over interleaved channels;
 crest = 20 log10(peak/RMS). Silence has null dB values (−infinity, not zero dB).
-Counts at full scale use threshold 1−2^(1−bits) for known integer PCM, otherwise 1.
-These are sample counts, not clipping-event counts or proof of clipping. Positive and
-negative integer rails differ by one quantization step; the symmetric threshold includes both.
+Counts at full scale use positive threshold 1−2^(1−bits) for known integer PCM,
+otherwise +1; the negative threshold is always −1. v6 corrects the earlier symmetric
+threshold, which also counted the negative sample one step above the negative rail.
+These are observed sample/run counts, not proof of historical clipping.
 
-Whole-stream loudness uses FFmpeg loudnorm's **input** measurements only, not its
+Legacy standalone loudness uses FFmpeg loudnorm's **input** measurements only, not its
 normalized output: input_i LUFS, input_lra LU and input_tp dBTP. Output goes to null,
 source is unchanged. Dynamic loudnorm uses a 192 kHz true-peak pipeline as described in
 [FFmpeg filters documentation](https://ffmpeg.org/ffmpeg-filters.html#loudnorm).
@@ -125,7 +145,11 @@ Reference occupancy helps reject sparse signals; it is not a music/codec classif
 For candidates c=14,15,…21 kHz below Nyquist−1.2 kHz, median PSD in
 [c−1200,c−300] and [c+300,c+1200] Hz defines adjacent-band drop. At least three bins required.
 Strong evidence requires lower band >−35 dB, upper band ≤−40 dB, drop ≥20 dB, occupancy ≥0.5.
-The largest-drop candidate is reported with drop/1.5 kHz as a coarse adjacent-band slope.
+Every candidate is checked against every guard before ranking; the largest drop among
+fully passing candidates is reported. If none pass, rank evaluable candidates, then
+retain an unevaluable candidate only as a measurement. A larger drop in an unexcited
+band or above the upper-band level threshold cannot hide another passing boundary.
+Drop/1.5 kHz is a coarse adjacent-band slope.
 This is not a fitted physical transition width. Evidence returns **Medium suspicion**;
 otherwise **Ambiguous**. High suspicion/Low suspicion are intentionally not emitted by
 this single-evidence implementation; no independent codec-artifact detector is validated.
@@ -147,11 +171,15 @@ Thresholds are exploratory engineering rules, not calibrated on a real-music cor
 ## 24-bit quantization
 
 Only known lossless integer 24-bit PCM. Exact signed integer = round(f64 ×2^23).
-Zero samples excluded; deterministic strides within each channel share an equal
-budget totaling at most 1,000,000 samples across channels.
+Zero samples excluded. Exact grid and zero-lower-byte fraction check every active sample
+in the bounded decoded prefix. Entropy/distinct counts use deterministic channel strides
+with an equal budget totaling at most 1,000,000 samples. Per-channel populations,
+entropy counts/strides and full-prefix off-grid counts are exported. Entropy sampling
+may miss periodic values; it no longer controls the exact-grid verdict. The checked
+prefix is not an unseen full recording.
 Fewer than 1,000 active analyzed samples: Ambiguous. Count low byte (integer &255),
 zero-byte percentage, distinct low bytes, distinct sample values and Shannon H=−Σp log2(p).
-Normalized H=H/8. Entire sampled active population low byte zero → Direct 16→24 padding
+Normalized H=H/8. Entire checked active prefix population low byte zero → Direct 16→24 padding
 evidence, meaning a measured grid compatible with padding, not a proven conversion history.
 Otherwise No direct-padding evidence. No tolerance threshold is silently substituted for 100%.
 
@@ -232,25 +260,43 @@ Album comparison and spectral-difference metrics are pending.
 
 ## Disc and device boundaries
 
-CUE parser handles UTF-8 BOM or explicit CP1251 fallback (displayed), FILE references under
-CUE directory, TITLE/PERFORMER, TRACK, INDEX in integer CD frames (75/s). Missing/escaping
-references, invalid timestamps, duplicate track numbers and non-increasing INDEX 01 are flagged.
-No extraction, duration validation against audio or logical-track analysis is implemented.
+Logical CUE/SACD tracks use typed fingerprinted source selections and the existing
+analysis engine. CUE indexes are exact 75-fps integers, references are independently
+probed and externally resolved paths require explicit authorization. INDEX01-to-next-
+INDEX01 policy, native sample rounding, INDEX00 allocation, encoding fallbacks and
+unsupported constructs are documented. Selected native PCM/DSD representations use
+bounded memory and owned temporary directories; track scopes retain source offsets.
 
-ISO checks 8-byte SACDMTOC at sector 510×2048 and CD001 at sector 16×2048+1 without copying
-the image. A signature is recognition evidence, not validated SACD track/TOC support. Raw sectors
-and encrypted images remain unverified. Optional sacd_extract command plan uses validated
-track range 1…255, distinct output directory and DSF/DST conversion flags from
-[upstream command help](https://github.com/netxing/sacd_extract/blob/main/tools/sacd_extract/main.c).
-Backend variants have different flags; command planning is tested but execution/temporary
-extraction cleanup is pending. No real-backend integration is claimed.
+SACD ISO requires bounded master/primary-area structure checks plus compatible optional
+sacd_extract enumeration. One selected track is extracted to native DSF and independently
+validated before the existing DSD-to-PCM pipeline. Actual stereo DSD64 Aja enumeration,
+extraction and full track decode were executed. Metadata DST recognition and real DST
+decompression are separate; real DST/multichannel audio, raw/encrypted/damaged variants
+remain unvalidated. Full methods and actual evidence: [CUE/SACD](docs/CUE_SACD_METHODS.md),
+[executed validation](docs/CUE_SACD_VALIDATION.md).
 
 Device profiles check explicit codec, channel count, rate/depth and DSD-rate constraints.
 Unknown properties remain Unknown; profiles do not certify actual hardware playback.
 
+## Engineering validation update — 2026-11-11
+
+Prefix PCM measurement trims at native sample indexes before ebur128; output `-t`
+alone was demonstrated to admit out-of-scope metadata. Independent test-only48kHz
+K-weighting/gating/percentile calculations validate selected Integrated/LRA controls,
+not certification. Native-FLAC MD5 covers8/16/24/32-bit mono/stereo known-PCM controls;
+missing/mismatched/partial/count failures remain distinct. DSDIFF FVER/version/order,
+required sound-property order and counted CMPR-name bounds are checked. Conversion FIR,
+Origin rules, reconstructed-peak algorithm and duration policy are unchanged.
+
+The [current matrix and real-file commands](docs/V1_VALIDATION_MATRIX.md) distinguish
+measured properties, experimental historical compatibility, actual stereo DSD tests
+and unsupported/unvalidated variants. Application remains0.2.5.dev0.
+
 ## Validation limits
 
-Only generated signals/containers and local backend integration have been used. No private
-collection was accessed. No diverse real-recording corpus, metering certification, native
-DSD recording spectral validation, real SACD image, browser rendering test or calibrated classification
-study has been performed. See DEVELOPMENT_PLAN.md for actual executed verification.
+Generated controls and the explicitly supplied local DSD256 recording are used;
+no private collection was searched. This is not a diverse real-recording corpus.
+Selected ITU/EBU-derived synthetic loudness/peak controls and independent checks are
+documented, not a full metering certification. The supplied real stereo SACD/DFF are
+now covered; real DST and source-history authentication remain unverified. See the current Conclusions/Origin/CUE-SACD validation reports
+and DEVELOPMENT_PLAN.md for executed tests, actual rendered checks and remaining scope.

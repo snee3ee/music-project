@@ -240,6 +240,15 @@ def test_actual_flac_md5_valid_mismatch_and_missing(tmp_path, write_wav, encode,
     findings = measure_technical(info, settings)
     assert findings["pcm_integrity"].measurements["flac_md5"]["status"] == "Verified"
     original = p.read_bytes()
+    frame_mismatch = bytearray(original)
+    value = int.from_bytes(frame_mismatch[18:26], "big")
+    frame_mismatch[18:26] = (value + 1).to_bytes(8, "big")
+    p.write_bytes(frame_mismatch)
+    wrong_count = measure_technical(probe(p, settings), settings)["pcm_integrity"].measurements[
+        "flac_md5"
+    ]
+    assert wrong_count["md5_status"] == "Verified" and wrong_count["frame_count_status"] == "Failed"
+    assert wrong_count["status"] == "Failed"
     changed = bytearray(original)
     changed[26] ^= 1
     p.write_bytes(changed)
@@ -326,7 +335,8 @@ def test_actual_32bit_pcm_stream_preserves_low_bits(tmp_path, settings, monkeypa
     assert info.bit_depth == 32
     measure_technical(info, settings)
     assert recovered.hexdigest() == expected
-    # Applicability-only header control, not a decodable 32-bit FLAC fixture.
+    # A header alone must never verify PCM. Actual 8/32-bit native FLAC decoding
+    # and embedded MD5 are exercised by independent verbatim fixtures in test_v1_flac.
     packed = (48000 << 44) | (1 << 41) | (31 << 36) | 48000
     header = (
         b"fLaC"
@@ -338,7 +348,7 @@ def test_actual_32bit_pcm_stream_preserves_low_bits(tmp_path, settings, monkeypa
     stub = tmp_path / "unsupported32.flac"
     stub.write_bytes(header)
     check = FlacMD5(replace(info, path=str(stub), codec="flac", container="flac"))
-    assert check.result(False)["status"] == "Not validated"
+    assert check.result(False)["status"] == "Partial"
 
 
 def test_reference_gain_constraint_and_invalid_values(info):
@@ -381,3 +391,16 @@ def test_actual_positive_intersample_and_machine_generated_conclusions(
         c.statement_type == "Verified fact" and c.category == "clipping" for c in r.conclusions
     )
     json.dumps(r.to_dict(), allow_nan=False)
+
+
+def test_unvalidated_true_peak_rate_does_not_imply_headroom(tmp_path, write_wav, settings):
+    p = write_wav(tmp_path / "rate32000.wav", tone_samples(32000, 4), rate=32000)
+    r, _ = analyze(p, settings)
+    c = build_conclusions(r.info, r.scope, r.findings, ReferenceProfile("custom", -14, -1))
+    assert any(
+        v.conclusion_id == "peaks.true-peak-unavailable" and v.statement_type == "Not validated"
+        for v in c
+    )
+    assert not any(v.conclusion_id == "peaks.true-peak" for v in c)
+    plan = next(v for v in c if v.conclusion_id == "reference.gain-plan")
+    assert "predicted_true_peak_dbtp" not in plan.measured_values

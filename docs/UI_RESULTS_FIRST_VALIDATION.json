@@ -1,0 +1,419 @@
+{
+  "date": "2026-11-11",
+  "app_version": "0.2.5.dev0",
+  "method_version": "2026.11-v7",
+  "baseline": {
+    "passed": 359,
+    "failed": 0,
+    "skipped": 0,
+    "seconds": 134.31
+  },
+  "full_regression": {
+    "passed": 364,
+    "failed": 0,
+    "skipped": 0,
+    "seconds": 123.46,
+    "real_dsf_fixture_enabled": true,
+    "real_sacd_fixture_enabled": true
+  },
+  "post_dsd_layout_checks": {
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0,
+    "seconds": 5.83
+  },
+  "static_checks": {
+    "ruff": "Passed",
+    "format": "98 Python files already formatted",
+    "compileall": "Passed",
+    "git_diff_check": "Passed; LF/CRLF notices only"
+  },
+  "protected_sources": [
+    {
+      "path": "music_project\\core\\analysis.py",
+      "sha256": "a3c9a059ed251e89d3a8599b6e60e2cb2019537f45e9b4c63a9d2aa88016b079",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\compare.py",
+      "sha256": "305b25daa53cf8c1b25c7bae366e7d76fbea5beda12783738b4a167a66bc1c29",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\conclusions.py",
+      "sha256": "978d9e580ae67fde9ea0303d62b0b80bf9c8407c594fc1a399ad2ed33a99b5ef",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\conclusion_evidence.py",
+      "sha256": "1ee14e3d3ff740138cf4d9549648881cdcb3e1e389a7f9111f5537285f54b781",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\conclusion_loudness.py",
+      "sha256": "f899027c9608d67d827bbcdf60cb639f044d1246b750f701084e7867f001d809",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\conclusion_models.py",
+      "sha256": "1f1d170accd1a0776d5f85465b9a28125e3d629f889df161379adf9057341b3b",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\conclusion_peaks.py",
+      "sha256": "184ad0b8723786dd7517ccc258ebf3957106609273f942d4091a283d6abf28aa",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\conclusion_reference.py",
+      "sha256": "953ecce048e3d6bd9338a9f70ec1a3af775429bad454eb2f23756d536b787836",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\conclusion_utils.py",
+      "sha256": "a3c513831692f6d026a1cc217e63046c5b0276591ed31908f1e8bc31b2ea3c08",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\config.py",
+      "sha256": "8fecf85cd9a5c0b0c352b7a2c3e6cc65c261545bdb792ccbb6fd5594ee333fb3",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\cue.py",
+      "sha256": "9bcc8936f11524f6c105f83d7ddc9305c09181c5e622a8ed4d4023717277f15b",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\decoder.py",
+      "sha256": "4854c92dac060a6cc39b2915764d8241e5e24a3e9dc5dc64027a884237ded4f8",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\devices.py",
+      "sha256": "3a9c162f9f57c7c70db4f2176b1bec94005343e979ce62d9e3fdd367f434aa09",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\disc.py",
+      "sha256": "8af99e0557050799bacd5c8304e71f2f192bfbd3d2e68101b9b74937246ddf0d",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\dsd.py",
+      "sha256": "33246b7bedc891e687d7165dce5f12481fa8cb8a4d3ecf1634e8ce4edc583db1",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\dsd_container.py",
+      "sha256": "0da332cf14c7ff573fd372b59df20180e4c40ae96a694be11ed428a065d79590",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\dsd_decoder.py",
+      "sha256": "ba0daa3675d589cd243d1cb58b2a4b42f395d51b9b4d0f46640f5251f1047a4c",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\dsd_native.py",
+      "sha256": "50d54f4e27a01421589dc36f452f1b14251029481bf0f9bc8adb0bcc6393dd99",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\dsd_spectrum.py",
+      "sha256": "02f7cf6c4f23af71f4ba92cedcff613aeff4b6c1f8476b633ff8b291dd0000ea",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\duration.py",
+      "sha256": "2f729d92b8923ea92509a0d499a7a3209b704ec1fec56b2f3b9a6ff131f356b3",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\entitlements.py",
+      "sha256": "5396d948297313731f52829a66cccd7b64118d7e1f3196438979da5e80defdbf",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\files.py",
+      "sha256": "4e4dff5788970d833150b6c47195fb230b30f54f6e0c704c465c97ed646f986e",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\flac_integrity.py",
+      "sha256": "6bc3a7e4b646dade12255d7ee9e9855d5b73243c5de658f9648e2fa92b65d965",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\integrity.py",
+      "sha256": "3c3b70b703386c05154ed4c6fe9b21807ea4ad5cc85562516aafd8033233e336",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\library.py",
+      "sha256": "1fba0e6c4f4b4172a1e2509cfb0a52fa700d074c1d0ee04ab5454d46243f57ee",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\loudness_stream.py",
+      "sha256": "80e41d7c4b4f99987a0cb380071516b42a72825dce5a51eca698edbe38b4d770",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\models.py",
+      "sha256": "653229b7959dc7de37f4b9e0f534785765487e3e5d7300e92d4c4297d482a826",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\origin.py",
+      "sha256": "7b203a8d9a4333775175907958d72d00d050aebd4b97f456e2cbf1cf097480fb",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\origin_calibration.py",
+      "sha256": "18f77652f297c67dbea6af7b1d50856835786dc1b9f6362d5dc0a13b01bd6d4b",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\origin_features.py",
+      "sha256": "e4dfaa122ba557da09e9ac16bf18bf4b910ea09243345389f90cc7f4feeccf42",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\origin_models.py",
+      "sha256": "489ae0dcd7ed2602c3ca06b09814b64add00a49fd0724a0483ff6d2422068f25",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\origin_reference.py",
+      "sha256": "623ede5d5d47a32114d6b430787ddb66e6a0b49378abc2a872072f4903688c69",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\origin_temporal.py",
+      "sha256": "48d229175ccc1acc0f7cdad953fde0ab8a7962c04706988944dc4a7cd5b662b8",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\pcm.py",
+      "sha256": "86861a798d46a0078aa87ec03efbd7ef3a66bc3efb59ee15ff115d5e79c7ffe6",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\peak_measurements.py",
+      "sha256": "1ea54cb4c315b8225f2ce00d230d17749358757a7c5a2c9bb9cf0a7ebfe52575",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\probe.py",
+      "sha256": "cec20da9bc249f64dc18275436a6a98acfc77b68710adb2c697079e212785b11",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\sacd.py",
+      "sha256": "7a2fcb8d6c44abcac0070420faf63a551c16eac4da67302e98beddc90327e50e",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\sources.py",
+      "sha256": "678110d876bc3df12b76e8f23326774afcc931cf17794e0215aececf510e1616",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\source_extract.py",
+      "sha256": "dff03d996afbe4ccc5cd72a5b5043b9d78ee61f9a4a9feca9c162270a75afc2d",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\source_models.py",
+      "sha256": "702d6f15eb6eb0b2e4ffc8974d91e04c4622e59e684221370a5c9c0c4f964b20",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\subprocess_utils.py",
+      "sha256": "1abe02e0a68d8ae934d12e221615666cb6e8f27be2613225e7baeaaf95f41397",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\technical_analysis.py",
+      "sha256": "4b8d86beaa920ad98564bad7e5ce7c03fcc7e11e0d2c11d85e7024634645cd0a",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\true_peak.py",
+      "sha256": "c5286f7da79cfae07b23e13ab43565a077b0e66f877703801015136569a1ec92",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\core\\__init__.py",
+      "sha256": "a1e41c025f39234796172b785786609929f5a6944664aedf30a65df682930047",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\ui\\analyzer.py",
+      "sha256": "a069b6d56384d6473e6afa9d20188babfc2bbb3a75d5028a42ec265ccbfe5dba",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\ui\\album_sources.py",
+      "sha256": "9182bad57032f29d458461f11de678bb09a43310fc7ed04a84d953dea4a23237",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\ui\\shared.py",
+      "sha256": "95e179cd868d89e96dba564524fc79e504a63cbe67a617c4baf074fc423c5484",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\ui\\library.py",
+      "sha256": "ab44e44e225aa8a09a11913115970a85248fe869f20062bfca5606830212315d",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\ui\\duplicates.py",
+      "sha256": "469a52aaba89c9b4a0b2b0caa89524637cce142f7398e4cdf114bb116f55b47b",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\ui\\compare.py",
+      "sha256": "275d5992a00b11cb5406a2f655a9107bf5c417a5a0f89471c285a3dd6ad347b1",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\ui\\archive.py",
+      "sha256": "cb3cdd178dc4929a83d0223cbcc35fafcfb142ce0fdcf7d1e3b8c821fa35a8bf",
+      "unchanged": true
+    },
+    {
+      "path": "music_project\\__init__.py",
+      "sha256": "90d9492a45096cd38affc662da6695648e81c9446afa4d0353ab8b008aa11a76",
+      "unchanged": true
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "28a4adfa13f177070df3181c6f0e77374a6682dfe8e20bdbfbb874bcf6d79535",
+      "unchanged": true
+    }
+  ],
+  "rendered": {
+    "server_health": "ok",
+    "cases": {
+      "normal": {
+        "overview_metrics": [
+          "-15.27",
+          "-13.97",
+          "0.00"
+        ],
+        "overview_tables": 0,
+        "main_json": 0,
+        "chart_sizes": [
+          {
+            "width": 720,
+            "height": 267
+          },
+          {
+            "width": 720,
+            "height": 267
+          },
+          {
+            "width": 720,
+            "height": 267
+          },
+          {
+            "width": 720,
+            "height": 267
+          }
+        ]
+      },
+      "hires": {
+        "overview_metrics": [
+          "-15.22",
+          "-13.37",
+          "0.00"
+        ],
+        "overview_tables": 0,
+        "main_json": 0,
+        "chart_sizes": [
+          {
+            "width": 720,
+            "height": 267
+          },
+          {
+            "width": 720,
+            "height": 267
+          },
+          {
+            "width": 720,
+            "height": 267
+          },
+          {
+            "width": 720,
+            "height": 267
+          }
+        ]
+      },
+      "short": {
+        "overview_metrics": [
+          "Не определено",
+          "−∞",
+          "Не определено"
+        ],
+        "overview_tables": 0,
+        "main_json": 0,
+        "chart_sizes": []
+      },
+      "dsd": {
+        "overview_metrics": [],
+        "overview_tables": 0,
+        "main_json": 0,
+        "chart_sizes": [
+          {
+            "width": 540,
+            "height": 245
+          },
+          {
+            "width": 540,
+            "height": 245
+          },
+          {
+            "width": 540,
+            "height": 245
+          },
+          {
+            "width": 540,
+            "height": 245
+          }
+        ]
+      }
+    }
+  },
+  "inspected_screens": [
+    "normal-overview",
+    "normal-levels",
+    "normal-appendix",
+    "normal-integrity",
+    "hires-overview",
+    "hires-timeline",
+    "short-overview",
+    "short-levels-expert",
+    "dsd-overview",
+    "dsd-levels-expert",
+    "dsd-origin",
+    "dsd-properties"
+  ],
+  "visual_scope": {
+    "viewport_css_pixels": [
+      1600,
+      1100
+    ],
+    "browser": "Installed Edge, headless, sandbox enabled",
+    "human_usability_study": false,
+    "mobile_validation": false
+  },
+  "limits": [
+    "Presentation correction only; numerical methods/models/decoders unchanged",
+    "No new DSD loudness results are invented",
+    "Original source-picker and CUE/ISO browsing/processing unchanged",
+    "Desktop inspection is not a full accessibility/browser/mobile matrix"
+  ]
+}

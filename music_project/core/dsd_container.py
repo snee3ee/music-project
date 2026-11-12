@@ -30,6 +30,9 @@ class DSDContainer:
     metadata_bytes: int = 0
     metadata_type: str = "Not applicable"
     bit_order: str = "Unknown"
+    format_version: str | None = None
+    channel_ids: list[str] = field(default_factory=list)
+    compression_name: str | None = None
     errors: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
 
@@ -145,11 +148,28 @@ def _dff(stream: BinaryIO, size: int, result: DSDContainer):
         raise StructureError("Invalid/truncated DFF FRM8 size or form type")
     audio = []
     properties = set()
+    version_seen = sound_properties_seen = False
     for tag, body, count in _chunks(stream, 16, size):
-        if tag == b"PROP":
+        if not version_seen and tag != b"FVER":
+            raise StructureError("DFF first local chunk must be FVER")
+        if tag == b"FVER":
+            if version_seen or count != 4:
+                raise StructureError("Duplicate or invalid DFF FVER chunk")
+            stream.seek(body)
+            version = read_exact(stream, 4)
+            result.format_version = ".".join(map(str, version))
+            if version[0] != 1:
+                raise VariantError("Unsupported DFF main format version")
+            version_seen = True
+        elif tag == b"PROP":
+            if count < 4:
+                raise StructureError("DFF PROP chunk too short for its property type")
             stream.seek(body)
             if read_exact(stream, 4) != b"SND ":
                 continue
+            if sound_properties_seen or audio:
+                raise StructureError("Duplicate DFF sound properties or properties after audio")
+            sound_properties_seen = True
             for key, offset, n in _chunks(stream, body + 4, body + count):
                 if key not in {b"FS  ", b"CHNL", b"CMPR"}:
                     continue
@@ -164,6 +184,10 @@ def _dff(stream: BinaryIO, size: int, result: DSDContainer):
                     if n != 2 + 4 * result.channels:
                         raise StructureError("Contradictory DFF channel identifiers/count")
                     labels = read_exact(stream, n - 2)
+                    result.channel_ids = [
+                        labels[i : i + 4].decode("ascii", errors="replace")
+                        for i in range(0, len(labels), 4)
+                    ]
                     if (
                         len({labels[i : i + 4] for i in range(0, len(labels), 4)})
                         != result.channels
@@ -173,9 +197,22 @@ def _dff(stream: BinaryIO, size: int, result: DSDContainer):
                     result.compression = (
                         read_exact(stream, 4).decode("ascii", errors="replace").strip()
                     )
+                    name_bytes = read_exact(stream, 1)[0]
+                    if name_bytes > n - 5:
+                        raise StructureError("DFF compression name exceeds CMPR chunk bounds")
+                    result.compression_name = read_exact(stream, name_bytes).decode(
+                        "ascii", errors="replace"
+                    )
         elif tag in {b"DSD ", b"DST "}:
+            if properties != {b"FS  ", b"CHNL", b"CMPR"}:
+                raise StructureError("DFF audio precedes complete required sound properties")
             audio.append((tag, count, body))
-    if not 0 < result.rate <= 22579200 or not 0 < result.channels <= 32 or len(audio) != 1:
+    if (
+        not version_seen
+        or not 0 < result.rate <= 22579200
+        or not 0 < result.channels <= 32
+        or len(audio) != 1
+    ):
         raise StructureError("Missing/impossible DFF rate/channels/audio chunk")
     tag, result.payload_bytes, result.audio_data_offset = audio[0]
     result.audio_data_end = result.audio_data_offset + result.payload_bytes

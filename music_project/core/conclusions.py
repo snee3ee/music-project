@@ -1,6 +1,7 @@
 """Deterministic versioned conclusion orchestration; no UI or audio decoding."""
 
 from music_project.core.conclusion_evidence import _integrity_conclusions, _origin_conclusions
+from music_project.core.conclusion_lossy import lossy_conclusions
 from music_project.core.conclusion_loudness import loudness_rules
 from music_project.core.conclusion_models import Conclusion, ReferenceProfile
 from music_project.core.conclusion_peaks import peak_rules
@@ -65,6 +66,7 @@ def build_conclusions(
         rule(info, scope, findings, ref, add)
     _integrity_conclusions(info, scope, findings, add)
     _origin_conclusions(findings, add)
+    lossy_conclusions(findings, add)
     return result
 
 

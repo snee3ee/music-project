@@ -17,6 +17,8 @@ def same_scope(a, b):
         "domain",
         "processing",
     )
+    if a and b and ("source_identity" in a or "source_identity" in b):
+        keys += ("source_identity", "source_start_seconds")
     return bool(a and b and all(k in a and k in b and a[k] == b[k] for k in keys))
 
 
@@ -24,6 +26,8 @@ def scope_text(scope):
     if not isinstance(scope, dict) or not number(scope.get("analyzed_seconds")):
         return "область измерения не установлена"
     if scope.get("complete_file"):
+        if "source_start_seconds" in scope:
+            return f"вся выбранная дорожка, {scope['analyzed_seconds']:.3f} s"
         return f"весь декодированный аудиопоток, {scope['analyzed_seconds']:.3f} s"
     if len(scope.get("ranges", [])) > 1:
         return f"{len(scope['ranges'])} выбранных интервала, суммарно {scope['analyzed_seconds']:.3f} s; весь файл не проверен"

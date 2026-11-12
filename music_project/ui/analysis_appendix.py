@@ -11,11 +11,13 @@ from music_project.ui.shared import export_json, show_measurements
 
 SECTIONS = {
     "results": "Численные результаты",
+    "conclusions": "Выводы и правила",
     "spectrum": "Полные спектральные таблицы",
     "logs": "Диагностика декодера",
     "methods": "Методы и параметры",
     "metadata": "Метаданные ffprobe",
     "raw": "Полный JSON",
+    "reference": "Сравнение с референсом",
 }
 
 
@@ -27,7 +29,22 @@ def show_appendix(result: Analysis, context: PCMContext | None = None):
         format_func=SECTIONS.__getitem__,
         key="analysis_appendix",
     )
-    if section == "metadata":
+    if section == "conclusions":
+        from music_project.ui.technical_findings import show_technical_findings
+
+        show_technical_findings(result)
+    elif section == "reference":
+        value = st.session_state.get("origin_reference_result")
+        if (
+            value
+            and value.get("source") == result.info.path
+            and "logical_source" not in result.findings
+        ):
+            st.json(value)
+            export_json("Скачать сравнение JSON", value, "reference-analysis.json")
+        else:
+            st.text("Для этого результата сравнение с референсом не выполнено.")
+    elif section == "metadata":
         st.dataframe(
             [{"Tag": key, "Значение": value} for key, value in result.info.tags.items()],
             hide_index=True,
@@ -111,6 +128,14 @@ def show_appendix(result: Analysis, context: PCMContext | None = None):
         if conversion:
             st.markdown("**Преобразование и фактический выход**")
             st.json(conversion.measurements)
+        origin = result.findings.get("origin_investigation")
+        if origin and origin.measurements:
+            for limitation in origin.measurements.get("limitations", []):
+                st.text(limitation)
+            if st.toggle("Контроли преобразования", key="appendix_response_controls"):
+                from music_project.ui.origin import show_response_controls
+
+                show_response_controls(origin.measurements)
     elif section == "spectrum":
         spectrum = result.findings.get("dsd_audible")
         spectrum = spectrum.measurements.get("spectrum") if spectrum else None

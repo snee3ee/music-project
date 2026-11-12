@@ -38,6 +38,8 @@ def reference_rules(info, scope, findings, ref, add) -> None:
                     message += " По текущей оценке этот gain также соблюдает выбранный потолок."
         elif number(tp):
             message += " Прогноз True Peak и проверка потолка не выполнены: области LUFS и пика различаются."
+        elif ref.peak_ceiling_dbtp is not None:
+            message += " Выбранный потолок не проверен: нет пригодной оценки True Peak."
         add(
             "reference.gain-plan",
             "reference",

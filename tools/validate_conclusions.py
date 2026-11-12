@@ -57,8 +57,9 @@ def write_control(path, seconds, kind):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--durations", type=float, nargs="*", default=[20, 240])
+    parser.add_argument("--output", type=Path, default=Path("data/conclusion-validation"))
     args = parser.parse_args()
-    root = Path("data/conclusion-validation")
+    root = args.output
     root.mkdir(parents=True, exist_ok=True)
     settings = Settings(timeout=600)
     report = {"platform": platform.platform(), "cases": [], "performance": []}

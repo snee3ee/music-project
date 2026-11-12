@@ -1,0 +1,524 @@
+{
+  "date": "2026-11-10",
+  "app_version": "0.2.5.dev0",
+  "method_version": "2026.11-v7",
+  "source_version": "logical-source-2026.11-v1",
+  "baseline": {
+    "passed": 319,
+    "failed": 0,
+    "skipped": 1,
+    "seconds": 124.63
+  },
+  "final_regression": {
+    "passed": 359,
+    "failed": 0,
+    "skipped": 0,
+    "seconds": 124.94,
+    "real_dsf_fixture_enabled": true,
+    "real_sacd_fixture_enabled": true
+  },
+  "static_checks": {
+    "ruff_check": "Passed",
+    "ruff_format": "94 files already formatted",
+    "compileall": "Passed"
+  },
+  "backend": {
+    "url": "https://github.com/sacd-ripper/sacd-ripper/releases/download/0.3.9.3/sacd_extract-0.3.9.3-107-win64.zip",
+    "archive_bytes": 1304353,
+    "archive_sha256": "c75f5596070f9fee4f0869cf3d4ebc778ed839c25a4627c17b75feb2c1e860b3",
+    "files": [
+      {
+        "name": "readme.txt",
+        "size": 12316,
+        "sha256": "69fc19655a8d9d06a436e87f16645d62a24c95bd907f938d6092cdf659f66efb"
+      },
+      {
+        "name": "changelog.txt",
+        "size": 13653,
+        "sha256": "d2f8b4f8683806f554f6fa9d7c400033ed45cbb42a33162cb0d43c2671d32532"
+      },
+      {
+        "name": "sacd_extract.exe",
+        "size": 2300928,
+        "sha256": "eeb4b18514ba9cfcb354a9670e7eedf4da646117a4d81edb852e2b9084f92af4"
+      },
+      {
+        "name": "sacd_extract.cfg",
+        "size": 75,
+        "sha256": "3b74f714a52c4f25bf6509c3eff52d3aac9d4546ba925332a08c624dd630b7a3"
+      }
+    ],
+    "identity_limit": "No publisher digest supplied by GitHub release; hash records downloaded bytes, not independent authentication",
+    "reported_version": "0.3.9.3-107-g01c90ddafb0256f3eb194d2c62e7ee5ba14b1c12",
+    "license_source": "https://github.com/EuFlo/sacd-ripper/blob/master/COPYING",
+    "license_observation": "Upstream COPYING: GPL-2.0; source headers: v2 or later. Commercial redistribution audit not completed."
+  },
+  "cue": {
+    "metadata": {
+      "performer": "Steely Dan",
+      "title": "Aja"
+    },
+    "encoding": "utf-8-sig",
+    "boundary_policy": "INDEX01 to next INDEX01 in the same FILE; INDEX00 pregap belongs to preceding interval; initial pregap excluded",
+    "tracks": [
+      {
+        "number": 1,
+        "title": "Black Cow",
+        "performer": "Steely Dan",
+        "indexes": {
+          "01": 0
+        },
+        "start_seconds": 0.0,
+        "end_seconds": 307.9866666666667,
+        "duration_seconds": 307.9866666666667,
+        "status": "Ready"
+      },
+      {
+        "number": 2,
+        "title": "Aja",
+        "performer": "Steely Dan",
+        "indexes": {
+          "01": 23099
+        },
+        "start_seconds": 307.9866666666667,
+        "end_seconds": 783.0,
+        "duration_seconds": 475.0133333333333,
+        "status": "Ready"
+      },
+      {
+        "number": 3,
+        "title": "Deacon Blues",
+        "performer": "Steely Dan",
+        "indexes": {
+          "01": 58725
+        },
+        "start_seconds": 783.0,
+        "end_seconds": 1236.4266666666667,
+        "duration_seconds": 453.42666666666673,
+        "status": "Ready"
+      },
+      {
+        "number": 4,
+        "title": "Peg",
+        "performer": "Steely Dan",
+        "indexes": {
+          "01": 92732
+        },
+        "start_seconds": 1236.4266666666667,
+        "end_seconds": 1473.2266666666667,
+        "duration_seconds": 236.79999999999995,
+        "status": "Ready"
+      },
+      {
+        "number": 5,
+        "title": "Home At Last",
+        "performer": "Steely Dan",
+        "indexes": {
+          "01": 110492
+        },
+        "start_seconds": 1473.2266666666667,
+        "end_seconds": 1804.8933333333334,
+        "duration_seconds": 331.66666666666674,
+        "status": "Ready"
+      },
+      {
+        "number": 6,
+        "title": "I Got The News",
+        "performer": "Steely Dan",
+        "indexes": {
+          "01": 135367
+        },
+        "start_seconds": 1804.8933333333334,
+        "end_seconds": 2107.9466666666667,
+        "duration_seconds": 303.0533333333333,
+        "status": "Ready"
+      },
+      {
+        "number": 7,
+        "title": "Josie",
+        "performer": "Steely Dan",
+        "indexes": {
+          "01": 158096
+        },
+        "start_seconds": 2107.9466666666667,
+        "end_seconds": 2379.733333333333,
+        "duration_seconds": 271.7866666666664,
+        "status": "Ready"
+      }
+    ]
+  },
+  "sacd": {
+    "metadata": {
+      "title": "Aja",
+      "artist": "Steely Dan"
+    },
+    "structure": {
+      "status": "Passed",
+      "sector_bytes": 2048,
+      "areas": [
+        {
+          "kind": "stereo",
+          "lsn": 544,
+          "toc_sectors": 8,
+          "channels": 2,
+          "track_count": 7,
+          "native_rate_hz": 2822400,
+          "encoding": "DSD",
+          "frame_format": 2,
+          "first_audio_sector": 624,
+          "last_audio_sector": 837721
+        }
+      ],
+      "scope": "Master/primary area headers and bounds only; not every sector or audio packet"
+    },
+    "tracks": [
+      {
+        "area": "stereo",
+        "number": 1,
+        "title": "Black Cow",
+        "performer": "Steely Dan",
+        "start_75": 150,
+        "duration_75": 23099,
+        "start_seconds": 2.0,
+        "duration_seconds": 307.9866666666667,
+        "status": "Ready"
+      },
+      {
+        "area": "stereo",
+        "number": 2,
+        "title": "Aja",
+        "performer": "Steely Dan",
+        "start_75": 23335,
+        "duration_75": 35626,
+        "start_seconds": 311.1333333333333,
+        "duration_seconds": 475.0133333333333,
+        "status": "Ready"
+      },
+      {
+        "area": "stereo",
+        "number": 3,
+        "title": "Deacon Blues",
+        "performer": "Steely Dan",
+        "start_75": 58998,
+        "duration_75": 34007,
+        "start_seconds": 786.64,
+        "duration_seconds": 453.4266666666667,
+        "status": "Ready"
+      },
+      {
+        "area": "stereo",
+        "number": 4,
+        "title": "Peg",
+        "performer": "Steely Dan",
+        "start_75": 93200,
+        "duration_75": 17760,
+        "start_seconds": 1242.6666666666667,
+        "duration_seconds": 236.8,
+        "status": "Ready"
+      },
+      {
+        "area": "stereo",
+        "number": 5,
+        "title": "Home At Last",
+        "performer": "Steely Dan",
+        "start_75": 110995,
+        "duration_75": 24875,
+        "start_seconds": 1479.9333333333334,
+        "duration_seconds": 331.6666666666667,
+        "status": "Ready"
+      },
+      {
+        "area": "stereo",
+        "number": 6,
+        "title": "I Got The News",
+        "performer": "Steely Dan",
+        "start_75": 136005,
+        "duration_75": 22729,
+        "start_seconds": 1813.4,
+        "duration_seconds": 303.05333333333334,
+        "status": "Ready"
+      },
+      {
+        "area": "stereo",
+        "number": 7,
+        "title": "Josie",
+        "performer": "Steely Dan",
+        "start_75": 158993,
+        "duration_75": 20385,
+        "start_seconds": 2119.9066666666668,
+        "duration_seconds": 271.8,
+        "status": "Ready"
+      }
+    ]
+  },
+  "actual_selected_track_analyses": [
+    {
+      "kind": "cue",
+      "track": 7,
+      "title": "Josie",
+      "seconds": 12.66376919997856,
+      "duration_seconds": 271.7866666666667,
+      "decode_status": "Passed",
+      "conclusion_count": 12,
+      "time_mapping": {
+        "source_start_seconds": 2107.9466666666667,
+        "source_end_seconds": 2379.7333333333336,
+        "time_origin": "selected track; t=0 at selected track audio start",
+        "complete_file_means": "Complete selected track, not complete CUE album/ISO/source file"
+      },
+      "extraction": {
+        "method": "Native packed DSD copy to DSF; bit order normalized, no PCM conversion",
+        "temporary_bytes": 191774812
+      },
+      "native_rate_hz": 2822400,
+      "channels": 2,
+      "duration_status": "Verified",
+      "actual_integrity_conclusion": {
+        "conclusion_id": "integrity.decode",
+        "category": "integrity",
+        "title": "Результат проверки потока",
+        "statement": "Выбранная дорожка полностью декодирована: 271.787 s; весь исходный альбом не проверялся.",
+        "statement_type": "Verified fact",
+        "measurement_ids": [
+          "dsd_integrity"
+        ],
+        "measured_values": {
+          "status": "Passed"
+        },
+        "measurement_units": {},
+        "analysis_scope": {
+          "strategy": "full",
+          "complete_file": true,
+          "domain": "Derived from DSD-to-PCM conversion.",
+          "method_version": "dsd-2026.11-v2",
+          "expected_duration_seconds": 271.7866666666667,
+          "ranges": [
+            {
+              "start_seconds": 0.0,
+              "requested_seconds": null,
+              "decoded_seconds": 271.7866666666667,
+              "status": "Passed"
+            }
+          ],
+          "decoded_seconds": 271.7866666666667,
+          "duration": {
+            "seconds": 271.7866666666667,
+            "source": "DSF sample count / native rate",
+            "status": "Verified",
+            "ffprobe_seconds": 271.789569,
+            "container_seconds": 271.7866666666667,
+            "decoded_seconds": 271.7866666666667,
+            "full_decode_reached_eof": true,
+            "decode_status": "Passed",
+            "rounding_tolerance_seconds": 5.668934240362812e-06,
+            "padding_tolerance_seconds": 0.0029024943310657597,
+            "ffprobe_minus_container_seconds": 0.0029023333332816037,
+            "decoded_minus_container_seconds": 0.0,
+            "consistency": "Passed",
+            "policy_version": "dsd-duration-2026.11-v1"
+          },
+          "source_identity": "960bf2ce026e8a9f3f404d42bd42ff49de5e35fab153328ff2e4070d33035063",
+          "time_origin": "selected track; t=0 at selected track audio start",
+          "source_start_seconds": 2107.9466666666667,
+          "source_end_seconds": 2379.7333333333336,
+          "declared_start_seconds": 2107.9466666666667,
+          "source_time_grid_seconds": 3.5430839002267574e-07,
+          "mapping_rule": "source_seconds = track_seconds + source_start_seconds",
+          "complete_file_means": "Complete selected track, not complete CUE album/ISO/source file"
+        },
+        "rule_id": "integrity.completed-versus-partial",
+        "applicability": "Only the stated measurement domain and coverage",
+        "validation_status": "Deterministic rule; tested controls documented",
+        "limitations": [
+          "Декодирование не аутентифицирует издание и не является проверкой всех полей контейнера."
+        ],
+        "reference_value": null,
+        "reference_source": null,
+        "severity": null,
+        "suggested_next_action": null,
+        "rule_version": "conclusions-2026.11-v1"
+      }
+    },
+    {
+      "kind": "sacd",
+      "track": 1,
+      "title": "Black Cow",
+      "seconds": 12.249698200001149,
+      "duration_seconds": 307.9866666666667,
+      "decode_status": "Passed",
+      "conclusion_count": 12,
+      "time_mapping": {
+        "source_start_seconds": 2.0,
+        "source_end_seconds": 309.9866666666667,
+        "time_origin": "selected track; t=0 at selected track audio start",
+        "complete_file_means": "Complete selected track, not complete CUE album/ISO/source file"
+      },
+      "extraction": {
+        "method": "Selected track only; sacd_extract native DSF output; DST decompression requested, no PCM conversion",
+        "temporary_bytes": 217317695
+      },
+      "native_rate_hz": 2822400,
+      "channels": 2,
+      "duration_status": "Verified",
+      "actual_integrity_conclusion": {
+        "conclusion_id": "integrity.decode",
+        "category": "integrity",
+        "title": "Результат проверки потока",
+        "statement": "Выбранная дорожка полностью декодирована: 307.987 s; весь исходный альбом не проверялся.",
+        "statement_type": "Verified fact",
+        "measurement_ids": [
+          "dsd_integrity"
+        ],
+        "measured_values": {
+          "status": "Passed"
+        },
+        "measurement_units": {},
+        "analysis_scope": {
+          "strategy": "full",
+          "complete_file": true,
+          "domain": "Derived from DSD-to-PCM conversion.",
+          "method_version": "dsd-2026.11-v2",
+          "expected_duration_seconds": 307.9866666666667,
+          "ranges": [
+            {
+              "start_seconds": 0.0,
+              "requested_seconds": null,
+              "decoded_seconds": 307.9866666666667,
+              "status": "Passed"
+            }
+          ],
+          "decoded_seconds": 307.9866666666667,
+          "duration": {
+            "seconds": 307.9866666666667,
+            "source": "DSF sample count / native rate",
+            "status": "Verified",
+            "ffprobe_seconds": 307.989802,
+            "container_seconds": 307.9866666666667,
+            "decoded_seconds": 307.9866666666667,
+            "full_decode_reached_eof": true,
+            "decode_status": "Passed",
+            "rounding_tolerance_seconds": 5.668934240362812e-06,
+            "padding_tolerance_seconds": 0.0028117913832199546,
+            "ffprobe_minus_container_seconds": 0.003135333333318613,
+            "decoded_minus_container_seconds": 0.0,
+            "consistency": "Passed",
+            "policy_version": "dsd-duration-2026.11-v1"
+          },
+          "source_identity": "d4f00298a0240b04e2c8d49fb47949fe65619fca9c6e4e880281a93dbc7f7bce",
+          "time_origin": "selected track; t=0 at selected track audio start",
+          "source_start_seconds": 2.0,
+          "source_end_seconds": 309.9866666666667,
+          "declared_start_seconds": 2.0,
+          "source_time_grid_seconds": 0.013333333333333334,
+          "mapping_rule": "source_seconds = track_seconds + source_start_seconds",
+          "complete_file_means": "Complete selected track, not complete CUE album/ISO/source file"
+        },
+        "rule_id": "integrity.completed-versus-partial",
+        "applicability": "Only the stated measurement domain and coverage",
+        "validation_status": "Deterministic rule; tested controls documented",
+        "limitations": [
+          "Декодирование не аутентифицирует издание и не является проверкой всех полей контейнера."
+        ],
+        "reference_value": null,
+        "reference_source": null,
+        "severity": null,
+        "suggested_next_action": null,
+        "rule_version": "conclusions-2026.11-v1"
+      }
+    }
+  ],
+  "source_preservation": [
+    {
+      "file": "Steely Dan - Aja.cue",
+      "size": 584,
+      "signature": [
+        584,
+        1791561619920666900
+      ],
+      "sha256": "f72a2c10785ea42b28cb00f6088ad4b6088518e63b9a141290a992b2b4a55987",
+      "sha256_after": "f72a2c10785ea42b28cb00f6088ad4b6088518e63b9a141290a992b2b4a55987",
+      "stat_unchanged": true,
+      "sha256_unchanged": true
+    },
+    {
+      "file": "Steely Dan - Aja.dff",
+      "size": 1679139970,
+      "signature": [
+        1679139970,
+        1791561679275389200
+      ],
+      "sha256": "2ab6d866aabbd7705f1db667b7cd0c2fa96d8ea097e5ff400f9172c0170cce6d",
+      "sha256_after": "2ab6d866aabbd7705f1db667b7cd0c2fa96d8ea097e5ff400f9172c0170cce6d",
+      "stat_unchanged": true,
+      "sha256_unchanged": true
+    },
+    {
+      "file": "Aja.iso",
+      "size": 1715818496,
+      "signature": [
+        1715818496,
+        1791561681433959300
+      ],
+      "sha256": "6012d1155907d1bfd39b26803c865b26bb4e5078f0dbf4a99ea67aff452ecbc1",
+      "sha256_after": "6012d1155907d1bfd39b26803c865b26bb4e5078f0dbf4a99ea67aff452ecbc1",
+      "stat_unchanged": true,
+      "sha256_unchanged": true
+    }
+  ],
+  "browser": {
+    "ordinary_flac": {
+      "app_version_visible": true,
+      "technical_findings_visible": true,
+      "images": 3,
+      "tables": 1,
+      "exceptions": 0
+    },
+    "real_albums": {
+      "cue": {
+        "findings": true,
+        "track_title": true,
+        "exceptions": 0,
+        "tables": 1
+      },
+      "iso": {
+        "findings": true,
+        "track_title": true,
+        "exceptions": 0,
+        "tables": 1
+      }
+    }
+  },
+  "limits": [
+    "Real ISO is uncompressed stereo DSD64; no real DST/multichannel audio validation",
+    "Track decode and selected header checks do not verify a whole album/ISO",
+    "No native identity or mastering comparison between ISO and DFF",
+    "Other extractor protocols/encodings/raw/encrypted/damaged variants unvalidated",
+    "No v1.0 declaration, no uploads/audio commits/push"
+  ],
+  "post_scope_guard_ui_regression": {
+    "passed": 29,
+    "failed": 0,
+    "skipped": 0,
+    "seconds": 31.94
+  },
+  "final_source_preservation": [
+    {
+      "file": "Steely Dan - Aja.cue",
+      "sha256": "f72a2c10785ea42b28cb00f6088ad4b6088518e63b9a141290a992b2b4a55987",
+      "sha256_unchanged": true,
+      "stat_unchanged": true
+    },
+    {
+      "file": "Steely Dan - Aja.dff",
+      "sha256": "2ab6d866aabbd7705f1db667b7cd0c2fa96d8ea097e5ff400f9172c0170cce6d",
+      "sha256_unchanged": true,
+      "stat_unchanged": true
+    },
+    {
+      "file": "Aja.iso",
+      "sha256": "6012d1155907d1bfd39b26803c865b26bb4e5078f0dbf4a99ea67aff452ecbc1",
+      "sha256_unchanged": true,
+      "stat_unchanged": true
+    }
+  ]
+}

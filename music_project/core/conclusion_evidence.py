@@ -23,6 +23,8 @@ def _integrity_conclusions(info, scope, findings, add):
     area = m.get("scope", scope)
     if m.get("decode_status", finding.status) == "Passed" and m.get("complete_file"):
         text = f"Первый аудиопоток полностью декодирован: {m.get('decoded_seconds', m.get('successfully_decoded_seconds', 0)):.3f} s."
+        if "logical_source" in findings:
+            text = f"Выбранная дорожка полностью декодирована: {m.get('decoded_seconds', m.get('successfully_decoded_seconds', 0)):.3f} s; весь исходный альбом не проверялся."
         stype = "Verified fact"
     elif finding.status == "Failed":
         text = "Проверка не пройдена; исходная диагностика сохранена."
@@ -50,12 +52,13 @@ def _integrity_conclusions(info, scope, findings, add):
     )
     if "flac_md5" in m:
         f = m["flac_md5"]
+        md5_status = f.get("md5_status", f["status"])
         text = (
             "MD5 декодированного PCM совпал с STREAMINFO FLAC."
-            if f["status"] == "Verified"
+            if md5_status == "Verified"
             else "MD5 декодированного PCM не совпал с STREAMINFO FLAC."
-            if f["status"] == "Failed"
-            else f"Проверка FLAC MD5: {f['status']}. {f['reason']}"
+            if md5_status == "Failed"
+            else f"Проверка FLAC MD5: {md5_status}. {f['reason']}"
         )
         if f["status"] != "Not applicable":
             add(
@@ -63,7 +66,7 @@ def _integrity_conclusions(info, scope, findings, add):
                 "integrity",
                 "Встроенный контроль FLAC",
                 text,
-                "Verified fact" if f["status"] in {"Verified", "Failed"} else "Inconclusive",
+                "Verified fact" if md5_status in {"Verified", "Failed"} else "Inconclusive",
                 ["pcm_integrity.flac_md5"],
                 f,
                 {},
@@ -72,6 +75,19 @@ def _integrity_conclusions(info, scope, findings, add):
                 limitations=[
                     "Сравнивается встроенный digest; независимость происхождения или архивной копии не установлена."
                 ],
+            )
+        if f.get("frame_count_status") == "Failed":
+            add(
+                "integrity.flac-frame-count",
+                "integrity",
+                "Число кадров FLAC не совпало",
+                f"STREAMINFO объявляет {f['expected_frames']} кадров на канал; полностью декодировано {f['decoded_frames']}.",
+                "Verified fact",
+                ["pcm_integrity.flac_md5"],
+                {"expected_frames": f["expected_frames"], "decoded_frames": f["decoded_frames"]},
+                {"expected_frames": "frames/channel", "decoded_frames": "frames/channel"},
+                area,
+                "integrity.declared-versus-decoded-flac-frames",
             )
 
 

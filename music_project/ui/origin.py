@@ -11,7 +11,7 @@ from music_project.core.models import AudioError
 from music_project.core.origin_models import ORIGIN_VERSION
 from music_project.core.origin_reference import investigate_reference
 from music_project.ui.file_picker import choose_file
-from music_project.ui.presentation import duration_text
+from music_project.ui.lossy import show_lossy
 
 HYPOTHESIS_STATUS = {
     "Compatible but not distinguishable": "Совместимо, но неотличимо от альтернатив",
@@ -33,61 +33,79 @@ def _open_reference():
 
 
 def show_origin_report(result, *, expert=False):
+    show_lossy(result, expert=expert)
     finding = result.findings.get("origin_investigation")
     report = finding.measurements if finding else {}
-    st.markdown("**Origin Investigation Report**")
-    info = result.info
-    family = result.findings.get("dsd")
-    format_name = family.measurements["dsd_family"] if family else info.codec.upper()
-    st.text(f"{format_name} · {info.channels} канала · {duration_text(info.duration)}")
-    container = result.findings.get("dsd_container")
-    integrity = result.findings.get("dsd_integrity")
-    if container and container.status == "Failed":
-        st.error(
-            "Проверка структуры контейнера не пройдена. Диагностика сохранена в экспертном режиме."
-        )
-    if integrity and integrity.status == "Failed":
-        st.error(
-            "Декодирование завершилось ошибкой. Полная проверка не подтверждена; см. модуль «Целостность»."
-        )
     if not report:
-        st.text(
-            "Исследование недоступно: "
-            + (finding.summary if finding else "для этого входа нет применимого результата")
-        )
+        st.caption("Дополнительное исследование Origin недоступно; диагностика — в приложении.")
         return
-    st.markdown("**Что найдено**")
-    st.markdown("\n".join("- " + discovery for discovery in report["discoveries"][:5]))
-    compatible = [
-        h for h in report["hypotheses"] if h["status"] == "Compatible but not distinguishable"
+    if (
+        result.info.kind == "DSD"
+        or "lossy_source" not in result.findings
+        or any(b.get("status") == "Measured" for b in report.get("boundaries", []))
+    ):
+        _origin_summary(result, report)
+    if expert:
+        if st.toggle("Численные свидетельства и альтернативы", key="origin_evidence_visible"):
+            _origin_tables(result, report)
+        if st.toggle("Спектральные свидетельства", key="origin_plots_visible"):
+            show_origin_plots(result, report)
+    with st.container(horizontal=True):
+        if not result.scope.get("complete_file") and result.info.kind == "DSD":
+            st.button(
+                "Проверить всю дорожку"
+                if "logical_source" in result.findings
+                else "Проверить весь файл",
+                on_click=_request_full,
+                key="origin_full",
+            )
+        st.button(
+            "Сравнить с референсом",
+            on_click=_open_reference,
+            key="origin_reference_next",
+            disabled="logical_source" in result.findings,
+            help="Сравнение логической дорожки с внешним референсом пока не поддерживается."
+            if "logical_source" in result.findings
+            else None,
+        )
+    if st.toggle("Проверить по референсу", key="origin_reference_visible"):
+        show_reference(result)
+
+
+def _origin_summary(result, report):
+    st.markdown("### Что найдено")
+    # Use scoped Origin statements; the mixed legacy discovery list also contains
+    # decoder summaries and search-method descriptions belonging to other modules.
+    statements = [
+        c
+        for c in result.conclusions
+        if c.category == "origin"
+        and (
+            c.conclusion_id == "origin.boundary-summary"
+            or c.conclusion_id.startswith("origin.noise-regime-")
+        )
     ]
-    st.markdown("**Что это означает**")
-    if compatible:
+    for conclusion in statements[:3]:
+        st.text(conclusion.statement)
+    if not statements:
+        st.text("Отдельной находки в пригодных измерениях нет.")
+    st.markdown("### Что можно заключить")
+    hypotheses = report.get("hypotheses", [])
+    supported = [h for h in hypotheses if h["status"] == "Supported by measured evidence"]
+    compatible = [h for h in hypotheses if h["status"] == "Compatible but not distinguishable"]
+    if supported:
+        st.text(supported[0]["title"] + ": поддержано измеренными признаками в указанной области.")
+    elif compatible:
         st.text(
-            compatible[0]["title"]
-            + ": совместимо с измерениями. Фильтрация и аналоговое ограничение дают похожий результат."
+            compatible[0]["title"] + ": совместимо с измерениями, но не отличается от альтернатив."
         )
     else:
-        st.text(
-            "Измерены границы полосы и изменение высокочастотного фона. "
-            "Экспертный режим показывает кривые и проверенные объяснения."
-        )
-    st.caption(
-        "Остаётся неизвестным: исторический источник и последовательность преобразований; "
-        "формат файла и спектральные признаки этого не доказывают."
-    )
-    if not expert:
-        with st.container(horizontal=True):
-            if not result.scope.get("complete_file") and info.kind == "DSD":
-                st.button("Проверить весь файл", on_click=_request_full, key="origin_full")
-            st.button(
-                "Сравнить с референсом", on_click=_open_reference, key="origin_reference_next"
-            )
-        st.caption(
-            "Подробные измерения, проверенные гипотезы и методика доступны в экспертном режиме. "
-            "Документы о происхождении издания требуют внешней проверки."
-        )
-        return
+        st.text("По измеренным признакам единственный исторический источник не установлен.")
+    st.markdown("### Что остаётся неизвестным")
+    st.text("Исторический источник и последовательность преобразований.")
+
+
+def _origin_tables(result, report):
     st.markdown("**Оценённые гипотезы**")
     st.dataframe(
         [
@@ -99,6 +117,7 @@ def show_origin_report(result, *, expert=False):
                 "Контрпризнаки": " ".join(h["contradicting_evidence"]) or "Не установлены",
             }
             for h in report["hypotheses"]
+            if h["status"] != "Not testable with available data"
         ],
         hide_index=True,
         alt="Гипотезы совместимости и фактические свидетельства",
@@ -107,7 +126,6 @@ def show_origin_report(result, *, expert=False):
         "Гипотезы не взаимоисключающие. Контрпризнаки проверяют простую модель видимой постоянной границы, "
         "а не исключают всю историю PCM/DSD. Вероятности не вычисляются."
     )
-    show_origin_plots(result, report)
     st.markdown("**Измеренные границы и устойчивость по каналам**")
     st.dataframe(
         [
@@ -160,11 +178,6 @@ def show_origin_report(result, *, expert=False):
             hide_index=True,
             alt="Переходы спектрального фона по каналам и временная повторяемость",
         )
-    if st.toggle("Проверить по референсу", key="origin_reference_visible"):
-        show_reference(result)
-    st.markdown("**Метод и ограничения**")
-    for limitation in report["limitations"]:
-        st.text(limitation)
     for key in ("lossy_history", "upsampling", "quantization"):
         if key in result.findings:
             label = {
@@ -175,15 +188,13 @@ def show_origin_report(result, *, expert=False):
             st.markdown(f"**Дополнительные PCM-признаки · {label}**")
             for observation in result.findings[key].observations:
                 st.text(observation.summary)
-    st.caption(
-        "Полные контрольные параметры, пороги, численные результаты и исходные предупреждения: Техническое приложение."
-    )
 
 
 def show_origin_plots(result, report):
     st.caption(
-        "PCM после явного преобразования и независимый native DSD показаны раздельно; "
-        "сглаживание графиков PSD не применяется."
+        "PCM после явного преобразования и независимый native DSD показаны раздельно; сглаживание PSD не применяется."
+        if result.info.kind == "DSD"
+        else f"График декодированного PCM: первые {report.get('scope', {}).get('converted', {}).get('decoded_seconds', 0):g} s, исходная частота, без resampling. Область lossy-исследования указана отдельно."
     )
     candidates = report["boundaries"]
     spectrum = result.findings.get("dsd_audible")
@@ -211,7 +222,7 @@ def show_origin_plots(result, report):
     for title, frequencies, density in plots:
         f, p = np.asarray(frequencies), np.asarray(density)
         show = f <= 160000
-        fig, ax = plt.subplots(figsize=(9, 3.1), layout="constrained")
+        fig, ax = plt.subplots(figsize=(7.2, 2.6), layout="constrained")
         for channel in range(p.shape[1]):
             positive = p[:, channel] > 0
             levels = np.full(len(f), np.nan)
@@ -233,34 +244,13 @@ def show_origin_plots(result, report):
                 )
         ax.set(title=title, xlabel="Частота, kHz", ylabel="PSD, dB re FS²/Hz")
         ax.legend()
-        st.pyplot(fig, alt="Спектр с отмеченными измеренными областями границ")
+        st.pyplot(fig, width=720, alt="Спектр с отмеченными измеренными областями границ")
         plt.close(fig)
-    profile = report["measurement_chain"]
-    if profile.get("status") == "Measured":
-        controls = profile["controls"]
-        fig, ax = plt.subplots(figsize=(9, 2.5), layout="constrained")
-        ax.scatter(
-            [r["frequency_hz"] / 1000 for r in controls],
-            [r["relative_gain_db"] for r in controls],
-            s=20,
-        )
-        ax.axhline(-0.5, color="gray", linestyle=":")
-        ax.set(
-            xlabel="Контрольная частота, kHz",
-            ylabel="Относительно 1 kHz, dB",
-            title="Измеренная характеристика анализатора",
-        )
-        st.pyplot(fig, alt="Дискретные контрольные точки частотной характеристики FFmpeg")
-        plt.close(fig)
-        st.caption(
-            "33 синтетических однобитных тона; измерена амплитуда входа и выхода. "
-            "Контрольные точки не сертифицируют непрерывную АЧХ."
-        )
     noise = report.get("noise", {})
     if noise.get("status") == "Measured":
         f = np.asarray(noise["frequencies_hz"])
         p = np.asarray(noise["median_density_fs2_per_hz"])
-        fig, ax = plt.subplots(figsize=(9, 2.8), layout="constrained")
+        fig, ax = plt.subplots(figsize=(7.2, 2.6), layout="constrained")
         for channel in range(p.shape[1]):
             good = p[:, channel] > 0
             ax.scatter(
@@ -272,13 +262,18 @@ def show_origin_plots(result, report):
             title="Спектральный фон · медианы логарифмических полос",
         )
         ax.legend()
-        st.pyplot(fig, alt="Измеренное изменение медианной спектральной плотности по частоте")
+        st.pyplot(
+            fig, width=720, alt="Измеренное изменение медианной спектральной плотности по частоте"
+        )
         plt.close(fig)
     cells = report["scope"]["temporal"].get("cells", [])
-    if cells and candidates:
+    timeline_candidates = [
+        b for b in candidates if any(c.get("eligible") for c in b.get("channels", []))
+    ]
+    if cells and timeline_candidates:
         candidate = st.selectbox(
             "Граница для проверки по времени",
-            [b["candidate_hz"] for b in candidates],
+            [b["candidate_hz"] for b in timeline_candidates],
             format_func=lambda f: f"{f / 1000:g} kHz",
             key="origin_timeline_candidate",
         )
@@ -295,12 +290,38 @@ def show_origin_plots(result, report):
                 times.append((cell["start_seconds"] + cell["end_seconds"]) / 2)
                 drops.append(float(np.median(values)))
         if times:
-            fig, ax = plt.subplots(figsize=(9, 2.4), layout="constrained")
+            fig, ax = plt.subplots(figsize=(7.2, 2.4), layout="constrained")
             ax.scatter(times, drops, s=20)
             ax.axhline(18, color="gray", linestyle=":")
             ax.set(xlabel="Время, s", ylabel="Спад, dB", title="Проверка временной устойчивости")
-            st.pyplot(fig, alt="Измеренные спады в сохранённых временных ячейках")
+            st.pyplot(fig, width=720, alt="Измеренные спады в сохранённых временных ячейках")
             plt.close(fig)
+
+
+def show_response_controls(report):
+    profile = report["measurement_chain"]
+    if profile.get("status") == "Measured":
+        controls = profile["controls"]
+        fig, ax = plt.subplots(figsize=(7.2, 2.5), layout="constrained")
+        ax.scatter(
+            [r["frequency_hz"] / 1000 for r in controls],
+            [r["relative_gain_db"] for r in controls],
+            s=20,
+        )
+        ax.axhline(-0.5, color="gray", linestyle=":")
+        ax.set(
+            xlabel="Контрольная частота, kHz",
+            ylabel="Относительно 1 kHz, dB",
+            title="Измеренная характеристика анализатора",
+        )
+        st.pyplot(
+            fig, width=720, alt="Дискретные контрольные точки частотной характеристики FFmpeg"
+        )
+        plt.close(fig)
+        st.caption(
+            "33 синтетических однобитных тона; измерена амплитуда входа и выхода. "
+            "Контрольные точки не сертифицируют непрерывную АЧХ."
+        )
 
 
 @st.cache_data(max_entries=2, ttl=600, show_spinner=False)
@@ -313,6 +334,11 @@ def cached_reference(
 
 
 def show_reference(result):
+    if "logical_source" in result.findings:
+        st.info(
+            "Сравнение логической дорожки с внешним референсом пока не поддерживается. Измерения выбранного интервала доступны; сравнение всего исходного альбома вместо дорожки не выполняется."
+        )
+        return
     if st.button("Выбрать референс…", key="choose_origin_reference"):
         try:
             selected = choose_file()
@@ -371,4 +397,4 @@ def show_reference(result):
                     st.metric(
                         label, f"{number:.4g}" if number is not None else "Не интерпретируется"
                     )
-        st.json(value)
+        st.caption("Полный результат сравнения — в техническом приложении.")

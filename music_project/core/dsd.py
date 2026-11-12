@@ -12,7 +12,7 @@ from music_project.core.duration import ffprobe_duration, select_dsd_duration
 from music_project.core.files import signature
 from music_project.core.models import AudioError, AudioInfo, Finding
 
-DSD_METHOD_VERSION = "dsd-2026.11-v2"
+DSD_METHOD_VERSION = "dsd-2026.11-v3"
 DERIVED = "Derived from DSD-to-PCM conversion."
 LIMITS = [
     DERIVED,

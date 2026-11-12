@@ -18,3 +18,5 @@ dist/
 .coverage
 htmlcov/
 /test_audio/
+/_pytest_focus_temp/
+/_pytest_run_temp/

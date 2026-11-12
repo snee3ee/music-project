@@ -71,70 +71,55 @@ def selected_reference(controls=True):
     return saved
 
 
-def show_technical_findings(result, *, expert=False, controls=True, category=None):
-    reference = selected_reference(controls and result.info.kind != "DSD")
+def show_technical_findings(result):
+    """Complete rules/evidence are rendered exclusively in Technical Appendix."""
+    reference = selected_reference(False)
     conclusions = build_conclusions(result.info, result.scope, result.findings, reference)
-    if category:
-        conclusions = [c for c in conclusions if c.category in category]
-    st.markdown("**Technical Findings · Технические выводы**")
-    if expert:
-        st.dataframe(
-            [
-                {
-                    "Вывод": c.title,
-                    "Тип": TYPES.get(c.statement_type, c.statement_type),
-                    "Утверждение": c.statement,
-                    "Область": scope_text(c.analysis_scope),
-                    "Правило": c.rule_id,
-                }
-                for c in conclusions
-            ],
-            hide_index=True,
-            alt="Выводы, типы утверждений, области и детерминированные правила",
+    st.dataframe(
+        [
+            {
+                "Вывод": c.title,
+                "Тип": TYPES.get(c.statement_type, c.statement_type),
+                "Утверждение": c.statement,
+                "Область": scope_text(c.analysis_scope),
+                "Правило": c.rule_id,
+                "Версия": c.rule_version,
+            }
+            for c in conclusions
+        ],
+        hide_index=True,
+        alt="Все выводы, правила, области и версии",
+    )
+    if (
+        st.toggle("Свидетельства выбранного вывода", key="conclusion_evidence_visible")
+        and conclusions
+    ):
+        selected = st.selectbox(
+            "Вывод",
+            range(len(conclusions)),
+            format_func=lambda i: conclusions[i].title,
+            key="conclusion_evidence_selection",
         )
-        if (
-            st.toggle("Свидетельства выбранного вывода", key="conclusion_evidence_visible")
-            and conclusions
-        ):
-            selected = st.selectbox(
-                "Вывод",
-                range(len(conclusions)),
-                format_func=lambda i: conclusions[i].title,
-                key="conclusion_evidence_selection",
-            )
-            st.json(asdict(conclusions[selected]))
-    else:
-        wanted = [
-            "loudness.integrated",
-            "reference.gain-plan",
-            "peaks.true-peak",
-            "peaks.true-peak-zero",
-            "dynamics.lra",
-            "peaks.rails",
-            "integrity.flac-md5",
-            "integrity.decode",
-            "loudness.unavailable",
-        ]
-        chosen = [c for cid in wanted for c in conclusions if c.conclusion_id == cid]
-        if not chosen:
-            chosen = conclusions[:3]
-        for c in chosen[:7]:
-            st.markdown(f"**{c.title}.** {c.statement}")
-    if result.info.kind != "DSD":
-        st.caption(
-            "LUFS: взвешенная громкость с gating. True Peak: оценка пиков между отсчётами. "
-            "LRA: изменение громкости, не качество динамики. Достижение цифрового предела не устанавливает прежнее clipping."
-        )
-        if expert or st.toggle("Громкость и пики по времени", key="technical_timeline_visible"):
-            show_timelines(result)
+        st.json(asdict(conclusions[selected]))
 
 
 def show_timelines(result):
     loudness = result.findings.get("loudness")
     m = loudness.measurements if loudness else {}
     rows = m.get("timeline", [])
-    if rows:
-        fig, ax = plt.subplots(figsize=(9, 3), layout="constrained")
+    finite_loudness = [
+        r[key]
+        for r in rows
+        for key in (
+            "momentary_min_lufs",
+            "momentary_max_lufs",
+            "short_term_min_lufs",
+            "short_term_max_lufs",
+        )
+        if r[key] is not None
+    ]
+    if rows and finite_loudness:
+        fig, ax = plt.subplots(figsize=(7.2, 2.6), layout="constrained")
         t = [(r["start_seconds"] + r["end_seconds"]) / 2 for r in rows]
         for prefix, label, color in [
             ("momentary", "Momentary · 400 ms", "gray"),
@@ -163,21 +148,28 @@ def show_timelines(result):
                 label="Референс Integrated LUFS (не порог M/S)",
             )
         ax.set(xlabel="Время, s", ylabel="Громкость, LUFS", title="Громкость во времени")
+        ax.ticklabel_format(axis="y", style="plain", useOffset=False)
+        if max(finite_loudness) - min(finite_loudness) < 1:
+            middle = (max(finite_loudness) + min(finite_loudness)) / 2
+            ax.set_ylim(middle - 0.5, middle + 0.5)
         ax.legend()
         st.pyplot(
             fig,
+            width=720,
             alt="Измеренные Momentary и Short-term Loudness по времени с огибающей минимума и максимума",
         )
         plt.close(fig)
-        st.caption(
-            scope_text(m.get("scope", {}))
-            + ". Данные 10 Hz; при объединении ячеек сохранены min/max. Пропуски не заменяются нулём; кривая S — не Integrated LUFS."
-        )
+        st.caption("M: 400 ms · S: 3 s · 10 Hz; объединённые ячейки сохраняют min/max.")
+    elif rows:
+        st.caption("Нет конечных измерений в полных окнах M/S; график громкости не строится.")
     finding = result.findings.get("full_peaks")
     p = finding.measurements if finding else {}
     rows = p.get("timeline", [])
+    if rows and not any(any(value > 0 for value in r["peak_linear"]) for r in rows):
+        st.caption("Пики и RMS: нулевая амплитуда (−∞ dBFS); конечных значений для графика нет.")
+        return
     if rows:
-        fig, ax = plt.subplots(figsize=(9, 3), layout="constrained")
+        fig, ax = plt.subplots(figsize=(7.2, 2.6), layout="constrained")
         t = [(r["start_seconds"] + r["end_seconds"]) / 2 for r in rows]
         channels = result.info.channels
         for ch in range(channels):
@@ -201,10 +193,9 @@ def show_timelines(result):
         )
         ax.legend()
         st.pyplot(
-            fig, alt="Пики отсчётов по каналам, времени и выбранный порог около цифрового предела"
+            fig,
+            width=720,
+            alt="Пики отсчётов по каналам, времени и выбранный порог около цифрового предела",
         )
         plt.close(fig)
-        st.caption(
-            scope_text(p.get("scope", {}))
-            + ". Начальные ячейки 100 ms; объединённые сохраняют максимум и суммарную энергию. Нулевые амплитуды не рисуются как 0 dBFS."
-        )
+        st.caption("Ячейки 100 ms; объединение сохраняет пики и энергию.")

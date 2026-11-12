@@ -169,10 +169,20 @@ def quantization(context: PCMContext) -> Finding:
     # Float64 exactly represents all 24-bit integers. Decode preserves native scale.
     budget = max(1, 1_000_000 // info.channels)
     selected = []
+    population = []
+    strides = []
+    off_grid = 0
     for channel in context.samples.T:
         values = np.rint(channel * (1 << 23)).astype(np.int64)
         nonzero = values[values != 0]
-        selected.append(nonzero[:: max(1, math.ceil(nonzero.size / budget))])
+        # Values are already loaded for this bounded decoded prefix. Check the
+        # exact grid over all of them; deterministic entropy strides may alias a
+        # periodic alternating grid/off-grid signal.
+        off_grid += int(np.count_nonzero(nonzero & 255))
+        population.append(int(nonzero.size))
+        stride = max(1, math.ceil(nonzero.size / budget))
+        strides.append(stride)
+        selected.append(nonzero[::stride])
     active = np.concatenate(selected)
     if active.size < 1000:
         return Finding(
@@ -192,14 +202,14 @@ def quantization(context: PCMContext) -> Finding:
     counts = np.bincount(low, minlength=256)
     p = counts[counts > 0] / active.size
     entropy = float(-np.sum(p * np.log2(p)))
-    zero = float(np.mean(low == 0) * 100)
+    zero = (sum(population) - off_grid) / sum(population) * 100
     distinct = int(np.unique(active).size)
-    padded = bool(np.all(low == 0))
+    padded = off_grid == 0
     return Finding(
         "Direct 16→24 padding evidence" if padded else "No direct-padding evidence",
-        "Все активные samples выборки лежат на 16-bit grid; это совместимо с 16→24 Padding."
+        "Все активные samples проверенного фрагмента лежат на 16-bit grid; это совместимо с 16→24 Padding."
         if padded
-        else "В выборке есть ненулевые младшие 8 bits: прямой 16→24 Padding не описывает всю выборку.",
+        else "В проверенном фрагменте есть ненулевые младшие 8 bits: прямой 16→24 Padding не описывает весь фрагмент.",
         {
             "zero_lower_byte_percent": zero,
             "distinct_lower_bytes": int(np.count_nonzero(counts)),
@@ -208,7 +218,13 @@ def quantization(context: PCMContext) -> Finding:
             "normalized_entropy": entropy / 8,
             "active_samples": int(active.size),
             "compatible_with_65536_output_levels": distinct <= 65536,
-            "sampling": "nonzero samples per channel, deterministic stride, total max 1,000,000",
+            "grid_checked_active_samples": sum(population),
+            "grid_off_grid_samples": off_grid,
+            "active_samples_per_channel": population,
+            "entropy_samples_per_channel": [int(len(values)) for values in selected],
+            "entropy_stride_per_channel": strides,
+            "sampling": "exact grid/zero-byte fraction over every active decoded-prefix sample; entropy/distinct counts use per-channel deterministic strides, total max 1,000,000",
+            "validation_status": "Exact decoded-prefix grid; sampled entropy/counts do not establish historical bit depth",
         },
         "Samples представлены как signed 24-bit; lower byte — младшие 8 bits; "
         "Shannon entropy вычисляется по распределению lower bytes.",
@@ -218,7 +234,7 @@ def quantization(context: PCMContext) -> Finding:
             Observation(
                 "PADDING_GRID",
                 "Detected" if padded else "Not detected",
-                "16-bit grid обнаружен: младшие 8 bits нулевые у всех активных samples выборки."
+                "16-bit grid обнаружен: младшие 8 bits нулевые у всех активных samples проверенного фрагмента."
                 if padded
                 else f"16-bit grid отсутствует у части samples: нулевой lower byte у {zero:.2f}%.",
                 zero,
@@ -368,16 +384,14 @@ def spectral_findings(context: PCMContext) -> tuple[Finding, Finding]:
         for c in range(14000, 21001, 1000)
         if c + 1200 < info.sample_rate / 2 and (m := boundary(c))
     ]
-    best = max(candidates, key=lambda m: m["drop_db"], default=None)
     useful = occupancy >= 0.5
-    evidence = bool(
-        useful
-        and best
-        and best["below_db_relative"] > -35
-        and best["drop_db"] >= 20
-        and best["above_db_relative"] <= -40
-    )
-    cutoff_evaluable = bool(useful and best and best["below_db_relative"] > -35)
+    eligible = [m for m in candidates if useful and m["below_db_relative"] > -35]
+    passing = [m for m in eligible if m["drop_db"] >= 20 and m["above_db_relative"] <= -40]
+    # Test every candidate against all unchanged guards before ranking. A larger
+    # ratio that fails one guard cannot hide a separate, fully passing boundary.
+    best = max(passing or eligible or candidates, key=lambda m: m["drop_db"], default=None)
+    evidence = bool(passing)
+    cutoff_evaluable = bool(eligible)
     cutoff_observation = Observation(
         "CUTOFF",
         "Detected" if evidence else "Not detected" if cutoff_evaluable else "Insufficient data",
@@ -405,6 +419,8 @@ def spectral_findings(context: PCMContext) -> tuple[Finding, Finding]:
             "candidate": best,
             "reference_occupancy": occupancy,
             "checked_boundaries_hz": [m["boundary_hz"] for m in candidates],
+            "candidates": candidates,
+            "validation_status": "Experimental spectral compatibility; not a source-codec classifier",
             "thresholds": {
                 "drop_db_min": 20,
                 "above_db_max": -40,
@@ -480,6 +496,7 @@ def spectral_findings(context: PCMContext) -> tuple[Finding, Finding]:
             "band_22300_23700_db": upper_band,
             "above_24k_db": above_24,
             "source_rate": "Unknown",
+            "validation_status": "Experimental bandwidth compatibility; historical source rate is unknown",
             "thresholds": loss.measurements["thresholds"],
         },
         method,

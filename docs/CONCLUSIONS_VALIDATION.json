@@ -1,0 +1,846 @@
+{
+  "date": "2026-11-10",
+  "app_version": "0.2.4.dev0",
+  "method_version": "2026.11-v6",
+  "conclusions_version": "conclusions-2026.11-v1",
+  "technical_pcm_version": "technical-pcm-2026.11-v1",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.13.15",
+    "ffmpeg": "9.0.2",
+    "streamlit": "1.66.1"
+  },
+  "baseline_tests": {
+    "passed": 260,
+    "failed": 0,
+    "skipped": 2,
+    "seconds": 82.7
+  },
+  "full_regression": {
+    "passed": 319,
+    "failed": 0,
+    "skipped": 1,
+    "seconds": 116.04,
+    "skip": "Real SACD fixture/backend unavailable",
+    "real_dsf_fixture_enabled": true
+  },
+  "post_chart_display_change_ui_tests": {
+    "passed": 3,
+    "failed": 0,
+    "skipped": 0,
+    "seconds": 6.8
+  },
+  "static_checks": {
+    "ruff_check": "Passed",
+    "ruff_format": "85 files already formatted",
+    "compileall": "Passed",
+    "git_diff_check": "Passed; LF/CRLF conversion notices only"
+  },
+  "cases": [
+    {
+      "generated_fixture": "anchor",
+      "scope": {
+        "start_seconds": 0,
+        "end_seconds": 20.0,
+        "analyzed_seconds": 20.0,
+        "total_seconds": 20.0,
+        "complete_file": true,
+        "frames": 960000,
+        "sample_rate_hz": 48000,
+        "channels": 2,
+        "domain": "PCM",
+        "processing": "Native rate/channel order, decoded float64; no gain",
+        "ranges": []
+      },
+      "source_unchanged": true,
+      "selected_reference": {
+        "name": "Explicit custom reference",
+        "loudness_lufs": -14,
+        "peak_ceiling_dbtp": -1,
+        "source": "Custom user-selected reference"
+      },
+      "measured": {
+        "integrated_lufs": -23.0,
+        "true_peak_dbtp": -22.99330375970996,
+        "lra_lu": 0.0,
+        "maximum_momentary": {
+          "lufs": -22.993,
+          "start_seconds": 0.09999999999999998,
+          "end_seconds": 0.5
+        },
+        "maximum_short_term": {
+          "lufs": -22.993,
+          "start_seconds": 0,
+          "end_seconds": 3.0
+        },
+        "minimum_short_term": {
+          "lufs": -22.993,
+          "start_seconds": 0,
+          "end_seconds": 3.0
+        },
+        "short_term_quantiles": {
+          "p10_lufs": -23.0,
+          "p50_lufs": -23.0,
+          "p90_lufs": -23.0
+        },
+        "sample_peak_dbfs": -22.999999518003015,
+        "sample_peak_per_channel_dbfs": [
+          -22.999999518003015,
+          -22.999999518003015
+        ],
+        "rms_dbfs": -26.01030315254471,
+        "crest_factor_db": 3.0103036345416934,
+        "full_scale_samples_per_channel": [
+          0,
+          0
+        ],
+        "near_ceiling_dbfs": -1.0,
+        "near_ceiling_samples_per_channel": [
+          0,
+          0
+        ],
+        "near_ceiling_density_per_channel": [
+          0.0,
+          0.0
+        ],
+        "rail_runs_per_channel": [
+          0,
+          0
+        ],
+        "possible_flat_top_runs_per_channel": [
+          0,
+          0
+        ]
+      },
+      "integrity": {
+        "decode_status": "Passed",
+        "flac_md5": {
+          "status": "Verified",
+          "md5_status": "Verified",
+          "frame_count_status": "Verified",
+          "reason": "Embedded MD5 matched after complete native PCM decoding",
+          "expected_md5": "0d18238e9dbf04adf60fe0ca2b11a4e8",
+          "calculated_md5": "0d18238e9dbf04adf60fe0ca2b11a4e8",
+          "expected_frames": 960000,
+          "decoded_frames": 960000,
+          "method": "RFC9639 STREAMINFO MD5 of signed interleaved little-endian native PCM; no resampling/gain",
+          "limitation": "Matches the embedded digest, not an authenticated external archive; zero digest is not verification"
+        },
+        "container_status": "Not independently checked",
+        "warning_events": 0,
+        "warnings": []
+      },
+      "selected_actual_conclusions": [
+        {
+          "conclusion_id": "loudness.integrated",
+          "category": "loudness",
+          "title": "Интегральная громкость",
+          "statement": "Измерено -23.00 LUFS: весь декодированный аудиопоток, 20.000 s.",
+          "statement_type": "Measured fact",
+          "measurement_ids": [
+            "loudness.integrated_lufs"
+          ],
+          "measured_values": {
+            "integrated_lufs": -23.0
+          },
+          "measurement_units": {
+            "integrated_lufs": "LUFS"
+          },
+          "analysis_scope": {
+            "start_seconds": 0,
+            "end_seconds": 20.0,
+            "analyzed_seconds": 20.0,
+            "total_seconds": 20.0,
+            "complete_file": true,
+            "frames": 960000,
+            "sample_rate_hz": 48000,
+            "channels": 2,
+            "domain": "PCM",
+            "processing": "Native rate/channel order, decoded float64; no gain",
+            "ranges": []
+          },
+          "rule_id": "loudness.valid-integrated",
+          "applicability": "Only the stated measurement domain and coverage",
+          "validation_status": "Deterministic rule; tested controls documented",
+          "limitations": [
+            "LUFS характеризует сигнал с частотным взвешиванием и gating; это не положение регулятора и не акустическая громкость."
+          ],
+          "reference_value": null,
+          "reference_source": null,
+          "severity": null,
+          "suggested_next_action": null,
+          "rule_version": "conclusions-2026.11-v1"
+        },
+        {
+          "conclusion_id": "reference.gain-plan",
+          "category": "reference",
+          "title": "Расчёт без изменения файла",
+          "statement": "Относительно выбранного -14.00 LUFS: ниже на 9.000 LU. Расчёт линейного gain: +9.000 dB. Расчётный True Peak после такого gain: -13.993 dBTP. По текущей оценке этот gain также соблюдает выбранный потолок.",
+          "statement_type": "Mathematical derivation",
+          "measurement_ids": [
+            "loudness.integrated_lufs",
+            "loudness.true_peak_dbtp"
+          ],
+          "measured_values": {
+            "difference_lu": -9.0,
+            "target_gain_db": 9.0,
+            "predicted_true_peak_dbtp": -13.99330375970996,
+            "maximum_gain_from_ceiling_db": 21.99330375970996,
+            "gain_only_target_achievable": true,
+            "ceiling_constrained_gain_db": 9.0,
+            "resulting_loudness_lufs": -14.0
+          },
+          "measurement_units": {
+            "difference_lu": "LU",
+            "target_gain_db": "dB",
+            "predicted_true_peak_dbtp": "dBTP",
+            "maximum_gain_from_ceiling_db": "dB",
+            "gain_only_target_achievable": "boolean",
+            "ceiling_constrained_gain_db": "dB",
+            "resulting_loudness_lufs": "LUFS"
+          },
+          "analysis_scope": {
+            "start_seconds": 0,
+            "end_seconds": 20.0,
+            "analyzed_seconds": 20.0,
+            "total_seconds": 20.0,
+            "complete_file": true,
+            "frames": 960000,
+            "sample_rate_hz": 48000,
+            "channels": 2,
+            "domain": "PCM",
+            "processing": "Native rate/channel order, decoded float64; no gain",
+            "ranges": []
+          },
+          "rule_id": "reference.target-minus-measured-and-ceiling",
+          "applicability": "Only the stated measurement domain and coverage",
+          "validation_status": "Deterministic rule; tested controls documented",
+          "limitations": [
+            "Только математический линейный gain; файл не изменяется. Не моделируются limiter, кодирование или алгоритм конкретного сервиса.",
+            "Прогноз LUFS предполагает неизменный набор gating-блоков. При изменении абсолютного gating требуется повторное измерение результата."
+          ],
+          "reference_value": {
+            "loudness_lufs": -14,
+            "peak_ceiling_dbtp": -1
+          },
+          "reference_source": "Custom user-selected reference",
+          "severity": null,
+          "suggested_next_action": null,
+          "rule_version": "conclusions-2026.11-v1"
+        },
+        {
+          "conclusion_id": "integrity.flac-md5",
+          "category": "integrity",
+          "title": "Встроенный контроль FLAC",
+          "statement": "MD5 декодированного PCM совпал с STREAMINFO FLAC.",
+          "statement_type": "Verified fact",
+          "measurement_ids": [
+            "pcm_integrity.flac_md5"
+          ],
+          "measured_values": {
+            "status": "Verified",
+            "md5_status": "Verified",
+            "frame_count_status": "Verified",
+            "reason": "Embedded MD5 matched after complete native PCM decoding",
+            "expected_md5": "0d18238e9dbf04adf60fe0ca2b11a4e8",
+            "calculated_md5": "0d18238e9dbf04adf60fe0ca2b11a4e8",
+            "expected_frames": 960000,
+            "decoded_frames": 960000,
+            "method": "RFC9639 STREAMINFO MD5 of signed interleaved little-endian native PCM; no resampling/gain",
+            "limitation": "Matches the embedded digest, not an authenticated external archive; zero digest is not verification"
+          },
+          "measurement_units": {},
+          "analysis_scope": {
+            "start_seconds": 0,
+            "end_seconds": 20.0,
+            "analyzed_seconds": 20.0,
+            "total_seconds": 20.0,
+            "complete_file": true,
+            "frames": 960000,
+            "sample_rate_hz": 48000,
+            "channels": 2,
+            "domain": "PCM",
+            "processing": "Native rate/channel order, decoded float64; no gain",
+            "ranges": []
+          },
+          "rule_id": "integrity.flac-native-md5",
+          "applicability": "Only the stated measurement domain and coverage",
+          "validation_status": "Deterministic rule; tested controls documented",
+          "limitations": [
+            "Сравнивается встроенный digest; независимость происхождения или архивной копии не установлена."
+          ],
+          "reference_value": null,
+          "reference_source": null,
+          "severity": null,
+          "suggested_next_action": null,
+          "rule_version": "conclusions-2026.11-v1"
+        }
+      ]
+    },
+    {
+      "generated_fixture": "intersample",
+      "scope": {
+        "start_seconds": 0,
+        "end_seconds": 4.0,
+        "analyzed_seconds": 4.0,
+        "total_seconds": 4.0,
+        "complete_file": true,
+        "frames": 192000,
+        "sample_rate_hz": 48000,
+        "channels": 2,
+        "domain": "PCM",
+        "processing": "Native rate/channel order, decoded float64; no gain",
+        "ranges": []
+      },
+      "source_unchanged": true,
+      "selected_reference": {
+        "name": "Explicit custom reference",
+        "loudness_lufs": -14,
+        "peak_ceiling_dbtp": -1,
+        "source": "Custom user-selected reference"
+      },
+      "measured": {
+        "integrated_lufs": 4.166,
+        "true_peak_dbtp": 0.8725450485745517,
+        "lra_lu": 0.01,
+        "maximum_momentary": {
+          "lufs": 4.18,
+          "start_seconds": 0.09999999999999998,
+          "end_seconds": 0.5
+        },
+        "maximum_short_term": {
+          "lufs": 4.18,
+          "start_seconds": 0.10000000000000009,
+          "end_seconds": 3.1
+        },
+        "minimum_short_term": {
+          "lufs": 4.17,
+          "start_seconds": 0,
+          "end_seconds": 3.0
+        },
+        "short_term_quantiles": {
+          "p10_lufs": 4.199999999999989,
+          "p50_lufs": 4.199999999999989,
+          "p90_lufs": 4.199999999999989
+        },
+        "sample_peak_dbfs": -2.1824459362043274,
+        "sample_peak_per_channel_dbfs": [
+          -2.1824459362043274,
+          -2.1824459362043274
+        ],
+        "rms_dbfs": -2.1969692801436254,
+        "crest_factor_db": 0.014523343939296975,
+        "full_scale_samples_per_channel": [
+          0,
+          0
+        ],
+        "near_ceiling_dbfs": -1.0,
+        "near_ceiling_samples_per_channel": [
+          0,
+          0
+        ],
+        "near_ceiling_density_per_channel": [
+          0.0,
+          0.0
+        ],
+        "rail_runs_per_channel": [
+          0,
+          0
+        ],
+        "possible_flat_top_runs_per_channel": [
+          0,
+          0
+        ]
+      },
+      "integrity": {
+        "decode_status": "Passed",
+        "flac_md5": {
+          "status": "Not applicable",
+          "md5_status": "Not applicable",
+          "frame_count_status": "Unknown",
+          "reason": "Not native FLAC",
+          "expected_md5": null,
+          "calculated_md5": null,
+          "expected_frames": null,
+          "decoded_frames": 192000,
+          "method": "RFC9639 STREAMINFO MD5 of signed interleaved little-endian native PCM; no resampling/gain",
+          "limitation": "Matches the embedded digest, not an authenticated external archive; zero digest is not verification"
+        },
+        "container_status": "Not independently checked",
+        "warning_events": 1,
+        "warnings": [
+          "[aist#0:0/pcm_s24le @ 00000283131ad3c0] [warning] Guessed Channel Layout: stereo"
+        ]
+      },
+      "selected_actual_conclusions": [
+        {
+          "conclusion_id": "peaks.true-peak",
+          "category": "peaks",
+          "title": "Реконструированный пик",
+          "statement": "Оценка True Peak: 0.873 dBTP, выше 0 dBTP на 0.873 dB (весь декодированный аудиопоток, 4.000 s).",
+          "statement_type": "Measured fact",
+          "measurement_ids": [
+            "loudness.true_peak_dbtp"
+          ],
+          "measured_values": {
+            "true_peak_dbtp": 0.8725450485745517,
+            "margin_to_zero_db": -0.8725450485745517
+          },
+          "measurement_units": {
+            "true_peak_dbtp": "dBTP",
+            "margin_to_zero_db": "dB"
+          },
+          "analysis_scope": {
+            "start_seconds": 0,
+            "end_seconds": 4.0,
+            "analyzed_seconds": 4.0,
+            "total_seconds": 4.0,
+            "complete_file": true,
+            "frames": 192000,
+            "sample_rate_hz": 48000,
+            "channels": 2,
+            "domain": "PCM",
+            "processing": "Native rate/channel order, decoded float64; no gain",
+            "ranges": []
+          },
+          "rule_id": "peaks.zero-margin",
+          "applicability": "Only the stated measurement domain and coverage",
+          "validation_status": "Reconstruction estimator; selected ITU/EBU controls, not blanket standards certification",
+          "limitations": [
+            "Оценка ограничена FIR и частотой дискретизации. Не устанавливает исторический clipping или безопасность любой цепочки воспроизведения."
+          ],
+          "reference_value": null,
+          "reference_source": null,
+          "severity": "above-zero reconstructed estimate",
+          "suggested_next_action": null,
+          "rule_version": "conclusions-2026.11-v1"
+        },
+        {
+          "conclusion_id": "peaks.intersample-difference",
+          "category": "peaks",
+          "title": "True Peak и Sample Peak",
+          "statement": "Оценка True Peak численно выше Sample Peak на 3.055 dB в той же области.",
+          "statement_type": "Mathematical derivation",
+          "measurement_ids": [
+            "loudness.true_peak_dbtp",
+            "full_peaks.sample_peak_dbfs"
+          ],
+          "measured_values": {
+            "difference_db": 3.054990984778879,
+            "above_zero_intersample_db": 0.8725450485745517
+          },
+          "measurement_units": {
+            "difference_db": "dB",
+            "above_zero_intersample_db": "dB"
+          },
+          "analysis_scope": {
+            "start_seconds": 0,
+            "end_seconds": 4.0,
+            "analyzed_seconds": 4.0,
+            "total_seconds": 4.0,
+            "complete_file": true,
+            "frames": 192000,
+            "sample_rate_hz": 48000,
+            "channels": 2,
+            "domain": "PCM",
+            "processing": "Native rate/channel order, decoded float64; no gain",
+            "ranges": []
+          },
+          "rule_id": "peaks.matched-tp-minus-sp",
+          "applicability": "Only the stated measurement domain and coverage",
+          "validation_status": "Deterministic rule; tested controls documented",
+          "limitations": [],
+          "reference_value": null,
+          "reference_source": null,
+          "severity": null,
+          "suggested_next_action": null,
+          "rule_version": "conclusions-2026.11-v1"
+        },
+        {
+          "conclusion_id": "peaks.rails",
+          "category": "clipping",
+          "title": "Отсчёты на цифровом пределе",
+          "statement": "Отсчётов, достигших цифрового предела: 0; по каналам [0, 0] (весь декодированный аудиопоток, 4.000 s).",
+          "statement_type": "Measured fact",
+          "measurement_ids": [
+            "full_peaks.full_scale_samples_per_channel"
+          ],
+          "measured_values": {
+            "count": 0,
+            "per_channel": [
+              0,
+              0
+            ],
+            "positive_rail": 0.9999998807907104,
+            "negative_rail": -1.0
+          },
+          "measurement_units": {
+            "count": "samples",
+            "per_channel": "samples",
+            "positive_rail": "FS",
+            "negative_rail": "FS"
+          },
+          "analysis_scope": {
+            "start_seconds": 0,
+            "end_seconds": 4.0,
+            "analyzed_seconds": 4.0,
+            "total_seconds": 4.0,
+            "complete_file": true,
+            "frames": 192000,
+            "sample_rate_hz": 48000,
+            "channels": 2,
+            "domain": "PCM",
+            "processing": "Native rate/channel order, decoded float64; no gain",
+            "ranges": []
+          },
+          "rule_id": "peaks.exact-signed-rails",
+          "applicability": "Only the stated measurement domain and coverage",
+          "validation_status": "Deterministic rule; tested controls documented",
+          "limitations": [
+            "Нулевое число не исключает ранее выполненное ограничение. Достижение предела не доказывает историческую причину."
+          ],
+          "reference_value": null,
+          "reference_source": null,
+          "severity": null,
+          "suggested_next_action": null,
+          "rule_version": "conclusions-2026.11-v1"
+        }
+      ]
+    },
+    {
+      "generated_fixture": "levels",
+      "scope": {
+        "start_seconds": 0,
+        "end_seconds": 40.0,
+        "analyzed_seconds": 40.0,
+        "total_seconds": 40.0,
+        "complete_file": true,
+        "frames": 1920000,
+        "sample_rate_hz": 48000,
+        "channels": 2,
+        "domain": "PCM",
+        "processing": "Native rate/channel order, decoded float64; no gain",
+        "ranges": []
+      },
+      "source_unchanged": true,
+      "selected_reference": {
+        "name": "Explicit custom reference",
+        "loudness_lufs": -14,
+        "peak_ceiling_dbtp": -1,
+        "source": "Custom user-selected reference"
+      },
+      "measured": {
+        "integrated_lufs": -22.596,
+        "true_peak_dbtp": -19.993302123564984,
+        "lra_lu": 10.0,
+        "maximum_momentary": {
+          "lufs": -19.993,
+          "start_seconds": 0.09999999999999998,
+          "end_seconds": 0.5
+        },
+        "maximum_short_term": {
+          "lufs": -19.993,
+          "start_seconds": 0,
+          "end_seconds": 3.0
+        },
+        "minimum_short_term": {
+          "lufs": -29.993,
+          "start_seconds": 20.0,
+          "end_seconds": 23.0
+        },
+        "short_term_quantiles": {
+          "p10_lufs": -30.0,
+          "p50_lufs": -22.599999999999994,
+          "p90_lufs": -20.0
+        },
+        "sample_peak_dbfs": -19.99999792912278,
+        "sample_peak_per_channel_dbfs": [
+          -19.99999792912278,
+          -19.99999792912278
+        ],
+        "rms_dbfs": -25.606674298004457,
+        "crest_factor_db": 5.606676368881675,
+        "full_scale_samples_per_channel": [
+          0,
+          0
+        ],
+        "near_ceiling_dbfs": -1.0,
+        "near_ceiling_samples_per_channel": [
+          0,
+          0
+        ],
+        "near_ceiling_density_per_channel": [
+          0.0,
+          0.0
+        ],
+        "rail_runs_per_channel": [
+          0,
+          0
+        ],
+        "possible_flat_top_runs_per_channel": [
+          0,
+          0
+        ]
+      },
+      "integrity": {
+        "decode_status": "Passed",
+        "flac_md5": {
+          "status": "Not applicable",
+          "md5_status": "Not applicable",
+          "frame_count_status": "Unknown",
+          "reason": "Not native FLAC",
+          "expected_md5": null,
+          "calculated_md5": null,
+          "expected_frames": null,
+          "decoded_frames": 1920000,
+          "method": "RFC9639 STREAMINFO MD5 of signed interleaved little-endian native PCM; no resampling/gain",
+          "limitation": "Matches the embedded digest, not an authenticated external archive; zero digest is not verification"
+        },
+        "container_status": "Not independently checked",
+        "warning_events": 1,
+        "warnings": [
+          "[aist#0:0/pcm_s24le @ 0000024600ddb0c0] [warning] Guessed Channel Layout: stereo"
+        ]
+      },
+      "selected_actual_conclusions": [
+        {
+          "conclusion_id": "dynamics.lra",
+          "category": "dynamics",
+          "title": "Изменение громкости",
+          "statement": "Loudness Range: 10.00 LU (весь декодированный аудиопоток, 40.000 s); разброс кратковременной громкости по методу LRA.",
+          "statement_type": "Measured fact",
+          "measurement_ids": [
+            "loudness.lra_lu"
+          ],
+          "measured_values": {
+            "lra_lu": 10.0
+          },
+          "measurement_units": {
+            "lra_lu": "LU"
+          },
+          "analysis_scope": {
+            "start_seconds": 0,
+            "end_seconds": 40.0,
+            "analyzed_seconds": 40.0,
+            "total_seconds": 40.0,
+            "complete_file": true,
+            "frames": 1920000,
+            "sample_rate_hz": 48000,
+            "channels": 2,
+            "domain": "PCM",
+            "processing": "Native rate/channel order, decoded float64; no gain",
+            "ranges": []
+          },
+          "rule_id": "loudness.lra",
+          "applicability": "Only the stated measurement domain and coverage",
+          "validation_status": "Deterministic rule; tested controls documented",
+          "limitations": [
+            "LRA не является полной оценкой динамического диапазона и не определяет качество или тип компрессии."
+          ],
+          "reference_value": null,
+          "reference_source": null,
+          "severity": null,
+          "suggested_next_action": null,
+          "rule_version": "conclusions-2026.11-v1"
+        }
+      ]
+    },
+    {
+      "generated_fixture": "plateau",
+      "scope": {
+        "start_seconds": 0,
+        "end_seconds": 4.0,
+        "analyzed_seconds": 4.0,
+        "total_seconds": 4.0,
+        "complete_file": true,
+        "frames": 192000,
+        "sample_rate_hz": 48000,
+        "channels": 2,
+        "domain": "PCM",
+        "processing": "Native rate/channel order, decoded float64; no gain",
+        "ranges": []
+      },
+      "source_unchanged": true,
+      "selected_reference": {
+        "name": "Explicit custom reference",
+        "loudness_lufs": -14,
+        "peak_ceiling_dbtp": -1,
+        "source": "Custom user-selected reference"
+      },
+      "measured": {
+        "integrated_lufs": -8.581,
+        "true_peak_dbtp": 1.6436418704402498,
+        "lra_lu": 0.06,
+        "maximum_momentary": {
+          "lufs": -8.569,
+          "start_seconds": 0.09999999999999998,
+          "end_seconds": 0.5
+        },
+        "maximum_short_term": {
+          "lufs": -8.569,
+          "start_seconds": 0.10000000000000009,
+          "end_seconds": 3.1
+        },
+        "minimum_short_term": {
+          "lufs": -8.624,
+          "start_seconds": 0,
+          "end_seconds": 3.0
+        },
+        "short_term_quantiles": {
+          "p10_lufs": -8.599999999999994,
+          "p50_lufs": -8.599999999999994,
+          "p90_lufs": -8.599999999999994
+        },
+        "sample_peak_dbfs": -0.3545749940623943,
+        "sample_peak_per_channel_dbfs": [
+          -0.3545749940623943,
+          -0.3545749940623943
+        ],
+        "rms_dbfs": -0.35457499406608484,
+        "crest_factor_db": 3.691445541965199e-12,
+        "full_scale_samples_per_channel": [
+          0,
+          0
+        ],
+        "near_ceiling_dbfs": -1.0,
+        "near_ceiling_samples_per_channel": [
+          192000,
+          192000
+        ],
+        "near_ceiling_density_per_channel": [
+          1.0,
+          1.0
+        ],
+        "rail_runs_per_channel": [
+          0,
+          0
+        ],
+        "possible_flat_top_runs_per_channel": [
+          80,
+          80
+        ]
+      },
+      "integrity": {
+        "decode_status": "Passed",
+        "flac_md5": {
+          "status": "Not applicable",
+          "md5_status": "Not applicable",
+          "frame_count_status": "Unknown",
+          "reason": "Not native FLAC",
+          "expected_md5": null,
+          "calculated_md5": null,
+          "expected_frames": null,
+          "decoded_frames": 192000,
+          "method": "RFC9639 STREAMINFO MD5 of signed interleaved little-endian native PCM; no resampling/gain",
+          "limitation": "Matches the embedded digest, not an authenticated external archive; zero digest is not verification"
+        },
+        "container_status": "Not independently checked",
+        "warning_events": 1,
+        "warnings": [
+          "[aist#0:0/pcm_s24le @ 0000015a0efcdd80] [warning] Guessed Channel Layout: stereo"
+        ]
+      },
+      "selected_actual_conclusions": [
+        {
+          "conclusion_id": "clipping.plateaus",
+          "category": "clipping",
+          "title": "Постоянные участки около предела",
+          "statement": "Найдено 160 постоянных участков из ≥3 одинаковых отсчётов при |sample|≥-1 dBFS (весь декодированный аудиопоток, 4.000 s). Признак совместим с ограничением, но не уникален для него.",
+          "statement_type": "Rule-based technical conclusion",
+          "measurement_ids": [
+            "full_peaks.possible_flat_top_runs"
+          ],
+          "measured_values": {
+            "events": 160,
+            "threshold_dbfs": -1.0
+          },
+          "measurement_units": {
+            "events": "events",
+            "threshold_dbfs": "dBFS"
+          },
+          "analysis_scope": {
+            "start_seconds": 0,
+            "end_seconds": 4.0,
+            "analyzed_seconds": 4.0,
+            "total_seconds": 4.0,
+            "complete_file": true,
+            "frames": 192000,
+            "sample_rate_hz": 48000,
+            "channels": 2,
+            "domain": "PCM",
+            "processing": "Native rate/channel order, decoded float64; no gain",
+            "ranges": []
+          },
+          "rule_id": "clipping.exact-plateau-three",
+          "applicability": "Only the stated measurement domain and coverage",
+          "validation_status": "Deterministic rule; tested controls documented",
+          "limitations": [
+            "Прямоугольные/естественно постоянные формы, DC и намеренная обработка также дают такой признак. Исторический clipping не подтверждён."
+          ],
+          "reference_value": null,
+          "reference_source": null,
+          "severity": null,
+          "suggested_next_action": null,
+          "rule_version": "conclusions-2026.11-v1"
+        }
+      ]
+    }
+  ],
+  "performance": [
+    {
+      "duration": 20.0,
+      "input_mib": 5.493206024169922,
+      "legacy_loudnorm_seconds": 0.5530830000061542,
+      "legacy_python_allocator_peak_mib": 1.0361404418945312,
+      "new_stream_seconds_with_tracemalloc": 0.5319311000057496,
+      "python_allocator_peak_mib": 12.629685401916504,
+      "retained_peak_rows": 200,
+      "retained_loudness_rows": 200,
+      "warning": "Both paths use tracemalloc; legacy is a component, not the whole previous application. No speedup claim. Allocator peak excludes FFmpeg/RSS."
+    },
+    {
+      "duration": 240.0,
+      "input_mib": 65.91801071166992,
+      "legacy_loudnorm_seconds": 6.354651100002229,
+      "legacy_python_allocator_peak_mib": 1.0401687622070312,
+      "new_stream_seconds_with_tracemalloc": 5.617356100003235,
+      "python_allocator_peak_mib": 13.94609546661377,
+      "retained_peak_rows": 1376,
+      "retained_loudness_rows": 1376,
+      "warning": "Both paths use tracemalloc; legacy is a component, not the whole previous application. No speedup claim. Allocator peak excludes FFmpeg/RSS."
+    }
+  ],
+  "rendered_browser": {
+    "app_version_visible": true,
+    "technical_findings_visible": true,
+    "images": 3,
+    "tables": 1,
+    "exceptions": 0
+  },
+  "scope": "Generated local PCM fixtures and explicitly supplied local DSF only; no general certification, no user audio uploads",
+  "real_dsf": {
+    "file": "02. The Pink Panther DSD 256fs - 2ch.dsf",
+    "source_unchanged": true,
+    "sha256": "2495ee118c597cb2cb977e83d24c2217ade07dce8aae4f6e67080326f2ab84f3",
+    "duration": 234.02666666666667,
+    "duration_status": "Verified",
+    "conclusion_count": 16,
+    "decode_status": "Passed",
+    "duration_evidence": {
+      "seconds": 234.02666666666667,
+      "source": "DSF sample count / native rate",
+      "status": "Verified",
+      "ffprobe_seconds": 235.881361,
+      "container_seconds": 234.02666666666667,
+      "decoded_seconds": 234.02666666666667,
+      "full_decode_reached_eof": true,
+      "decode_status": "Passed",
+      "rounding_tolerance_seconds": 5.668934240362812e-06,
+      "padding_tolerance_seconds": 0.0014512471655328798,
+      "ffprobe_minus_container_seconds": 1.8546943333333274,
+      "decoded_minus_container_seconds": 0.0,
+      "consistency": "Passed",
+      "policy_version": "dsd-duration-2026.11-v1"
+    }
+  }
+}
